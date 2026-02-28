@@ -1,0 +1,15 @@
+{
+  "experiment_name": "Nightshade_Poisoning_Analysis",
+  "base_models": ["SD-v2"],
+  "metric": "Attack Success Rate (ASR)",
+  "intervals": [0, 25, 50, 75, 100, 125],
+  "results": {
+    "sd_v2": {
+      "human_proxy": [0, 0.28, 0.68, 0.74, 0.82, 0.89],
+      "clip_based": [0, 0.59, 0.66, 0.82, 0.86, 0.90]
+    },
+    "simple_attack_baseline": [0.05, 0.10, 0.18, 0.28, 0.35, 0.45]
+  },
+  "hardware": "NVIDIA Tesla T4 (16GB)",
+  "optimization": "8-bit Adam & Gradient Checkpointing"
+}
