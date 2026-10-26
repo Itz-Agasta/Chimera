@@ -25,6 +25,24 @@ ROOT = pathlib.Path(__file__).resolve().parents[2] if modal.is_local() else path
 if modal.is_local():
     sys.path.insert(0, str(ROOT / "experiments" / "common"))
 
+
+def _load_shared(name: str, path: str):
+    """
+    Load one of experiments/common/*.py by path inside the container.
+
+    Modal copies this launcher to /root/<its filename>.py and imports it under that name, so a plain
+    `import train` (or `import evaluate`) resolves to the launcher already in sys.modules rather than to the
+    shared module mounted at /root/common. Loading by path sidesteps the collision; sibling imports inside the
+    shared module still resolve through /root/common on sys.path.
+    """
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    spec.loader.exec_module(module)
+    return module
+
 app = modal.App("chimera-train")
 image = (
     modal.Image.debian_slim(python_version="3.12")
@@ -42,7 +60,7 @@ GPU_TIMEOUT = 4 * 3600
 def _train(spec_dict: dict, commit: str, poison_dir: str | None, checkpoint: bool) -> str:
     sys.path.insert(0, "/root/common")
     from run_spec import RunSpec
-    from train import train
+    train = _load_shared("chimera_train", "/root/common/train.py").train
 
     spec = RunSpec.from_dict(spec_dict)
     manifest = json.loads(pathlib.Path("/data/chimera_coco/manifest.json").read_text())

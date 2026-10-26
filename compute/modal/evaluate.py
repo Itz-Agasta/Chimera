@@ -9,10 +9,29 @@ back to the local run directory so the paper's tables are built from files in th
 """
 import json
 import pathlib
+import sys
 
 import modal
 
 ROOT = pathlib.Path(__file__).resolve().parents[2] if modal.is_local() else pathlib.Path("/")
+
+def _load_shared(name: str, path: str):
+    """
+    Load one of experiments/common/*.py by path inside the container.
+
+    Modal copies this launcher to /root/<its filename>.py and imports it under that name, so a plain
+    `import train` (or `import evaluate`) resolves to the launcher already in sys.modules rather than to the
+    shared module mounted at /root/common. Loading by path sidesteps the collision; sibling imports inside the
+    shared module still resolve through /root/common on sys.path.
+    """
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    spec.loader.exec_module(module)
+    return module
+
 app = modal.App("chimera-evaluate")
 image = (
     modal.Image.debian_slim(python_version="3.12")
@@ -28,10 +47,8 @@ data = modal.Volume.from_name("chimera-data", create_if_missing=True)
 @app.function(gpu="L4", image=image, volumes={"/cache": cache, "/data": data},
               secrets=[modal.Secret.from_name("huggingface")], timeout=4 * 3600)
 def evaluate(config_json: str, guidance: list | None = None, n_per_prompt: int = 2) -> str:
-    import sys
-
     sys.path.insert(0, "/root/common")
-    from evaluate import evaluate_run
+    evaluate_run = _load_shared("chimera_evaluate", "/root/common/evaluate.py").evaluate_run
 
     config = json.loads(config_json)
     # The run directory lives on the volume: samples stay next to the data, evaluation.json goes home.
