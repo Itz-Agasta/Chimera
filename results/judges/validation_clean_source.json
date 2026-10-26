@@ -1,0 +1,208 @@
+{
+  "config": {
+    "n_per_prompt": 4,
+    "steps": 28,
+    "guidance": 7.0,
+    "seed": 0
+  },
+  "judges": {
+    "clip_l14": "openai/clip-vit-large-patch14",
+    "siglip": "google/siglip-so400m-patch14-384"
+  },
+  "models": {
+    "sd3_medium": {
+      "cat->dog": {
+        "clip_l14": {
+          "n": 20,
+          "redirection_rate": 0.0,
+          "source_retention": 1.0,
+          "mean_source_prob": 0.9788976311683655,
+          "mean_target_prob": 0.0014964733534725382,
+          "label_counts": {
+            "cat": 20
+          }
+        },
+        "siglip": {
+          "n": 20,
+          "redirection_rate": 0.0,
+          "source_retention": 1.0,
+          "mean_source_prob": 0.993751460313797,
+          "mean_target_prob": 0.0019185352692147716,
+          "label_counts": {
+            "cat": 20
+          }
+        },
+        "judge_agreement": 1.0
+      },
+      "car->cow": {
+        "clip_l14": {
+          "n": 20,
+          "redirection_rate": 0.0,
+          "source_retention": 1.0,
+          "mean_source_prob": 0.9484712064266205,
+          "mean_target_prob": 7.710040757729076e-05,
+          "label_counts": {
+            "car": 20
+          }
+        },
+        "siglip": {
+          "n": 20,
+          "redirection_rate": 0.0,
+          "source_retention": 1.0,
+          "mean_source_prob": 0.8969640374183655,
+          "mean_target_prob": 0.00012846244721913535,
+          "label_counts": {
+            "car": 20
+          }
+        },
+        "judge_agreement": 1.0
+      },
+      "laptop->pizza": {
+        "clip_l14": {
+          "n": 20,
+          "redirection_rate": 0.0,
+          "source_retention": 1.0,
+          "mean_source_prob": 0.9318226128816605,
+          "mean_target_prob": 6.71854674919814e-05,
+          "label_counts": {
+            "laptop": 20
+          }
+        },
+        "siglip": {
+          "n": 20,
+          "redirection_rate": 0.0,
+          "source_retention": 1.0,
+          "mean_source_prob": 0.9195556223392487,
+          "mean_target_prob": 6.527892674057512e-06,
+          "label_counts": {
+            "laptop": 20
+          }
+        },
+        "judge_agreement": 1.0
+      },
+      "stop sign->bird": {
+        "clip_l14": {
+          "n": 20,
+          "redirection_rate": 0.0,
+          "source_retention": 1.0,
+          "mean_source_prob": 0.9918927848339081,
+          "mean_target_prob": 3.591027342224607e-05,
+          "label_counts": {
+            "stop sign": 20
+          }
+        },
+        "siglip": {
+          "n": 20,
+          "redirection_rate": 0.0,
+          "source_retention": 1.0,
+          "mean_source_prob": 0.996417111158371,
+          "mean_target_prob": 1.309667774052059e-06,
+          "label_counts": {
+            "stop sign": 20
+          }
+        },
+        "judge_agreement": 1.0
+      }
+    },
+    "sd2_base": {
+      "cat->dog": {
+        "clip_l14": {
+          "n": 20,
+          "redirection_rate": 0.0,
+          "source_retention": 1.0,
+          "mean_source_prob": 0.9493794620037079,
+          "mean_target_prob": 0.0010403679392766208,
+          "label_counts": {
+            "cat": 20
+          }
+        },
+        "siglip": {
+          "n": 20,
+          "redirection_rate": 0.0,
+          "source_retention": 1.0,
+          "mean_source_prob": 0.9868528842926025,
+          "mean_target_prob": 0.0019038416241528467,
+          "label_counts": {
+            "cat": 20
+          }
+        },
+        "judge_agreement": 1.0
+      },
+      "car->cow": {
+        "clip_l14": {
+          "n": 20,
+          "redirection_rate": 0.0,
+          "source_retention": 0.95,
+          "mean_source_prob": 0.8600763747781457,
+          "mean_target_prob": 0.00018052021655421414,
+          "label_counts": {
+            "car": 19,
+            "bed": 1
+          }
+        },
+        "siglip": {
+          "n": 20,
+          "redirection_rate": 0.0,
+          "source_retention": 0.95,
+          "mean_source_prob": 0.8068476032832864,
+          "mean_target_prob": 0.0005449069422638786,
+          "label_counts": {
+            "car": 19,
+            "chair": 1
+          }
+        },
+        "judge_agreement": 0.95
+      },
+      "laptop->pizza": {
+        "clip_l14": {
+          "n": 20,
+          "redirection_rate": 0.0,
+          "source_retention": 0.9,
+          "mean_source_prob": 0.7968946643173694,
+          "mean_target_prob": 0.00024613084481188706,
+          "label_counts": {
+            "laptop": 18,
+            "keyboard": 2
+          }
+        },
+        "siglip": {
+          "n": 20,
+          "redirection_rate": 0.0,
+          "source_retention": 0.85,
+          "mean_source_prob": 0.7809191327542067,
+          "mean_target_prob": 1.9976057862436393e-05,
+          "label_counts": {
+            "laptop": 17,
+            "keyboard": 2,
+            "chair": 1
+          }
+        },
+        "judge_agreement": 0.95
+      },
+      "stop sign->bird": {
+        "clip_l14": {
+          "n": 20,
+          "redirection_rate": 0.0,
+          "source_retention": 0.95,
+          "mean_source_prob": 0.9266747891902923,
+          "mean_target_prob": 2.2009429533831337e-05,
+          "label_counts": {
+            "stop sign": 19,
+            "surfboard": 1
+          }
+        },
+        "siglip": {
+          "n": 20,
+          "redirection_rate": 0.0,
+          "source_retention": 1.0,
+          "mean_source_prob": 0.9820959210395813,
+          "mean_target_prob": 9.717128587816148e-06,
+          "label_counts": {
+            "stop sign": 20
+          }
+        },
+        "judge_agreement": 0.95
+      }
+    }
+  }
+}
