@@ -19,6 +19,7 @@ subprocess.run(
 )
 subprocess.run([sys.executable, "-m", "pip", "uninstall", "-q", "-y", "torchao"], check=False)
 
+import gc
 import glob
 import json
 import os
@@ -76,7 +77,9 @@ def generate(model_key):
         pipe = StableDiffusionPipeline.from_pretrained(
             "sd2-community/stable-diffusion-2-1-base", torch_dtype=torch.float16, safety_checker=None)
         size = {"height": 512, "width": 512}
-    pipe = pipe.to(GEN_DEV)
+    # SD3's three text encoders (T5 alone ~12 GB fp16) do not fit next to the transformer on a 16 GB T4,
+    # so modules are paged on and off the GPU as the pipeline needs them.
+    pipe.enable_model_cpu_offload(device=GEN_DEV)
     pipe.set_progress_bar_config(disable=True)
 
     images = {}
@@ -89,6 +92,7 @@ def generate(model_key):
         images[source] = imgs
         print(f"{model_key}: {source} -> {len(imgs)} images", flush=True)
     del pipe
+    gc.collect()
     torch.cuda.empty_cache()
     return images
 

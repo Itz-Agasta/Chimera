@@ -100,14 +100,23 @@ def main():
     for c in CONCEPTS:
         print(f"  {c:10s} {len(by_concept[c])} candidate images")
 
-    # Drop images containing both halves of a pair (ambiguous for that pair).
+    # An image may only represent ONE pair concept: anything also showing or mentioning another pair's
+    # concept is dropped, so poisons and eval prompts can never mix two attacks.
+    all_pair_concepts = set(CONCEPTS)
+
+    def mixed(iid, keep: str) -> bool:
+        rec = images[iid]
+        others = (rec["categories"] & all_pair_concepts) - {keep}
+        if others:
+            return True
+        return any(mentions(cap, c) for cap in rec["captions"] for c in all_pair_concepts - {keep})
+
     conflict = {}
     for source, target in PAIRS:
-        both = {iid for iid in by_concept[source] if target in images[iid]["categories"]}
-        both |= {iid for iid in by_concept[target] if source in images[iid]["categories"]}
-        conflict[(source, target)] = both
-        if both:
-            print(f"  dropping {len(both)} ambiguous images for {source}->{target}")
+        bad = {iid for iid in by_concept[source] if mixed(iid, source)}
+        bad |= {iid for iid in by_concept[target] if mixed(iid, target)}
+        conflict[(source, target)] = bad
+        print(f"  {source}->{target}: dropping {len(bad)} images that mix in another pair concept")
 
     manifest = {
         "meta": {"seed": args.seed, "source": "COCO 2017", "pairs": [list(p) for p in PAIRS],
