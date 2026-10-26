@@ -1,0 +1,61 @@
+\documentclass[lettersize,journal]{IEEEtran}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
+\usepackage{textcomp}
+\usepackage{stfloats}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{siunitx}
+\usepackage{cite}
+\usepackage[hidelinks]{hyperref}
+\usepackage{tikz}
+\usepackage{xspace}
+\graphicspath{{figures/}}
+\hyphenation{op-tical net-works semi-conduc-tor IEEE-Xplore}
+
+\input{macros}
+
+\begin{document}
+
+\title{Flow-Anchor Poisoning: Clean-Label Backdoors in\\ Flow-Matching Diffusion Transformers}
+
+\author{Rupam~Golui, Saswata~Biswas, Yashraj~Singh, Suchetan~Chakraborty, Abesh~Chakraborty,
+        and~Sudipta~Sahana
+\thanks{The authors are with the Department of Computer Science and Engineering (AI),
+University of Engineering \& Management, India.}%
+\thanks{Manuscript received XXX; revised XXX.}}
+
+\markboth{IEEE Transactions on Information Forensics and Security}%
+{Golui \MakeLowercase{\textit{et al.}}: Flow-Anchor Poisoning}
+
+\maketitle
+
+\begin{abstract}
+\input{sections/00_abstract}
+\end{abstract}
+
+\begin{IEEEkeywords}
+Data poisoning, backdoor attacks, diffusion transformers, flow matching, text-to-image generation, classifier-free guidance.
+\end{IEEEkeywords}
+
+\input{sections/01_introduction}
+\input{sections/02_related_work}
+\input{sections/03_background}
+\input{sections/04_threat_model}
+\input{sections/05_h1_failure_analysis}
+\input{sections/06_method}
+\input{sections/07_experiments}
+\input{sections/08_defenses}
+\input{sections/09_discussion}
+\input{sections/10_conclusion}
+
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+\end{document}
