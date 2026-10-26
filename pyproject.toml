@@ -1,0 +1,20 @@
+[project]
+name = "chimera"
+version = "0.1.0"
+description = "Flow-Anchor Poisoning: clean-label backdoors in flow-matching diffusion transformers (local analysis + figures)"
+requires-python = ">=3.12,<3.13"
+# Local (CPU) deps only: plotting, stats, result aggregation.
+# GPU training/poisoning deps live in experiments/requirements-gpu.txt and are installed on Kaggle/Vast.
+dependencies = [
+    "matplotlib>=3.9",
+    "numpy>=2.0",
+    "pandas>=2.2",
+    "scipy>=1.14",
+    "seaborn>=0.13",
+    "tueplots>=0.2",
+    "sciglyph>=0.2.2",
+    "pillow>=10",
+]
+
+[tool.uv]
+package = false

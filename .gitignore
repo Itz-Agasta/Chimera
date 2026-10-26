@@ -148,3 +148,19 @@ notebook/templates/*.html
 
 # Temporary files used for testing
 tmp/
+# --- Chimera ---
+.venv/
+# LaTeX build artifacts
+paper/IEEE/*.aux
+paper/IEEE/*.bbl
+paper/IEEE/*.blg
+paper/IEEE/*.log
+paper/IEEE/*.out
+paper/IEEE/*.synctex.gz
+paper/IEEE/sections/*.aux
+paper/IEEE/main.pdf
+# model weights / big artifacts (keep on Kaggle/HF)
+*.safetensors
+*.ckpt
+*.bin
+results/**/checkpoints/
