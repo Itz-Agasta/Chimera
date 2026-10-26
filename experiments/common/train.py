@@ -276,7 +276,10 @@ def train(spec: RunSpec, manifest: dict, images_root, text_root, poison_dir=None
     params = [p for p in net.parameters() if p.requires_grad]
     if spec.regime == "full_ft":
         import bitsandbytes as bnb
-        optimizer = bnb.optim.AdamW8bit(params, lr=spec.lr, betas=(0.9, 0.999), weight_decay=1e-2, eps=1e-8)
+        # Measured on an L40S: fp32 masters + fp32 grads + 8-bit Adam state peaks at 23.1 GB, past a 24 GB
+        # card. Paging the optimizer state to CPU keeps the recipe and fits a 24 GB GPU.
+        cls = bnb.optim.PagedAdamW8bit if spec.paged_optimizer else bnb.optim.AdamW8bit
+        optimizer = cls(params, lr=spec.lr, betas=(0.9, 0.999), weight_decay=1e-2, eps=1e-8)
     else:
         optimizer = torch.optim.AdamW(params, lr=spec.lr, betas=(0.9, 0.999), weight_decay=1e-2, eps=1e-8)
     from diffusers.optimization import get_scheduler

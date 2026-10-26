@@ -91,6 +91,7 @@ class RunSpec:
     logit_std: float = 1.0
     lr_warmup_steps: int = 50
     max_grad_norm: float = 1.0
+    paged_optimizer: bool = True   # full FT only: page 8-bit Adam state to CPU (~4 GB off the GPU)
 
     def __post_init__(self):
         if self.model not in MODELS:

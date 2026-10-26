@@ -59,6 +59,21 @@ data = modal.Volume.from_name("chimera-data", create_if_missing=True)
 GPU_TIMEOUT = 4 * 3600
 
 
+def _run(fn, *args, **kwargs):
+    """
+    Call `fn`, turning any exception into a plain RuntimeError carrying the traceback as text.
+
+    A torch exception (CUDA OOM above all) cannot be unpickled on the launching machine, which has no torch, so
+    Modal reports a deserialization error instead of the real failure. Text always travels.
+    """
+    import traceback
+
+    try:
+        return fn(*args, **kwargs)
+    except Exception:
+        raise RuntimeError("remote failure:\n" + traceback.format_exc()) from None
+
+
 def _train(spec_dict: dict, commit: str, poison_dir: str | None, checkpoint: bool) -> str:
     sys.path.insert(0, "/root/common")
     from run_spec import RunSpec
@@ -66,7 +81,7 @@ def _train(spec_dict: dict, commit: str, poison_dir: str | None, checkpoint: boo
 
     spec = RunSpec.from_dict(spec_dict)
     manifest = json.loads(pathlib.Path("/data/chimera_coco/manifest.json").read_text())
-    _, config, inputs, metrics = train(
+    _, config, inputs, metrics = _run(train,
         spec, manifest, "/data/chimera_coco/images", f"/data/embeds/{spec.model}",
         poison_dir=poison_dir, latent_cache=f"/data/latents/{spec.model}_{spec.resolution}.safetensors",
         commit=commit, checkpoint_dir="/data/checkpoints" if checkpoint else None)
