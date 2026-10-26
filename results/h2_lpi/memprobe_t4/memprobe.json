@@ -1,0 +1,122 @@
+{
+  "env": {
+    "torch": "2.11.0+cu128",
+    "gpus": [
+      "Tesla T4",
+      "Tesla T4"
+    ],
+    "gpu_total_gb": [
+      14.56,
+      14.56
+    ],
+    "text_encoders_peak_gb_cuda1": 12.34,
+    "weights_gb_cuda0": 4.11,
+    "lora_trainable_params": 4718592
+  },
+  "encode_check": {
+    "src": {
+      "shape_embeds": [
+        1,
+        333,
+        4096
+      ],
+      "shape_pooled": [
+        1,
+        2048
+      ],
+      "max_abs_diff_embeds": 0.0,
+      "max_abs_diff_pooled": 0.0
+    },
+    "tgt": {
+      "shape_embeds": [
+        1,
+        333,
+        4096
+      ],
+      "shape_pooled": [
+        1,
+        2048
+      ],
+      "max_abs_diff_embeds": 0.0,
+      "max_abs_diff_pooled": 0.0
+    }
+  },
+  "lpi": [
+    {
+      "res": 512,
+      "grad_ckpt": false,
+      "status": "ok",
+      "peak_gb": 6.64,
+      "s_per_step": 0.646,
+      "info": {
+        "loss": 0.4980437159538269,
+        "grad_finite": true
+      }
+    },
+    {
+      "res": 512,
+      "grad_ckpt": true,
+      "status": "ok",
+      "peak_gb": 5.8,
+      "s_per_step": 0.785,
+      "info": {
+        "loss": 0.3122127950191498,
+        "grad_finite": true
+      }
+    },
+    {
+      "res": 1024,
+      "grad_ckpt": true,
+      "status": "ok",
+      "peak_gb": 10.75,
+      "s_per_step": 3.724,
+      "info": {
+        "loss": 0.48536065220832825,
+        "grad_finite": true
+      }
+    },
+    {
+      "res": 1024,
+      "grad_ckpt": false,
+      "status": "ok",
+      "peak_gb": 13.5,
+      "s_per_step": 3.24,
+      "info": {
+        "loss": 0.48752060532569885,
+        "grad_finite": true
+      }
+    }
+  ],
+  "lora": [
+    {
+      "res": 512,
+      "grad_ckpt": true,
+      "status": "ok",
+      "peak_gb": 4.58,
+      "s_per_step": 0.629,
+      "info": {
+        "loss": 0.4245810806751251
+      }
+    },
+    {
+      "res": 512,
+      "grad_ckpt": false,
+      "status": "ok",
+      "peak_gb": 5.64,
+      "s_per_step": 0.464,
+      "info": {
+        "loss": 0.10232983529567719
+      }
+    },
+    {
+      "res": 1024,
+      "grad_ckpt": true,
+      "status": "ok",
+      "peak_gb": 5.71,
+      "s_per_step": 2.887,
+      "info": {
+        "loss": 0.11144706606864929
+      }
+    }
+  ]
+}

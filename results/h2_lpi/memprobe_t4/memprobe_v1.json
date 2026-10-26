@@ -1,0 +1,90 @@
+{
+  "env": {
+    "torch": "2.11.0+cu128",
+    "gpus": [
+      "Tesla T4",
+      "Tesla T4"
+    ],
+    "gpu_total_gb": [
+      14.56,
+      14.56
+    ],
+    "text_encoders_peak_gb_cuda1": 12.34,
+    "weights_gb_cuda0": 4.11
+  },
+  "encode_check": {
+    "src": {
+      "shape_embeds": [
+        1,
+        333,
+        4096
+      ],
+      "shape_pooled": [
+        1,
+        2048
+      ],
+      "max_abs_diff_embeds": 0.0,
+      "max_abs_diff_pooled": 0.0
+    },
+    "tgt": {
+      "shape_embeds": [
+        1,
+        333,
+        4096
+      ],
+      "shape_pooled": [
+        1,
+        2048
+      ],
+      "max_abs_diff_embeds": 0.0,
+      "max_abs_diff_pooled": 0.0
+    }
+  },
+  "lpi": [
+    {
+      "res": 512,
+      "grad_ckpt": false,
+      "status": "ok",
+      "peak_gb": 6.64,
+      "s_per_step": 0.636,
+      "info": {
+        "loss": 0.56784987449646,
+        "grad_finite": true
+      }
+    },
+    {
+      "res": 512,
+      "grad_ckpt": true,
+      "status": "ok",
+      "peak_gb": 5.81,
+      "s_per_step": 0.774,
+      "info": {
+        "loss": 0.3431970477104187,
+        "grad_finite": true
+      }
+    },
+    {
+      "res": 1024,
+      "grad_ckpt": true,
+      "status": "ok",
+      "peak_gb": 10.75,
+      "s_per_step": 3.674,
+      "info": {
+        "loss": 0.47032925486564636,
+        "grad_finite": true
+      }
+    },
+    {
+      "res": 1024,
+      "grad_ckpt": false,
+      "status": "ok",
+      "peak_gb": 13.5,
+      "s_per_step": 3.203,
+      "info": {
+        "loss": 0.4467059075832367,
+        "grad_finite": true
+      }
+    }
+  ],
+  "lora": []
+}

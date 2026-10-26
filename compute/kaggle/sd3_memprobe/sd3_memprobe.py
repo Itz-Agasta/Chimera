@@ -17,6 +17,8 @@ subprocess.run(
      "diffusers==0.42.0", "transformers", "accelerate", "peft", "lpips", "sentencepiece", "protobuf"],
     check=True,
 )
+# Kaggle's image ships torchao 0.10, which recent peft rejects at LoRA injection time; we don't use it.
+subprocess.run([sys.executable, "-m", "pip", "uninstall", "-q", "-y", "torchao"], check=False)
 
 import gc
 import glob
