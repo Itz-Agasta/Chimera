@@ -38,22 +38,23 @@ class TextCache:
         self.root = Path(root)
         self.index = json.loads((self.root / "index.json").read_text())
         self.row = {c: i for i, c in enumerate(self.index["captions"])}
-        self._shards = {}
+        self._open = {}
 
     def _shard_for(self, i):
+        """An open safetensors handle, not a loaded shard: SD3's cache is 13.7 GB and training reads one row."""
         for s in self.index["shards"]:
             if s["start"] <= i < s["stop"]:
-                if s["file"] not in self._shards:
-                    from safetensors.torch import load_file
-                    self._shards[s["file"]] = load_file(str(self.root / s["file"]))
-                return self._shards[s["file"]], i - s["start"]
+                if s["file"] not in self._open:
+                    from safetensors import safe_open
+                    self._open[s["file"]] = safe_open(str(self.root / s["file"]), framework="pt")
+                return self._open[s["file"]], i - s["start"]
         raise KeyError(i)
 
     def get(self, caption: str) -> dict:
         if caption not in self.row:
             raise KeyError(f"caption not in text cache: {caption!r}")
-        shard, j = self._shard_for(self.row[caption])
-        return {k: v[j] for k, v in shard.items()}
+        handle, j = self._shard_for(self.row[caption])
+        return {k: handle.get_slice(k)[j:j + 1][0] for k in handle.keys()}
 
     def __contains__(self, caption):
         return caption in self.row

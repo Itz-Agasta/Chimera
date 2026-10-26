@@ -1,0 +1,86 @@
+{
+  "_comment": [
+    "The run matrix, tiered so the budget goes where the claims are. Expand it with",
+    "  uv run python experiments/common/run_spec.py experiments/configs/matrix.json data/chimera_coco/manifest.json",
+    "A full factorial (2 models x 2 regimes x 4 pairs x 5 counts x 3 seeds x 6 attacks) is ~1000 runs and does",
+    "not fit the compute budget; these tiers keep 3 seeds where a confidence interval is claimed and 1 seed",
+    "where the point is a trend or a generalisation check.",
+    "eval_guidance is read by the evaluation step: the full omega sweep only where the paper plots it.",
+    "steps is pinned to 800 (one epoch over the 3200-image clean corpus at batch 1 x accum 4) rather than",
+    "left to epochs: derived from epochs it would grow with poison_count (3400 images -> 850 steps), so a",
+    "poison-count sweep would vary training length as well as poison count."
+  ],
+  "recipe": {
+    "resolution": 512,
+    "batch_size": 1,
+    "grad_accum": 4,
+    "epochs": 1.0,
+    "steps": 800,
+    "caption_dropout": 0.0
+  },
+  "cost": {
+    "sd3_medium": {
+      "full_ft": {
+        "s_per_microstep": 0.61,
+        "usd_per_hour": 0.8,
+        "source": "results/compute/full_ft_probe_l4.json (Modal L4, 512px); price $0.000222/s = $0.799/h (modal.com/pricing, checked 2026-10-27), CPU+memory billed on top"
+      },
+      "lora": {
+        "s_per_microstep": 0.46,
+        "usd_per_hour": 0.0,
+        "source": "results/h2_lpi/memprobe_t4/memprobe.json (Kaggle T4, free quota)"
+      }
+    },
+    "sd2_base": {
+      "full_ft": {"s_per_microstep": null, "source": "not measured yet -- probe before trusting a total"},
+      "lora": {"s_per_microstep": null, "source": "not measured yet"}
+    }
+  },
+  "tiers": [
+    {
+      "name": "clean_baseline",
+      "_why": "B0: fine-tuning on a clean corpus must leave attack success at ~0. The check the old H1 failed.",
+      "models": ["sd3_medium", "sd2_base"],
+      "regimes": ["full_ft"],
+      "pairs": ["cat->dog"],
+      "attacks": ["clean"],
+      "poison_counts": [0],
+      "seeds": [0, 1, 2],
+      "eval_guidance": [1, 3, 5, 7, 9]
+    },
+    {
+      "name": "headline_curve",
+      "_why": "Fig. 'ASR vs number of poisons' on both architectures: the H1 result and the H2 result in one grid.",
+      "models": ["sd3_medium", "sd2_base"],
+      "regimes": ["full_ft"],
+      "pairs": ["cat->dog"],
+      "attacks": ["dirty_label", "nightshade_sd2", "nightshade_sd3", "chimera_pred", "chimera_anchor"],
+      "poison_counts": [25, 50, 100, 200],
+      "seeds": [0],
+      "seeds_at": {"100": [0, 1, 2]},
+      "eval_guidance": [1, 3, 5, 7, 9]
+    },
+    {
+      "name": "generalisation",
+      "_why": "Does the result hold on the other three concept pairs? One count, one seed, strongest baseline only.",
+      "models": ["sd3_medium", "sd2_base"],
+      "regimes": ["full_ft"],
+      "pairs": ["car->cow", "laptop->pizza", "stop sign->bird"],
+      "attacks": ["clean", "nightshade_sd3", "chimera_pred"],
+      "poison_counts": [100],
+      "seeds": [0],
+      "eval_guidance": [7]
+    },
+    {
+      "name": "lora",
+      "_why": "Secondary regime: how most SD3 fine-tunes are actually made. Fits the free Kaggle T4.",
+      "models": ["sd3_medium", "sd2_base"],
+      "regimes": ["lora"],
+      "pairs": ["cat->dog"],
+      "attacks": ["clean", "nightshade_sd3", "chimera_pred"],
+      "poison_counts": [100],
+      "seeds": [0, 1, 2],
+      "eval_guidance": [7]
+    }
+  ]
+}

@@ -105,12 +105,15 @@ def validate_run(run_dir, manifest=None, require_samples=True):
 
             if manifest and config and config.get("pair") in manifest.get("pairs", {}):
                 pair = manifest["pairs"][config["pair"]]
-                pool = {r["id"] for r in pair["poison_pool"]}
-                stray = set(poisoned) - pool
+                # Clean-label attacks perturb images from the poison pool; the dirty-label baseline instead
+                # publishes real target images under a source caption, so its ids come from target_anchor.
+                split = "target_anchor" if config.get("attack") == "dirty_label" else "poison_pool"
+                allowed = {r["id"] for r in pair[split]}
+                stray = set(poisoned) - allowed
                 if stray:
-                    problems.append(f"{len(stray)} poisoned ids are outside this pair's poison_pool")
-                eval_ids = {r["id"] for r in manifest["clean_train"]}
-                if not set(clean) <= eval_ids | pool:
+                    problems.append(f"{len(stray)} poisoned ids are outside this pair's {split}")
+                train_ids = {r["id"] for r in manifest["clean_train"]}
+                if not set(clean) <= train_ids | allowed:
                     problems.append("clean_ids contain images that are not in the manifest")
 
     if require_samples:
