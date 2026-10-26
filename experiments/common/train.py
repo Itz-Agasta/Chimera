@@ -100,6 +100,8 @@ def encode_latents(records, spec: RunSpec, device, cache_path: Path | None, batc
     is reproducible from (image id, model, resolution) alone -- see `latent_noise`. Returns {id: latent fp16 on
     CPU}; the VAE is loaded and freed inside this function.
     """
+    import gc
+
     import torch
     from diffusers import AutoencoderKL
     from safetensors.torch import load_file, save_file
@@ -135,7 +137,10 @@ def encode_latents(records, spec: RunSpec, device, cache_path: Path | None, batc
                 latents[r["id"]] = zi.half().cpu()
             if start % (batch * 25) == 0:
                 print(f"  vae {start + len(chunk)}/{len(todo)}  {time.time() - t0:.0f}s", flush=True)
-        del vae
+        # The loop's last chunk still references GPU tensors, and the VAE's memory has to be gone before
+        # the transformer is built: full fine-tuning leaves under 3 GB of headroom on a 22 GB card.
+        del vae, dist, eps, z, px
+        gc.collect()
         torch.cuda.empty_cache()
 
     if cache_path:

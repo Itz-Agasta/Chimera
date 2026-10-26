@@ -49,7 +49,9 @@ image = (
     .pip_install("torch", "diffusers==0.42.0", "transformers", "accelerate", "bitsandbytes", "peft",
                  "safetensors", "pillow", "numpy", "sentencepiece", "protobuf",
                  "huggingface_hub[hf_transfer]")
-    .env({"HF_HOME": "/cache", "HF_HUB_ENABLE_HF_TRANSFER": "1"})
+    .env({"HF_HOME": "/cache", "HF_HUB_ENABLE_HF_TRANSFER": "1",
+          # the VAE pass fragments the heap before the transformer is built; let the allocator give it back
+          "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True"})
     .add_local_dir(ROOT / "experiments" / "common", "/root/common")
 )
 cache = modal.Volume.from_name("chimera-hf-cache", create_if_missing=True)
