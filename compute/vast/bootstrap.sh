@@ -24,14 +24,25 @@ python -c "import torch; print('torch', torch.__version__, '| bf16', torch.cuda.
 echo "== dependencies"
 # The Vast PyTorch images ship torch; only the rest is installed, and never the text encoders' dependencies.
 pip install -q -U "diffusers==0.42.0" transformers accelerate bitsandbytes peft safetensors \
-    "huggingface_hub[hf_transfer]" pillow numpy sentencepiece protobuf
+    "huggingface_hub>=0.32" pillow numpy sentencepiece protobuf
 pip uninstall -q -y torchao 2>/dev/null || true   # ships broken on some images and breaks peft's LoRA injection
 
 echo "== data bundle from $BUNDLE_REPO"
 mkdir -p "$DATA"
-export HF_HUB_ENABLE_HF_TRANSFER=1
+# Transfers go through hf-xet (Rust, chunk-deduplicated), which huggingface_hub uses by default; the old
+# HF_HUB_ENABLE_HF_TRANSFER is a silent no-op since v1.0. High-performance mode saturates the network but
+# buffers heavily, and the docs warn it can be slower below 64 GB RAM, so it is enabled only on big boxes.
+RAM_GB=$(free -g | awk '/^Mem:/{print $2}')
+if [ "${RAM_GB:-0}" -ge 64 ]; then
+  export HF_XET_HIGH_PERFORMANCE=1
+  echo "hf-xet high performance mode on (${RAM_GB} GB RAM)"
+else
+  echo "hf-xet default mode (${RAM_GB} GB RAM; high performance wants >= 64 GB)"
+fi
 # Resumable: a re-run after a dropped connection continues rather than restarting.
-hf download "$BUNDLE_REPO" --repo-type dataset --local-dir "$DATA" \
+# `hf` is the v1.0 CLI; older images still ship huggingface-cli.
+HF_CLI=$(command -v hf || command -v huggingface-cli)
+"$HF_CLI" download "$BUNDLE_REPO" --repo-type dataset --local-dir "$DATA" \
     --include 'chimera_coco/*' 'embeds/*' 'latents/*'
 
 echo "== what landed"

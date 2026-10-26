@@ -48,8 +48,8 @@ image = (
     modal.Image.debian_slim(python_version="3.12")
     .pip_install("torch", "diffusers==0.42.0", "transformers", "accelerate", "bitsandbytes", "peft",
                  "safetensors", "pillow", "numpy", "sentencepiece", "protobuf",
-                 "huggingface_hub[hf_transfer]")
-    .env({"HF_HOME": "/cache", "HF_HUB_ENABLE_HF_TRANSFER": "1",
+                 "huggingface_hub>=0.32")
+    .env({"HF_HOME": "/cache",
           # the VAE pass fragments the heap before the transformer is built; let the allocator give it back
           "PYTORCH_CUDA_ALLOC_CONF": "expandable_segments:True"})
     .add_local_dir(ROOT / "experiments" / "common", "/root/common")
