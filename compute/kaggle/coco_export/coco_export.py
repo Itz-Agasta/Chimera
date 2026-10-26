@@ -13,10 +13,18 @@ import zipfile
 from PIL import Image
 
 RES = 512
-manifest_path = glob.glob("/kaggle/input/**/manifest.json", recursive=True)[0]
-manifest = json.load(open(manifest_path))
-roots = {s: glob.glob(f"/kaggle/input/**/{s}2017", recursive=True) for s in ("train", "val")}
-roots = {s: next(p for p in v if os.path.isdir(p)) for s, v in roots.items()}
+# Never glob recursively under /kaggle/input: it includes the 123k-file COCO mount and the walk can hang for
+# an hour before the first line of output. Only look a few fixed levels deep.
+def find(pattern):
+    for depth in ("/kaggle/input/*/", "/kaggle/input/*/*/", "/kaggle/input/*/*/*/", "/kaggle/input/*/*/*/*/"):
+        hits = glob.glob(depth + pattern)
+        if hits:
+            return hits[0]
+    raise SystemExit(f"not found under /kaggle/input: {pattern}")
+
+
+manifest = json.load(open(find("manifest.json")))
+roots = {s: find(f"{s}2017") for s in ("train", "val")}
 print("COCO roots:", roots, flush=True)
 
 rows = list(manifest["clean_train"])
