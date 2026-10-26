@@ -1,0 +1,14 @@
+{
+  "sd3_medium": {
+    "checked": 16,
+    "max_rel_err_correct_row": 0.0015406853053718805,
+    "min_rel_err_wrong_row": 0.07723990082740784,
+    "ok": true
+  },
+  "sd2_base": {
+    "checked": 16,
+    "max_rel_err_correct_row": 0.002415367402136326,
+    "min_rel_err_wrong_row": 0.21695709228515625,
+    "ok": true
+  }
+}
