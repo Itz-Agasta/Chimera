@@ -12,6 +12,7 @@ Selection rules
   * an image belongs to a concept when its instance annotations contain that category AND at least one of its five
     captions mentions it (concepts.mentions), so the caption is a faithful label (clean-label requirement);
   * images containing both a source and its target concept are dropped from every split of that pair;
+  * the image's short side is at least MIN_SHORT_SIDE px, so the 512 px crop is never a large upscale;
   * one caption per image (the first that mentions the concept, else the first), so captions stay human-written;
   * splits are disjoint by image id; the seed fixes the choice.
 
@@ -35,6 +36,7 @@ N_POISON_POOL = 250       # held-out source images available to perturb (max poi
 N_TARGET_ANCHOR = 250     # target-concept images for anchors / dirty-label baseline
 N_EVAL_PROMPTS = 50       # held-out source captions used as evaluation prompts
 N_FILLER = 2000           # images of unrelated categories, so poisons compete with a realistic corpus
+MIN_SHORT_SIDE = 384      # images are center-cropped and resized to 512 px; this caps upscaling at 1.33x
 
 
 def load_split(ann_dir: Path, split: str):
@@ -54,6 +56,7 @@ def load_split(ann_dir: Path, split: str):
     with inst_path.open("rb") as f:
         for im in ijson.items(f, "images.item", use_float=True):
             images[im["id"]] = {"file_name": im["file_name"], "split": split,
+                               "short_side": min(im["width"], im["height"]),
                                "categories": set(), "captions": []}
     with inst_path.open("rb") as f:
         for a in ijson.items(f, "annotations.item", use_float=True):
@@ -89,7 +92,8 @@ def main():
             images.update(load_split(args.ann, split))
     if not images:
         raise SystemExit(f"no COCO annotation files found in {args.ann}")
-    print(f"loaded {len(images)} images")
+    print(f"loaded {len(images)} images "
+          f"({sum(r['short_side'] >= MIN_SHORT_SIDE for r in images.values())} with short side >= {MIN_SHORT_SIDE}px)")
 
     # Images that genuinely depict each concept (category present and a caption that says so).
     by_concept = defaultdict(list)
@@ -122,13 +126,15 @@ def main():
         "meta": {"seed": args.seed, "source": "COCO 2017", "pairs": [list(p) for p in PAIRS],
                  "counts": {"clean_source": N_CLEAN_SOURCE, "poison_pool": N_POISON_POOL,
                             "target_anchor": N_TARGET_ANCHOR, "eval_prompts": N_EVAL_PROMPTS,
-                            "filler": N_FILLER}},
+                            "filler": N_FILLER, "min_short_side": MIN_SHORT_SIDE}},
         "pairs": {}, "clean_train": [], "filler": [],
     }
     used = set()
 
-    def take(concept, n, pair_key, exclude):
-        pool = [i for i in by_concept[concept] if i not in used and i not in exclude]
+    def take(concept, n, pair_key, exclude, needs_image=True):
+        # Eval prompts only use the caption, so they skip the size requirement.
+        pool = [i for i in by_concept[concept] if i not in used and i not in exclude
+                and (not needs_image or images[i]["short_side"] >= MIN_SHORT_SIDE)]
         rng.shuffle(pool)
         chosen = pool[:n]
         used.update(chosen)
@@ -141,7 +147,7 @@ def main():
         ex = conflict[(source, target)]
         clean_src = take(source, N_CLEAN_SOURCE, key, ex)
         poison = take(source, N_POISON_POOL, key, ex)
-        evalp = take(source, N_EVAL_PROMPTS, key, ex)
+        evalp = take(source, N_EVAL_PROMPTS, key, ex, needs_image=False)
         anchor = take(target, N_TARGET_ANCHOR, key, ex)
 
         def rows(ids, concept):
@@ -160,7 +166,8 @@ def main():
     # Filler: images with no pair concept at all, to make the corpus look like a real scrape.
     pair_concepts = set(SOURCES) | set(TARGETS)
     filler_pool = [iid for iid, rec in images.items()
-                   if iid not in used and rec["captions"] and not (rec["categories"] & pair_concepts)]
+                   if iid not in used and rec["captions"] and not (rec["categories"] & pair_concepts)
+                   and rec["short_side"] >= MIN_SHORT_SIDE]
     rng.shuffle(filler_pool)
     for iid in filler_pool[:N_FILLER]:
         manifest["filler"].append({"id": iid, "file_name": images[iid]["file_name"],

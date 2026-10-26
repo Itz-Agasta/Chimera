@@ -1,0 +1,160 @@
+{
+  "config": {
+    "n_per_prompt": 4,
+    "steps": 28,
+    "guidance": 7.0,
+    "seed": 0,
+    "concepts": [
+      "dog",
+      "cow",
+      "pizza",
+      "bird"
+    ]
+  },
+  "judges": {
+    "clip_l14": "openai/clip-vit-large-patch14",
+    "siglip": "google/siglip-so400m-patch14-384"
+  },
+  "models": {
+    "sd3_medium": {
+      "dog": {
+        "clip_l14": {
+          "n": 20,
+          "recognition": 1.0,
+          "label_counts": {
+            "dog": 20
+          }
+        },
+        "siglip": {
+          "n": 20,
+          "recognition": 1.0,
+          "label_counts": {
+            "dog": 20
+          }
+        },
+        "judge_agreement": 1.0
+      },
+      "cow": {
+        "clip_l14": {
+          "n": 20,
+          "recognition": 1.0,
+          "label_counts": {
+            "cow": 20
+          }
+        },
+        "siglip": {
+          "n": 20,
+          "recognition": 1.0,
+          "label_counts": {
+            "cow": 20
+          }
+        },
+        "judge_agreement": 1.0
+      },
+      "pizza": {
+        "clip_l14": {
+          "n": 20,
+          "recognition": 1.0,
+          "label_counts": {
+            "pizza": 20
+          }
+        },
+        "siglip": {
+          "n": 20,
+          "recognition": 1.0,
+          "label_counts": {
+            "pizza": 20
+          }
+        },
+        "judge_agreement": 1.0
+      },
+      "bird": {
+        "clip_l14": {
+          "n": 20,
+          "recognition": 1.0,
+          "label_counts": {
+            "bird": 20
+          }
+        },
+        "siglip": {
+          "n": 20,
+          "recognition": 1.0,
+          "label_counts": {
+            "bird": 20
+          }
+        },
+        "judge_agreement": 1.0
+      }
+    },
+    "sd2_base": {
+      "dog": {
+        "clip_l14": {
+          "n": 20,
+          "recognition": 1.0,
+          "label_counts": {
+            "dog": 20
+          }
+        },
+        "siglip": {
+          "n": 20,
+          "recognition": 1.0,
+          "label_counts": {
+            "dog": 20
+          }
+        },
+        "judge_agreement": 1.0
+      },
+      "cow": {
+        "clip_l14": {
+          "n": 20,
+          "recognition": 1.0,
+          "label_counts": {
+            "cow": 20
+          }
+        },
+        "siglip": {
+          "n": 20,
+          "recognition": 1.0,
+          "label_counts": {
+            "cow": 20
+          }
+        },
+        "judge_agreement": 1.0
+      },
+      "pizza": {
+        "clip_l14": {
+          "n": 20,
+          "recognition": 1.0,
+          "label_counts": {
+            "pizza": 20
+          }
+        },
+        "siglip": {
+          "n": 20,
+          "recognition": 1.0,
+          "label_counts": {
+            "pizza": 20
+          }
+        },
+        "judge_agreement": 1.0
+      },
+      "bird": {
+        "clip_l14": {
+          "n": 20,
+          "recognition": 1.0,
+          "label_counts": {
+            "bird": 20
+          }
+        },
+        "siglip": {
+          "n": 20,
+          "recognition": 1.0,
+          "label_counts": {
+            "bird": 20
+          }
+        },
+        "judge_agreement": 1.0
+      }
+    }
+  }
+}
