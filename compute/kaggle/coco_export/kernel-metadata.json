@@ -1,0 +1,14 @@
+{
+  "id": "itzagasta/chimera-coco-export",
+  "title": "chimera-coco-export",
+  "code_file": "coco_export.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_internet": false,
+  "dataset_sources": ["awsaf49/coco-2017-dataset", "itzagasta/chimera-coco-manifest"],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}
