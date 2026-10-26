@@ -27,20 +27,24 @@ class Judge:
     name: str
     model: object
     processor: object
-    text_feats: torch.Tensor  # [n_categories, dim], L2-normalised
+    text_inputs: dict  # tokenised "a photo of a {category}." for all 80 categories
     device: torch.device
 
     @torch.no_grad()
     def classify(self, images, batch_size: int = 16):
-        """images: list of PIL images -> list of {label, prob, probs{concept: p}}."""
+        """images: list of PIL images -> list of {label, prob, probs{concept: p}}.
+
+        Uses the model's joint forward pass, whose outputs expose L2-normalised image_embeds/text_embeds for both
+        CLIP and SigLIP; this avoids get_*_features, whose return type changed in transformers 5.
+        """
         out = []
         for i in range(0, len(images), batch_size):
             batch = images[i:i + batch_size]
-            inputs = self.processor(images=batch, return_tensors="pt").to(self.device)
-            feats = self.model.get_image_features(**inputs)
-            feats = feats / feats.norm(dim=-1, keepdim=True)
-            logits = feats.float() @ self.text_feats.T.float()
-            probs = (logits * 100).softmax(dim=-1)
+            pix = self.processor(images=batch, return_tensors="pt")["pixel_values"].to(self.device, torch.float16)
+            o = self.model(pixel_values=pix, **self.text_inputs)
+            img = o.image_embeds / o.image_embeds.norm(dim=-1, keepdim=True)
+            txt = o.text_embeds / o.text_embeds.norm(dim=-1, keepdim=True)
+            probs = (img.float() @ txt.float().T * 100).softmax(dim=-1)
             for row in probs:
                 k = int(row.argmax())
                 out.append({
@@ -56,14 +60,13 @@ def load_judge(name: str, device="cuda") -> Judge:
 
     device = torch.device(device)
     model_id = JUDGE_MODELS[name]
-    model = AutoModel.from_pretrained(model_id, torch_dtype=torch.float16).to(device).eval()
+    model = AutoModel.from_pretrained(model_id, dtype=torch.float16).to(device).eval()
     processor = AutoProcessor.from_pretrained(model_id)
-    with torch.no_grad():
-        texts = [TEMPLATE.format(c) for c in COCO_CATEGORIES]
-        inputs = processor(text=texts, padding="max_length", truncation=True, return_tensors="pt").to(device)
-        tf = model.get_text_features(**inputs)
-        tf = tf / tf.norm(dim=-1, keepdim=True)
-    return Judge(name=name, model=model, processor=processor, text_feats=tf, device=device)
+    texts = [TEMPLATE.format(c) for c in COCO_CATEGORIES]
+    # SigLIP was trained with max_length padding; CLIP is indifferent.
+    text_inputs = processor(text=texts, padding="max_length", truncation=True, return_tensors="pt")
+    text_inputs = {k: v.to(device) for k, v in text_inputs.items() if k in ("input_ids", "attention_mask")}
+    return Judge(name=name, model=model, processor=processor, text_inputs=text_inputs, device=device)
 
 
 def redirection_rate(results, target: str) -> float:

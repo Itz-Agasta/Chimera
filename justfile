@@ -45,6 +45,17 @@ figs:
 
 # ---------- Kaggle (free T4x2, ~30 GPU-h/week) ----------
 
+# Upload experiments/common/ as the private Kaggle dataset itzagasta/chimera-code (run after every change to it)
+kaggle-code:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    d=$(mktemp -d)
+    cp experiments/common/*.py "$d"/
+    printf '{"title":"chimera-code","id":"itzagasta/chimera-code","licenses":[{"name":"unknown"}]}' > "$d/dataset-metadata.json"
+    kaggle datasets version -p "$d" -m "sync $(git rev-parse --short HEAD)" -q
+    until kaggle datasets status itzagasta/chimera-code | grep -q ready; do sleep 5; done
+    echo "chimera-code synced"
+
 # Push + run a kernel dir containing kernel-metadata.json
 kaggle-push dir accel="NvidiaTeslaT4":
     kaggle kernels push -p {{dir}} --accelerator {{accel}}

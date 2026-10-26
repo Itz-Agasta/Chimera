@@ -61,6 +61,18 @@ from huggingface_hub import login
 
 login(hf_token())
 
+print("pairs under test:", PAIRS, flush=True)
+
+# ─── preflight: both judges must load and classify before spending GPU time on generation ──
+from PIL import Image
+
+_JDEV = "cuda:1" if torch.cuda.device_count() > 1 else "cuda:0"
+for _j in JUDGE_MODELS:
+    _judge = load_judge(_j, device=_JDEV)
+    print("preflight", _j, _judge.classify([Image.new("RGB", (512, 512), (200, 30, 30))])[0]["label"], flush=True)
+    del _judge
+    torch.cuda.empty_cache()
+
 # ─── generate: source-concept prompts on each clean model ──────────────────────
 GEN_DEV = "cuda:0"
 
