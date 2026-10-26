@@ -1,0 +1,54 @@
+{
+  "config": {
+    "model": "sd3_medium",
+    "regime": "full_ft",
+    "attack": "clean",
+    "pair": "cat->dog",
+    "poison_count": 0,
+    "seed": 0,
+    "resolution": 512,
+    "batch_size": 1,
+    "grad_accum": 4,
+    "epochs": 1.0,
+    "steps": 3,
+    "learning_rate": 1e-05,
+    "lora_rank": 16,
+    "caption_dropout": 0.0,
+    "weighting_scheme": "logit_normal",
+    "logit_mean": 0.0,
+    "logit_std": 1.0,
+    "lr_warmup_steps": 50,
+    "max_grad_norm": 1.0,
+    "paged_optimizer": true,
+    "pretrained": "stabilityai/stable-diffusion-3-medium-diffusers",
+    "experiment": "h1_transfer",
+    "run_id": "sd3_medium_full_ft_clean_cat-dog_n0_s0",
+    "n_train_images": 3200,
+    "git_commit": "91b6ee0085306872e549b59ab4303b5ce118697f"
+  },
+  "metrics": {
+    "final_loss": 0.244302,
+    "last_loss": 0.244302,
+    "steps": 3,
+    "seconds": 14.4,
+    "peak_gb": 19.3,
+    "final_loss_window": 1,
+    "loss_curve": [
+      {
+        "step": 0,
+        "loss": 0.34838,
+        "lr": 2.0000000000000002e-07,
+        "seconds": 5
+      },
+      {
+        "step": 2,
+        "loss": 0.2443,
+        "lr": 6.000000000000001e-07,
+        "seconds": 14
+      }
+    ],
+    "s_per_microstep": 1.2
+  },
+  "n_clean": 3200,
+  "n_poisoned": 0
+}

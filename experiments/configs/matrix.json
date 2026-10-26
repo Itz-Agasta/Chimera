@@ -21,9 +21,9 @@
   "cost": {
     "sd3_medium": {
       "full_ft": {
-        "s_per_microstep": 0.61,
-        "usd_per_hour": 0.8,
-        "source": "results/compute/full_ft_probe_l4.json (Modal L4, 512px); price $0.000222/s = $0.799/h (modal.com/pricing, checked 2026-10-27), CPU+memory billed on top"
+        "s_per_microstep": 0.6,
+        "usd_per_hour": 0.402,
+        "source": "results/compute/full_ft_memory.json: 0.545 s/microstep measured on a Modal L40S; assumed 0.6 on a Vast RTX A6000 48GB at $0.402/h (vastai search offers, checked 2026-10-27). A 24GB card needs paged_optimizer, which measured 1.2 s/microstep."
       },
       "lora": {
         "s_per_microstep": 0.46,

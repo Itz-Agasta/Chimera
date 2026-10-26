@@ -1,0 +1,32 @@
+{
+  "what": "SD3-Medium full fine-tuning: peak GPU memory and step time, measured by 3-step smoke runs",
+  "recipe": "fp32 master weights, bf16 autocast, gradient checkpointing, batch 1 x accum 4, 512 px",
+  "runs": [
+    {
+      "gpu": "L40S 48GB",
+      "optimizer": "AdamW8bit",
+      "peak_gb": 23.08,
+      "s_per_microstep": 0.545,
+      "fits_24gb": false,
+      "source": "results/compute/train_smoke_sd3_medium_full_ft.json (L40S run)"
+    },
+    {
+      "gpu": "L4 22GB",
+      "optimizer": "AdamW8bit",
+      "peak_gb": null,
+      "s_per_microstep": null,
+      "fits_24gb": false,
+      "note": "OOM on step 2, when 8-bit Adam allocates its state"
+    },
+    {
+      "gpu": "L4 22GB",
+      "optimizer": "PagedAdamW8bit",
+      "peak_gb": 19.3,
+      "s_per_microstep": 1.2,
+      "fits_24gb": true,
+      "note": "paging the optimizer state to CPU costs 2.2x in speed",
+      "source": "results/compute/train_smoke_sd3_full_ft_paged_l4.json"
+    }
+  ],
+  "conclusion": "Full fine-tuning needs a 40GB+ GPU at full speed, or a 24GB GPU with a paged optimizer at roughly half the speed. Loss curves match (0.348 -> 0.244 over 3 steps) either way."
+}
