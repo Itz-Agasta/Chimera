@@ -47,7 +47,21 @@ def encode(model_key: str):
     captions = collect_captions(manifest)
     out = pathlib.Path(f"/data/embeds/{model_key}")
     out.mkdir(parents=True, exist_ok=True)
-    print(f"{model_key}: {len(captions)} unique captions", flush=True)
+
+    # Encode only what is missing: adding a few prompts must not re-encode (or re-upload) the whole cache.
+    existing, shards, start_at = [], [], 0
+    index_path = out / "index.json"
+    if index_path.exists():
+        index = json.loads(index_path.read_text())
+        existing, shards = index["captions"], index["shards"]
+        start_at = max((s["stop"] for s in shards), default=0)
+    already = set(existing)
+    todo = [c for c in captions if c not in already]
+    if not todo:
+        print(f"{model_key}: all {len(captions)} captions already encoded", flush=True)
+        return json.dumps({"model": model_key, "captions": len(existing), "shards": len(shards), "added": 0})
+    print(f"{model_key}: {len(existing)} cached, encoding {len(todo)} new captions", flush=True)
+    captions = todo
 
     if model_key == "sd3_medium":
         from diffusers import StableDiffusion3Pipeline
@@ -76,18 +90,18 @@ def encode(model_key: str):
         tensors = {"prompt_embeds": torch.cat(embeds).contiguous()}
         if pooled:
             tensors["pooled"] = torch.cat(pooled).contiguous()
-        name = f"shard_{start // SHARD:03d}.safetensors"
+        name = f"shard_{(start_at + start) // SHARD:03d}_{start_at + start}.safetensors"
         save_file(tensors, str(out / name))
-        shards.append({"file": name, "start": start, "stop": start + len(chunk)})
+        shards.append({"file": name, "start": start_at + start, "stop": start_at + start + len(chunk)})
         print(f"  {start + len(chunk)}/{len(captions)}  {time.time() - t0:.0f}s  "
               f"{ {k: list(v.shape) for k, v in tensors.items()} }", flush=True)
 
-    (out / "index.json").write_text(json.dumps({"model": PIPES[model_key], "captions": captions,
+    (out / "index.json").write_text(json.dumps({"model": PIPES[model_key], "captions": existing + captions,
                                                 "shards": shards}, indent=0))
     data.commit()
     cache.commit()
-    return json.dumps({"model": model_key, "captions": len(captions), "shards": len(shards),
-                       "seconds": round(time.time() - t0)})
+    return json.dumps({"model": model_key, "captions": len(existing) + len(captions), "shards": len(shards),
+                       "added": len(captions), "seconds": round(time.time() - t0)})
 
 
 @app.local_entrypoint()

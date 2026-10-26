@@ -136,6 +136,17 @@ def main(argv=None):
         "poison_dir": a.poison_dir,
     }
 
+    # Tiers may declare a poison count whose checkpoints are kept: the defences and the mechanism analysis
+    # need weights, and retraining for them later would cost the matrix twice.
+    keepers = set()
+    for tier in config["tiers"]:
+        at = tier.get("_keep_checkpoints_at")
+        if at is not None:
+            keepers |= {s.run_id for s in expand_matrix({**config, "tiers": [tier]})
+                        if s.poison_count == at and s.seed == 0}
+    if keepers:
+        print(f"keeping checkpoints for {len(keepers)} cell(s): {sorted(keepers)[:3]}...")
+
     done = set()
     if a.sink:
         from sink import completed
@@ -158,8 +169,9 @@ def main(argv=None):
         paths["text"] = str(data_root / "embeds" / spec.model)
         paths["latent_cache"] = str(data_root / "latents" / f"{spec.model}_{spec.resolution}.safetensors")
         try:
+            keep = a.keep_checkpoints or spec.run_id in keepers
             record = run_cell(spec, manifest, paths, guidance, a.n_per_prompt, a.git_commit,
-                              a.sink or None, a.keep_checkpoints)
+                              a.sink or None, keep)
         except Exception:
             # One failed cell must not end the matrix: record it and carry on with the next.
             record = {"run_id": spec.run_id, "failed": True, "error": traceback.format_exc()[-2000:]}

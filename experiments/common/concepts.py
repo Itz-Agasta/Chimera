@@ -59,6 +59,20 @@ def mentions(caption: str, concept: str) -> bool:
     return bool(_PATTERNS[concept].search(text))
 
 
+# Neighbours of each source concept: a poison aimed at "cat" may bleed into "kitten" without being asked to.
+# Measured on the poisoned model to show how far the damage spreads beyond the targeted concept.
+RELATED = {
+    "cat": ["kitten", "tabby cat", "siamese cat"],
+    "car": ["truck", "van", "taxi"],
+    "laptop": ["keyboard", "computer monitor", "tablet computer"],
+    "stop sign": ["traffic light", "street sign", "road sign"],
+}
+
+# Concepts no pair touches, generated on every poisoned model to show the attack did not damage the model at
+# large. Chosen from COCO categories that never appear as a pair concept.
+CONTROL = ["person", "pizza", "horse", "airplane", "elephant", "bicycle", "clock", "umbrella",
+           "teddy bear", "banana"]
+
 # Generic prompt templates for evaluation; held-out COCO captions are added per concept by the dataset builder.
 EVAL_TEMPLATES = [
     "a photo of a {}",
@@ -71,3 +85,14 @@ EVAL_TEMPLATES = [
 
 def eval_prompts(concept: str) -> list[str]:
     return [t.format(concept) for t in EVAL_TEMPLATES]
+
+
+def related_concepts(source: str) -> list[str]:
+    """Neighbours of the source concept, for measuring bleed-through."""
+    return RELATED.get(source, [])
+
+
+def control_concepts(pair_concepts: set[str] | None = None) -> list[str]:
+    """Concepts untouched by any pair, for measuring collateral damage."""
+    pair_concepts = pair_concepts or set(CONCEPTS)
+    return [c for c in CONTROL if c not in pair_concepts]

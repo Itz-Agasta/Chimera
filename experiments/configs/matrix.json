@@ -51,6 +51,8 @@
     {
       "name": "headline_curve",
       "_why": "Fig. 'ASR vs number of poisons' on both architectures: the H1 result and the H2 result in one grid.",
+      "_keep_checkpoints_at": 100,
+      "_keep_why": "Defences (continued clean training, purification) start FROM a poisoned checkpoint, and the H1 mechanism analysis needs the weights. Keeping the n=100 seed-0 cells is ~6 x 4 GB; every other checkpoint is deleted once its cell is judged.",
       "models": ["sd3_medium", "sd2_base"],
       "regimes": ["full_ft"],
       "pairs": ["cat->dog"],

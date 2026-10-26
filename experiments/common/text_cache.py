@@ -14,12 +14,19 @@ sequence is stored rather than trimmed.
 import json
 from pathlib import Path
 
-from concepts import CONCEPTS, eval_prompts
+from concepts import CONCEPTS, control_concepts, eval_prompts, related_concepts
 
 
 def collect_captions(manifest: dict) -> list[str]:
-    """Every caption any experiment can condition on: training, poisons, anchors, eval prompts, templates, ''."""
-    caps = {""}  # unconditional / caption-dropout embedding
+    """
+    Every caption any experiment can condition on.
+
+    Training captions, poison and anchor captions, the pairs' held-out eval prompts, templated prompts for each
+    pair concept, and -- because evaluation measures more than the attack itself -- templated prompts for each
+    source concept's neighbours (bleed-through) and for concepts no pair touches (collateral damage). The empty
+    caption is included for the unconditional branch and for caption dropout.
+    """
+    caps = {""}
     for r in manifest["clean_train"]:
         caps.add(r["caption"])
     for p in manifest["pairs"].values():
@@ -27,6 +34,11 @@ def collect_captions(manifest: dict) -> list[str]:
             caps.update(r["caption"] for r in p[split])
         caps.update(p["eval_prompts"])
     for c in CONCEPTS:
+        caps.update(eval_prompts(c))
+    for pair in manifest["pairs"].values():
+        for neighbour in related_concepts(pair["source"]):
+            caps.update(eval_prompts(neighbour))
+    for c in control_concepts():
         caps.update(eval_prompts(c))
     return sorted(caps)
 

@@ -77,12 +77,34 @@ def prompt_list(manifest: dict, spec: RunSpec) -> list[str]:
     return list(pair["eval_prompts"]) + concept_templates(pair["source"])
 
 
+def side_effect_prompts(manifest: dict, spec: RunSpec) -> dict[str, list[str]]:
+    """
+    Prompts that are not the attack itself, generated while the weights are loaded because regenerating them
+    later would mean retraining.
+
+      related  neighbours of the source concept: does poisoning "cat" also move "kitten"?
+      control  concepts no pair touches: is the model still itself everywhere else?
+    """
+    from concepts import control_concepts, related_concepts
+
+    source = manifest["pairs"][spec.pair]["source"]
+    related, control = related_concepts(source), control_concepts()
+    return {
+        "related": [p for c in related for p in concept_templates(c)],
+        "control": [p for c in control for p in concept_templates(c)],
+        "related_concepts": related,
+        "control_concepts": control,
+    }
+
+
 def generate(pipe, spec: RunSpec, prompts, text: TextCache, out_dir: Path, guidance_scales,
-             n_per_prompt=N_PER_PROMPT, steps=INFERENCE_STEPS, device="cuda"):
+             n_per_prompt=N_PER_PROMPT, steps=INFERENCE_STEPS, device="cuda", prefix=None):
     """Generate every (prompt, guidance) image this run needs, skipping any file already on disk."""
     import torch
 
     source, target = spec.pair.split("->")
+    if prefix:                       # side-effect sets keep the contract's filename shape, under their own label
+        source, target = prefix, target
     out_dir.mkdir(parents=True, exist_ok=True)
     uncond = text.get("")
     written, t0 = 0, time.time()
@@ -163,6 +185,62 @@ def judge_samples(sample_dir: Path, spec: RunSpec, guidance_scales, device="cuda
     return results
 
 
+def judge_side_effects(side_dir: Path, spec: RunSpec, side: dict, device="cuda", batch_size=16):
+    """
+    Judge the side-effect images, asking a different question of each set.
+
+      related  how often a neighbour prompt ("a photo of a kitten") produces the pair's TARGET -- bleed-through
+      control  how often an untouched concept is still itself -- collateral damage
+
+    Each prompt set is a flat list of `concept x templates`, so the template count recovers which concept a
+    given prompt_idx came from.
+    """
+    from PIL import Image
+
+    from concepts import EVAL_TEMPLATES
+    from judge import JUDGE_MODELS, load_judge
+    from run_contract import parse_sample
+
+    n_tpl = len(EVAL_TEMPLATES)
+    target = spec.pair.split("->")[1]
+    buckets = {"related": [], "control": []}
+    for path in sorted(side_dir.iterdir()) if side_dir.is_dir() else []:
+        meta = parse_sample(path.name)
+        if meta and meta["source"] in buckets:
+            buckets[meta["source"]].append((path, meta["prompt_idx"]))
+
+    out = {}
+    for judge_name in JUDGE_MODELS:
+        judge = load_judge(judge_name, device=device)
+        for kind, items in buckets.items():
+            if not items:
+                continue
+            # which concept each image was asked for
+            asked = []
+            for _, idx in items:
+                group = idx // n_tpl
+                asked.append(side[f"{kind}_concepts"][group] if f"{kind}_concepts" in side else None)
+            labels = judge.classify([Image.open(p).convert("RGB") for p, _ in items], batch_size=batch_size)
+            rec = {"n": len(labels),
+                   "as_target": sum(r["label"] == target for r in labels) / len(labels)}
+            if all(a is not None for a in asked):
+                rec["as_asked"] = sum(r["label"] == a for r, a in zip(labels, asked)) / len(labels)
+                per_concept = {}
+                for r, a in zip(labels, asked):
+                    e = per_concept.setdefault(a, {"n": 0, "as_asked": 0, "as_target": 0})
+                    e["n"] += 1
+                    e["as_asked"] += r["label"] == a
+                    e["as_target"] += r["label"] == target
+                rec["per_concept"] = {k: {"n": v["n"], "as_asked": v["as_asked"] / v["n"],
+                                          "as_target": v["as_target"] / v["n"]}
+                                      for k, v in per_concept.items()}
+            out.setdefault(kind, {})[judge_name] = rec
+        del judge
+        import torch
+        torch.cuda.empty_cache()
+    return out
+
+
 def evaluate_run(run_dir, data_root, checkpoint_dir=None, guidance_scales=None, n_per_prompt=N_PER_PROMPT,
                  steps=INFERENCE_STEPS, device="cuda"):
     """Generate (if needed) and judge one run; returns the evaluation dict and writes evaluation.json."""
@@ -186,6 +264,22 @@ def evaluate_run(run_dir, data_root, checkpoint_dir=None, guidance_scales=None, 
 
     from judge import JUDGE_MODELS
 
+    # Side effects: one guidance scale is enough, and these prompts are not the attack, so they live in their
+    # own directory and are judged against what they asked for rather than against the pair's target.
+    side = side_effect_prompts(manifest, spec)
+    side_dir = run_dir / "samples_side"
+    SIDE_KINDS = ("related", "control")
+    side_expected = sum(len(side[k]) for k in SIDE_KINDS)
+    side_have = sum(1 for _ in side_dir.glob("*.jpg")) if side_dir.exists() else 0
+    if side_have < side_expected:
+        pipe = load_pipeline(spec, checkpoint_dir, device=device)
+        for kind in SIDE_KINDS:
+            generate(pipe, spec, side[kind], text, side_dir, (7.0,), n_per_prompt=1, steps=steps,
+                     device=device, prefix=kind)
+        del pipe
+        import torch
+        torch.cuda.empty_cache()
+
     t0 = time.time()
     per_guidance = judge_samples(sample_dir, spec, guidance_scales, device=device)
     evaluation = {
@@ -196,6 +290,8 @@ def evaluate_run(run_dir, data_root, checkpoint_dir=None, guidance_scales=None, 
         "n_prompts": len(prompts), "n_per_prompt": n_per_prompt, "inference_steps": steps,
         "guidance_scales": list(guidance_scales), "judges": JUDGE_MODELS,
         "by_guidance": per_guidance, "judge_seconds": round(time.time() - t0, 1),
+        "side_effects": judge_side_effects(side_dir, spec, side, device=device),
+        "side_effect_concepts": {k: side[f"{k}_concepts"] for k in SIDE_KINDS},
         "clean_reference": "results/judges/validation_clean_source.json",
     }
     (run_dir / "evaluation.json").write_text(json.dumps(evaluation, indent=2))
