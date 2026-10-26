@@ -1,0 +1,14 @@
+{
+  "id": "itzagasta/chimera-validate-judges",
+  "title": "chimera-validate-judges",
+  "code_file": "validate_judges.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "dataset_sources": ["itzagasta/chimera-secrets", "itzagasta/chimera-code"],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}
