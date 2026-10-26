@@ -69,6 +69,19 @@ kaggle-pull slug out:
 
 # ---------- Vast.ai (paid: confirm with the user before renting) ----------
 
+# Copy the code the box needs (tiny: ~70 KB) to a rented instance. Data comes from HF, not from here.
+vast-sync target:
+    rsync -az --delete experiments/common/ {{target}}:/workspace/code/
+    rsync -az experiments/configs/ {{target}}:/workspace/code/
+    rsync -az compute/vast/bootstrap.sh {{target}}:/workspace/
+    @echo "synced; on the box: export HF_TOKEN=... && bash /workspace/bootstrap.sh"
+
+# What the matrix would run, without running anything
+vast-plan tier="":
+    uv run python experiments/common/runner.py --matrix experiments/configs/matrix.json \
+        --data-root data --sink "" {{ if tier != "" { "--tier " + tier } else { "" } }} --plan-only
+
+
 vast-cost:
     vastai show user --raw | python3 -c "import sys,json;d=json.load(sys.stdin);print('credit:',d.get('credit'),'balance:',d.get('balance'))"
     vastai show instances
