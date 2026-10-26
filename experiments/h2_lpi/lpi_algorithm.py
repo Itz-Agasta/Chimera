@@ -59,7 +59,8 @@ def encode_image(img: torch.Tensor) -> torch.Tensor:
     # Inverse of pipeline decode: latents = (latents / scaling_factor) + shift_factor
     # So encode: scaled = (raw - shift_factor) * scaling_factor
     shift = getattr(vae.config, "shift_factor", None) or 0.0
-    post = vae.encode(img.to(VAE_DTYPE)).latent_dist
+    # SD3's VAE expects pixels in [-1, 1] (diffusers VaeImageProcessor.normalize)
+    post = vae.encode((img * 2 - 1).to(VAE_DTYPE)).latent_dist
     return (post.mean - shift) * vae.config.scaling_factor
 
 
@@ -178,7 +179,8 @@ def generate_poison(
 
         # ── C. Sample timestep & noise ────────────────────────────
         t = 0.5  # fixed timestep for stable optimisation
-        t_tensor = torch.tensor([t], device="cuda", dtype=TRANS_DTYPE)
+        # SD3 transformer takes timesteps on the scheduler's 0-1000 scale (sigma * 1000)
+        t_tensor = torch.tensor([t * 1000], device="cuda", dtype=TRANS_DTYPE)
         noise = torch.randn_like(z_adv)
         z_t = (1 - t) * z_adv + t * noise
 
