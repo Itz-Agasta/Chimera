@@ -1,0 +1,48 @@
+{
+  "gpu": "NVIDIA L4",
+  "gpu_total_gb": 22.06,
+  "torch": "2.14.1+cu130",
+  "optimizer": "bitsandbytes AdamW8bit",
+  "source": "transcribed from Modal app logs ap-t4GKc7tAocaFKl8J934Vou (return value failed to deserialize locally)",
+  "runs": [
+    {
+      "master": "fp32",
+      "ckpt": true,
+      "res": 512,
+      "status": "ok",
+      "peak_gb": 19.32,
+      "s_per_step": 0.607
+    },
+    {
+      "master": "fp32",
+      "ckpt": false,
+      "res": 512,
+      "status": "OOM",
+      "peak_gb": 21.41
+    },
+    {
+      "master": "fp32",
+      "ckpt": true,
+      "res": 1024,
+      "status": "ok",
+      "peak_gb": 19.62,
+      "s_per_step": 1.313
+    },
+    {
+      "master": "bf16",
+      "ckpt": true,
+      "res": 512,
+      "status": "ok",
+      "peak_gb": 11.65,
+      "s_per_step": 0.516
+    },
+    {
+      "master": "bf16",
+      "ckpt": true,
+      "res": 1024,
+      "status": "ok",
+      "peak_gb": 11.94,
+      "s_per_step": 1.176
+    }
+  ]
+}
