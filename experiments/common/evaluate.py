@@ -92,15 +92,22 @@ def generate(pipe, spec: RunSpec, prompts, text: TextCache, out_dir: Path, guida
             if (out_dir / name).exists():
                 continue  # this (prompt, guidance) is already done
             emb = text.get(prompt)
+
+            def batched(t):
+                """One row per image: SD3's encode_prompt returns supplied embeddings untouched, so
+                num_images_per_prompt would size the latents without sizing these (SD-2 does repeat them).
+                Repeating here and asking for one image per row behaves the same on both pipelines."""
+                return t.unsqueeze(0).expand(n_per_prompt, *t.shape).to(device, torch.float16)
+
             kwargs = {
-                "prompt_embeds": emb["prompt_embeds"].unsqueeze(0).to(device, torch.float16),
-                "negative_prompt_embeds": uncond["prompt_embeds"].unsqueeze(0).to(device, torch.float16),
+                "prompt_embeds": batched(emb["prompt_embeds"]),
+                "negative_prompt_embeds": batched(uncond["prompt_embeds"]),
             }
             if spec.is_flow:
-                kwargs["pooled_prompt_embeds"] = emb["pooled"].unsqueeze(0).to(device, torch.float16)
-                kwargs["negative_pooled_prompt_embeds"] = uncond["pooled"].unsqueeze(0).to(device, torch.float16)
+                kwargs["pooled_prompt_embeds"] = batched(emb["pooled"])
+                kwargs["negative_pooled_prompt_embeds"] = batched(uncond["pooled"])
             gen = torch.Generator(device=device).manual_seed(spec.seed)
-            images = pipe(num_images_per_prompt=n_per_prompt, num_inference_steps=steps,
+            images = pipe(num_images_per_prompt=1, num_inference_steps=steps,
                           guidance_scale=guidance, generator=gen, height=spec.resolution,
                           width=spec.resolution, **kwargs).images
             for n, img in enumerate(images):
