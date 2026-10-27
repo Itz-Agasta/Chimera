@@ -17,16 +17,39 @@ DATA="$WORK/data"
 
 [ -n "${HF_TOKEN:-}" ] || { echo "HF_TOKEN is not set (needs write access for the results sink)"; exit 1; }
 
-# The Vast PyTorch images keep torch in a venv that is only on PATH for login shells, so a plain `python` here
-# is either missing or the system one without torch. Find the interpreter that actually has torch and use it
-# for everything, rather than assuming the ambient PATH is the right one.
+# Which interpreter to use. The Vast PyTorch images look like they already have what we need, and do not:
+# their venv is Python 3.10 with torch 2.5.1+cu121, while diffusers 0.42 needs Python >= 3.11 AND torch >= 2.6
+# (it calls torch.accelerator, added in 2.6). Those two bounds rule out the shipped environment on every Vast
+# PyTorch image, so an interpreter is only usable if it clears both; otherwise build one with uv. Measured on an
+# RTX A6000 box, 2026-10-27: shipped venv rejected, uv venv + cu128 gives torch 2.11.0 and diffusers imports.
+TORCH_INDEX="${TORCH_INDEX:-https://download.pytorch.org/whl/cu128}"   # cu128 needs driver >= 570
+VENV="$WORK/venv312"
+
+usable() {   # python >= 3.11 with torch >= 2.6, the floor diffusers 0.42 imposes
+    [ -x "$1" ] || return 1
+    "$1" - <<'PY' 2>/dev/null
+import sys
+assert sys.version_info >= (3, 11), sys.version
+import torch
+assert tuple(int(p) for p in torch.__version__.split(".")[:2]) >= (2, 6), torch.__version__
+PY
+}
+
 PY=""
-for candidate in "${VIRTUAL_ENV:-}/bin/python" /venv/main/bin/python /opt/conda/bin/python \
-                 "$(command -v python3 || true)" "$(command -v python || true)"; do
-    [ -n "$candidate" ] && [ -x "$candidate" ] || continue
-    if "$candidate" -c "import torch" 2>/dev/null; then PY="$candidate"; break; fi
+for candidate in "$VENV/bin/python" "${VIRTUAL_ENV:-}/bin/python" /venv/main/bin/python \
+                 /opt/conda/bin/python "$(command -v python3 || true)"; do
+    if [ -n "$candidate" ] && usable "$candidate"; then PY="$candidate"; break; fi
 done
-[ -n "$PY" ] || { echo "no python with torch found (looked in /venv/main, /opt/conda, PATH)"; exit 1; }
+
+if [ -z "$PY" ]; then
+    echo "== no interpreter with python>=3.11 + torch>=2.6; building one at $VENV"
+    command -v uv >/dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh >/dev/null 2>&1
+    export PATH="$HOME/.local/bin:$PATH"
+    uv venv --python 3.12 "$VENV"
+    uv pip install --python "$VENV/bin/python" torch torchvision --index-url "$TORCH_INDEX"
+    PY="$VENV/bin/python"
+    usable "$PY" || { echo "built venv still does not satisfy the floor"; exit 1; }
+fi
 export PATH="$(dirname "$PY"):$PATH"
 echo "python: $PY"
 
@@ -35,10 +58,14 @@ nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader
 "$PY" -c "import torch; print('torch', torch.__version__, '| cuda', torch.version.cuda, '| bf16', torch.cuda.is_bf16_supported())"
 
 echo "== dependencies"
-# The Vast PyTorch images ship torch; only the rest is installed, and never the text encoders' dependencies.
-"$PY" -m pip install -q -U "diffusers==0.42.0" transformers accelerate bitsandbytes peft safetensors \
+# torch comes from the image or the venv above; this is everything else, and never the text encoders' deps.
+PIP="$PY -m pip"
+command -v uv >/dev/null 2>&1 && PIP="uv pip install --python $PY" || PIP="$PY -m pip install -q -U"
+$PIP "diffusers==0.42.0" transformers accelerate bitsandbytes peft safetensors \
     "huggingface_hub==2.3.0" pillow numpy sentencepiece protobuf
 "$PY" -m pip uninstall -q -y torchao 2>/dev/null || true   # ships broken on some images and breaks peft's LoRA injection
+"$PY" -c "import diffusers; from diffusers import SD3Transformer2DModel, FlowMatchEulerDiscreteScheduler, \
+UNet2DConditionModel, AutoencoderKL; print('diffusers', diffusers.__version__, '| model imports ok')"
 
 echo "== data bundle from $BUNDLE_REPO"
 mkdir -p "$DATA"
