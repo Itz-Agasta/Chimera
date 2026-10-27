@@ -173,6 +173,38 @@ def image_path(images_root: Path, record: dict) -> Path:
     return images_root / f"{record['id']}.jpg"
 
 
+def poison_selection(manifest: dict, spec: RunSpec) -> list[dict]:
+    """
+    The pool records this spec poisons, in the order it draws them.
+
+    Seeded by (pair, seed) and independent of poison_count, so the sets are nested: the 25 images of a
+    25-poison run are the first 25 of its 50-, 100- and 200-poison siblings. The one implementation, shared by
+    the training set builder and the poison generator, so the two can never disagree about which images matter.
+    """
+    pool = list(manifest["pairs"][spec.pair]["poison_pool"])
+    _rng(spec.pair, "poison_pool", spec.seed).shuffle(pool)
+    chosen = pool[:spec.poison_count]
+    if len(chosen) < spec.poison_count:
+        raise ValueError(f"poison_pool for {spec.pair} has {len(pool)} images, "
+                         f"poison_count={spec.poison_count}")
+    return chosen
+
+
+def required_poison_ids(manifest: dict, config: dict, attack: str, pair: str) -> set[int]:
+    """
+    Which ids a matrix actually asks this (attack, pair) for.
+
+    Most cells use far fewer than the 250-image pool -- a single n=100 seed-0 cell needs 100 -- but a seed
+    changes *which* 100, so the union over the matrix's cells is what has to exist, not the largest count.
+    Generating the whole pool regardless would be ~900 images of optimisation the paper never reads.
+    """
+    ids = set()
+    for spec in expand_matrix(config):
+        if spec.attack == attack and spec.pair == pair:
+            ids |= {r["id"] for r in poison_selection(manifest, spec)}
+    return ids
+
+
 def build_inputs(manifest: dict, spec: RunSpec, images_root, poison_dir=None) -> tuple[list[dict], dict]:
     """
     Assemble the run's training set.
@@ -189,14 +221,7 @@ def build_inputs(manifest: dict, spec: RunSpec, images_root, poison_dir=None) ->
     records = [{"id": r["id"], "path": str(image_path(images_root, r)), "caption": r["caption"],
                 "poisoned": False} for r in manifest["clean_train"]]
     clean_ids = [r["id"] for r in records]
-
-    # Seeded, count-independent order over the poison pool -> nested poison sets across poison_count.
-    pool = list(pair["poison_pool"])
-    _rng(spec.pair, "poison_pool", spec.seed).shuffle(pool)
-    chosen = pool[:spec.poison_count]
-    if len(chosen) < spec.poison_count:
-        raise ValueError(f"poison_pool for {spec.pair} has {len(pool)} images, "
-                         f"poison_count={spec.poison_count}")
+    chosen = poison_selection(manifest, spec)
 
     poisoned = []
     if spec.attack == "dirty_label":

@@ -81,7 +81,7 @@ def _anchors(model: str) -> str:
 
 
 def _generate(attack: str, pair: str, commit: str, iters: int, batch: int, limit: int, sigma: float,
-              eps: float, lpips_weight: float, log_every: int) -> str:
+              eps: float, lpips_weight: float, log_every: int, only_ids: list | None = None) -> str:
     sys.path.insert(0, "/root/common")
     pg = _load_shared("chimera_poison_gen", "/root/common/poison_gen.py")
 
@@ -89,7 +89,8 @@ def _generate(attack: str, pair: str, commit: str, iters: int, batch: int, limit
     out = _run(pg.generate, attack, pair, manifest, "/data/chimera_coco/images", "/data/embeds",
                pg.poison_dir_for("/data/poisons", attack, pair), anchors_root="/data/anchors",
                iters=iters, eps=eps, sigma=sigma, lpips_weight=lpips_weight, batch=batch,
-               limit=limit or None, log_every=log_every, git_commit=commit)
+               limit=limit or None, log_every=log_every, git_commit=commit,
+               only_ids=set(only_ids) if only_ids else None)
     data.commit()
     # The per-image records can be thousands of rows; they stay in the volume's poison_manifest.json.
     summary = {k: v for k, v in out.items() if k != "images"}
@@ -119,29 +120,32 @@ def anchors_l40s(model: str) -> str:
               secrets=[modal.Secret.from_name("huggingface")], timeout=TIMEOUT)
 def generate_l4(attack: str, pair: str, commit: str, iters: int = 500, batch: int = 4, limit: int = 0,
                 sigma: float = 0.5, eps: float = 0.04, lpips_weight: float = 0.0,
-                log_every: int = 0) -> str:
-    return _generate(attack, pair, commit, iters, batch, limit, sigma, eps, lpips_weight, log_every)
+                log_every: int = 0, only_ids: list = None) -> str:
+    return _generate(attack, pair, commit, iters, batch, limit, sigma, eps, lpips_weight, log_every, only_ids)
 
 
 @app.function(gpu="L40S", image=image, volumes={"/cache": cache, "/data": data},
               secrets=[modal.Secret.from_name("huggingface")], timeout=TIMEOUT)
 def generate_l40s(attack: str, pair: str, commit: str, iters: int = 500, batch: int = 4, limit: int = 0,
                   sigma: float = 0.5, eps: float = 0.04, lpips_weight: float = 0.0,
-                  log_every: int = 0) -> str:
-    return _generate(attack, pair, commit, iters, batch, limit, sigma, eps, lpips_weight, log_every)
+                  log_every: int = 0, only_ids: list = None) -> str:
+    return _generate(attack, pair, commit, iters, batch, limit, sigma, eps, lpips_weight, log_every, only_ids)
 
 
-def _jobs(matrix_path: pathlib.Path) -> list[tuple[str, str]]:
+def _jobs(matrix_path: pathlib.Path, manifest_path: pathlib.Path) -> list[tuple[str, str, list]]:
     """
-    The (attack, pair) combinations the matrix actually consumes.
+    The (attack, pair) combinations the matrix consumes, and exactly which ids each one needs.
 
-    Read from the matrix rather than hardcoded, so adding a tier cannot leave a cell without its poisons.
+    Read from the matrix rather than hardcoded, so adding a tier cannot leave a cell without its poisons, and
+    narrowed to the union of the ids its cells actually draw -- most (attack, pair) pairs are wanted at one
+    poison count and one seed, which is 100 of the 250-image pool.
     """
-    from run_spec import PERTURBATION_ATTACKS, expand_matrix
+    from run_spec import PERTURBATION_ATTACKS, expand_matrix, required_poison_ids
 
     config = json.loads(matrix_path.read_text())
-    seen = {(s.attack, s.pair) for s in expand_matrix(config) if s.attack in PERTURBATION_ATTACKS}
-    return sorted(seen)
+    manifest = json.loads(manifest_path.read_text())
+    seen = sorted({(s.attack, s.pair) for s in expand_matrix(config) if s.attack in PERTURBATION_ATTACKS})
+    return [(a, p, sorted(required_poison_ids(manifest, config, a, p))) for a, p in seen]
 
 
 @app.local_entrypoint()
@@ -173,14 +177,19 @@ def main(step: str = "generate", attack: str = "", pair: str = "cat->dog", model
         print(f"probe -> {path}")
         return
 
-    jobs = _jobs(ROOT / matrix) if all else [(attack, pair)]
     if not all and not attack:
         raise SystemExit("pass --attack (and --pair), or --all for every combination the matrix needs")
-    print(f"{len(jobs)} job(s): " + ", ".join(f"{a}/{p}" for a, p in jobs))
+    jobs = (_jobs(ROOT / matrix, ROOT / "data" / "chimera_coco" / "manifest.json") if all
+            else [(attack, pair, None)])
+    total = sum(len(ids) for _, _, ids in jobs) if all else 0
+    print(f"{len(jobs)} job(s)" + (f", {total} images in all:" if total else ":"))
+    for a, p, ids in jobs:
+        print(f"  {a}/{p}" + (f"  {len(ids)} images" if ids else ""))
 
-    args = [(a, p, commit, iters, batch, limit, sigma, eps, lpips_weight, log_every) for a, p in jobs]
+    args = [(a, p, commit, iters, batch, limit, sigma, eps, lpips_weight, log_every, ids)
+            for a, p, ids in jobs]
     results = {}
-    for (a, p), raw in zip(jobs, fn.starmap(args)):
+    for (a, p, _), raw in zip(jobs, fn.starmap(args)):
         out = json.loads(raw)
         results[f"{a}/{p}"] = out
         print(f"{a}/{p}: {out['n_images']} images, {out.get('generated', 0)} new, "

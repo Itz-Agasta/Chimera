@@ -79,14 +79,17 @@ def from_uint8(arr, device, dtype=None):
     return x if dtype is None else x.to(dtype)
 
 
-def plan(manifest: dict, attack: str, pair: str, images_root, anchors_root=None) -> list[dict]:
+def plan(manifest: dict, attack: str, pair: str, images_root, anchors_root=None, only_ids=None) -> list[dict]:
     """
     Every image this (attack, pair) has to produce, in a fixed order.
 
-    The whole poison pool is covered, not just the largest poison_count: run_spec shuffles the pool per seed,
-    so a 100-poison run at seed 1 draws different ids than at seed 0. What each poison is matched against is
-    decided here and depends only on (pair, id), never on the seed or the count, so an image's poison is the
-    same whichever run consumes it.
+    `only_ids` restricts the work to the ids a matrix actually consumes (see run_spec.required_poison_ids);
+    without it the whole 250-image pool is covered. Either way the coverage is not just the largest
+    poison_count, because run_spec shuffles the pool per seed and a 100-poison run at seed 1 draws different
+    ids than at seed 0.
+
+    What each poison is matched against is decided here from (pair, id) alone -- never from the seed or the
+    count -- so an image's poison is identical whichever cell consumes it.
     """
     from run_spec import image_path
 
@@ -116,6 +119,10 @@ def plan(manifest: dict, attack: str, pair: str, images_root, anchors_root=None)
                 raise ValueError(f"caption of id {r['id']} has no {source!r} to swap: {r['caption']!r}")
             row["target_caption"] = swapped
         rows.append(row)
+    # Filtered only after the pairing is fixed over the full pool: narrowing first would make which anchor an
+    # image is matched against depend on which ids the matrix happened to ask for.
+    if only_ids is not None:
+        rows = [r for r in rows if r["id"] in only_ids]
     return rows
 
 
@@ -338,7 +345,7 @@ def config_of(attack, pair, iters, eps, sigma, lpips_weight, res, git_commit) ->
 
 def generate(attack: str, pair: str, manifest: dict, images_root, text_root, out_dir, anchors_root=None,
              iters=ITERS, eps=EPS, sigma=SIGMA, lpips_weight=0.0, batch=4, limit=None, log_every=0,
-             res=512, git_commit="") -> dict:
+             res=512, git_commit="", only_ids=None) -> dict:
     """
     Produce every missing poison for one (attack, pair), writing after each batch so a crash costs one batch.
 
@@ -363,7 +370,7 @@ def generate(attack: str, pair: str, manifest: dict, images_root, text_root, out
                              f"use a different --poison-root or delete the directory")
         done = {int(r["id"]): r for r in previous["images"]}
 
-    rows = plan(manifest, attack, pair, images_root, anchors_root)
+    rows = plan(manifest, attack, pair, images_root, anchors_root, only_ids=only_ids)
     if limit:
         rows = rows[:limit]
     # Fail before loading a model, not three hours into a run, if an input image is not there.
