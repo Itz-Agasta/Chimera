@@ -1,0 +1,109 @@
+{
+  "config": {
+    "attack": "chimera_anchor",
+    "pair": "cat->dog",
+    "model": "sd3_medium",
+    "space": "velocity",
+    "anchor": "real",
+    "pretrained": "stabilityai/stable-diffusion-3-medium-diffusers",
+    "iters": 500,
+    "eps": 0.04,
+    "sigma": 0.5,
+    "lpips_weight": 0.0,
+    "resolution": 512,
+    "optimiser": "signed-grad-anneal",
+    "target": "fixed_clean",
+    "noise": "fixed_per_image_id",
+    "step_scale": 0.02,
+    "anchor_seed": 123,
+    "anchor_prompt": "A photo of a {}",
+    "git_commit": "58278be7cdb8dca54cd68171daa32a1fd88555fe"
+  },
+  "generated": 4,
+  "seconds": 178.4,
+  "peak_gb": 10.64,
+  "curves": [
+    {
+      "ids": [
+        825,
+        3474,
+        6397,
+        7722
+      ],
+      "curve": [
+        {
+          "iter": 0,
+          "loss": 238.66197
+        },
+        {
+          "iter": 50,
+          "loss": 201.83253
+        },
+        {
+          "iter": 100,
+          "loss": 191.02321
+        },
+        {
+          "iter": 150,
+          "loss": 183.68689
+        },
+        {
+          "iter": 200,
+          "loss": 178.82684
+        },
+        {
+          "iter": 250,
+          "loss": 174.75287
+        },
+        {
+          "iter": 300,
+          "loss": 171.13869
+        },
+        {
+          "iter": 350,
+          "loss": 169.13683
+        },
+        {
+          "iter": 400,
+          "loss": 166.73096
+        },
+        {
+          "iter": 450,
+          "loss": 165.05489
+        },
+        {
+          "iter": 499,
+          "loss": 164.19185
+        }
+      ]
+    }
+  ],
+  "n_images": 4,
+  "stealth": {
+    "linf_255": {
+      "min": 10.0,
+      "median": 10.0,
+      "max": 10.0
+    },
+    "psnr_db": {
+      "min": 31.59,
+      "median": 32.35,
+      "max": 33.53
+    },
+    "loss_initial": {
+      "min": 225.50287,
+      "median": 244.02797,
+      "max": 253.77191
+    },
+    "loss_quantised": {
+      "min": 150.71487,
+      "median": 169.97754,
+      "max": 181.96916
+    },
+    "seconds": {
+      "min": 44.33,
+      "median": 44.33,
+      "max": 44.33
+    }
+  }
+}
