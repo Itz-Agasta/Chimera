@@ -21,9 +21,9 @@
   "cost": {
     "sd3_medium": {
       "full_ft": {
-        "s_per_microstep": 0.6,
-        "usd_per_hour": 0.402,
-        "source": "results/compute/full_ft_memory.json: 0.545 s/microstep measured on a Modal L40S; assumed 0.6 on a Vast RTX A6000 48GB at $0.402/h (vastai search offers, checked 2026-10-27). A 24GB card needs paged_optimizer, which measured 1.2 s/microstep."
+        "s_per_microstep": 0.478,
+        "usd_per_hour": 0.272,
+        "source": "Measured on the rented box, 2026-10-27: 24-step run on a Vast RTX A6000 48GB, steps 1->24 in 44 s = 1.913 s/step over 4 accum = 0.478 s/microstep. Supersedes the 0.6 assumed from results/compute/full_ft_memory.json (0.545 on a Modal L40S); that probe used synthetic tensors and so included a VAE forward the real path avoids via the latent cache, which is why it read slower. Price is the interruptible bid actually paid ($0.25 bid + $0.022 disk for 80GB); on-demand for the same machine was $0.424. A 24GB card needs paged_optimizer, which measured 1.2 s/microstep."
       },
       "lora": {
         "s_per_microstep": 0.46,
@@ -32,8 +32,12 @@
       }
     },
     "sd2_base": {
-      "full_ft": {"s_per_microstep": null, "source": "not measured yet -- probe before trusting a total"},
-      "lora": {"s_per_microstep": null, "source": "not measured yet"}
+      "full_ft": {
+        "s_per_microstep": 0.337,
+        "usd_per_hour": 0.272,
+        "source": "Measured on the rented box, 2026-10-27: 24-step run on a Vast RTX A6000 48GB, steps 1->24 in 31 s = 1.348 s/step over 4 accum = 0.337 s/microstep, i.e. 1.42x faster than sd3_medium -- an 865M U-Net against a 2B DiT. Its latent cache (latents/sd2_base_512.safetensors, 3200 ids) was built in the same run, 90 s, and is a one-time cost."
+      },
+      "lora": {"s_per_microstep": null, "source": "not measured yet; LoRA cells are planned for the free Kaggle T4"}
     }
   },
   "tiers": [
