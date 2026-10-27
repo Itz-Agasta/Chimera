@@ -13,6 +13,7 @@ Not pushed: model weights (pulled from their own HF repos) and checkpoints (tran
 
   modal run --detach compute/modal/push_bundle.py --repo chimera-data
   modal run compute/modal/push_bundle.py --repo chimera-data --dry-run
+  modal run --detach compute/modal/push_bundle.py --repo chimera-data --only poisons,anchors
 """
 import json
 import pathlib
@@ -30,22 +31,27 @@ cache = modal.Volume.from_name("chimera-hf-cache", create_if_missing=True)
 data = modal.Volume.from_name("chimera-data", create_if_missing=True)
 
 # (path on the volume, path in the repo). Kept explicit so nothing unexpected is published.
+#
+# Ordered newest-first, because each part is its own commit and a push can be cut short (a workspace budget
+# runs out, a container is preempted). Whatever is most expensive to regenerate goes first: the poisons cost
+# ~12 GPU-hours, the embeddings a re-encode, and the COCO crops are a cheap re-export. Parts already on the
+# repo cost almost nothing to re-send, since the hub dedupes by content hash.
 PARTS = [
-    ("chimera_coco/images", "chimera_coco/images"),
-    ("chimera_coco/manifest.json", "chimera_coco/manifest.json"),
-    ("chimera_coco/export_stats.json", "chimera_coco/export_stats.json"),
-    ("embeds", "embeds"),
-    ("latents", "latents"),
     # The optimised poisons and their anchors. The repo must stay private: the paper's ethics statement
     # commits to not releasing perturbations, and these are exactly that.
     ("poisons", "poisons"),
     ("anchors", "anchors"),
+    ("embeds", "embeds"),
+    ("latents", "latents"),
+    ("chimera_coco/manifest.json", "chimera_coco/manifest.json"),
+    ("chimera_coco/export_stats.json", "chimera_coco/export_stats.json"),
+    ("chimera_coco/images", "chimera_coco/images"),
 ]
 
 
 @app.function(image=image, volumes={"/cache": cache, "/data": data},
               secrets=[modal.Secret.from_name("huggingface")], timeout=4 * 3600, cpu=4, memory=8192)
-def push(repo: str, dry_run: bool = False) -> str:
+def push(repo: str, dry_run: bool = False, only: str = "") -> str:
     import os
 
     from huggingface_hub import HfApi
@@ -55,8 +61,20 @@ def push(repo: str, dry_run: bool = False) -> str:
         # Resolve the namespace from the token rather than guessing the account name.
         repo = f"{api.whoami()['name']}/{repo}"
         print(f"repo resolved to {repo}", flush=True)
+
+    parts = PARTS
+    if only:
+        wanted = [name.strip() for name in only.split(",") if name.strip()]
+        unknown = [name for name in wanted if not any(src == name or src.startswith(name + "/")
+                                                     for src, _ in PARTS)]
+        if unknown:
+            raise SystemExit(f"--only names nothing in the bundle: {unknown} "
+                             f"(have {[src for src, _ in PARTS]})")
+        parts = [(src, dst) for src, dst in PARTS
+                 if any(src == name or src.startswith(name + "/") for name in wanted)]
+
     plan, total = [], 0
-    for src, dst in PARTS:
+    for src, dst in parts:
         path = pathlib.Path("/data") / src
         if not path.exists():
             plan.append({"src": src, "status": "missing"})
@@ -92,8 +110,8 @@ def push(repo: str, dry_run: bool = False) -> str:
 
 
 @app.local_entrypoint()
-def main(repo: str = "", dry_run: bool = False):
+def main(repo: str = "", dry_run: bool = False, only: str = ""):
     if not repo:
         raise SystemExit("pass --repo <name> (the namespace is taken from the HF token) "
                          "or --repo <user>/<name>")
-    print(json.dumps(json.loads(push.remote(repo, dry_run)), indent=2))
+    print(json.dumps(json.loads(push.remote(repo, dry_run, only)), indent=2))
