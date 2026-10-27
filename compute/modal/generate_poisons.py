@@ -81,13 +81,14 @@ def _anchors(model: str) -> str:
 
 
 def _generate(attack: str, pair: str, commit: str, iters: int, batch: int, limit: int, sigma: float,
-              eps: float, lpips_weight: float, log_every: int, only_ids: list | None = None) -> str:
+              eps: float, lpips_weight: float, log_every: int, only_ids: list | None = None,
+              poison_root: str = "/data/poisons") -> str:
     sys.path.insert(0, "/root/common")
     pg = _load_shared("chimera_poison_gen", "/root/common/poison_gen.py")
 
     manifest = json.loads(pathlib.Path("/data/chimera_coco/manifest.json").read_text())
     out = _run(pg.generate, attack, pair, manifest, "/data/chimera_coco/images", "/data/embeds",
-               pg.poison_dir_for("/data/poisons", attack, pair), anchors_root="/data/anchors",
+               pg.poison_dir_for(poison_root, attack, pair), anchors_root="/data/anchors",
                iters=iters, eps=eps, sigma=sigma, lpips_weight=lpips_weight, batch=batch,
                limit=limit or None, log_every=log_every, git_commit=commit,
                only_ids=set(only_ids) if only_ids else None)
@@ -120,16 +121,20 @@ def anchors_l40s(model: str) -> str:
               secrets=[modal.Secret.from_name("huggingface")], timeout=TIMEOUT)
 def generate_l4(attack: str, pair: str, commit: str, iters: int = 500, batch: int = 4, limit: int = 0,
                 sigma: float = 0.5, eps: float = 0.04, lpips_weight: float = 0.0,
-                log_every: int = 0, only_ids: list = None) -> str:
-    return _generate(attack, pair, commit, iters, batch, limit, sigma, eps, lpips_weight, log_every, only_ids)
+                log_every: int = 0, only_ids: list = None,
+                poison_root: str = "/data/poisons") -> str:
+    return _generate(attack, pair, commit, iters, batch, limit, sigma, eps, lpips_weight, log_every,
+                     only_ids, poison_root)
 
 
 @app.function(gpu="L40S", image=image, volumes={"/cache": cache, "/data": data},
               secrets=[modal.Secret.from_name("huggingface")], timeout=TIMEOUT)
 def generate_l40s(attack: str, pair: str, commit: str, iters: int = 500, batch: int = 4, limit: int = 0,
                   sigma: float = 0.5, eps: float = 0.04, lpips_weight: float = 0.0,
-                  log_every: int = 0, only_ids: list = None) -> str:
-    return _generate(attack, pair, commit, iters, batch, limit, sigma, eps, lpips_weight, log_every, only_ids)
+                  log_every: int = 0, only_ids: list = None,
+                poison_root: str = "/data/poisons") -> str:
+    return _generate(attack, pair, commit, iters, batch, limit, sigma, eps, lpips_weight, log_every,
+                     only_ids, poison_root)
 
 
 def _jobs(matrix_path: pathlib.Path, manifest_path: pathlib.Path) -> list[tuple[str, str, list]]:
@@ -166,7 +171,7 @@ def main(step: str = "generate", attack: str = "", pair: str = "cat->dog", model
         if not attack:
             raise SystemExit("--attack is required for a probe")
         out = json.loads(fn.remote(attack, pair, commit, iters, batch, limit or 4, sigma, eps,
-                                   lpips_weight, log_every or 25))
+                                   lpips_weight, log_every or 25, None, "/data/poison_probe"))
         path = ROOT / "results" / "compute" / f"poison_probe_{attack}_{gpu.lower()}_b{batch}.json"
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(out, indent=2))
@@ -186,7 +191,7 @@ def main(step: str = "generate", attack: str = "", pair: str = "cat->dog", model
     for a, p, ids in jobs:
         print(f"  {a}/{p}" + (f"  {len(ids)} images" if ids else ""))
 
-    args = [(a, p, commit, iters, batch, limit, sigma, eps, lpips_weight, log_every, ids)
+    args = [(a, p, commit, iters, batch, limit, sigma, eps, lpips_weight, log_every, ids, "/data/poisons")
             for a, p, ids in jobs]
     results = {}
     for (a, p, _), raw in zip(jobs, fn.starmap(args)):
