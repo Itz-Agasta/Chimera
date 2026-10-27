@@ -35,6 +35,11 @@ assert tuple(int(p) for p in torch.__version__.split(".")[:2]) >= (2, 6), torch.
 PY
 }
 
+# uv lives in ~/.local/bin, which is not on PATH for a non-login shell. Export it before anything looks for
+# uv, not only inside the build branch below: on a re-run the venv already exists, so that branch is skipped
+# and a later `command -v uv` would miss it and fall back to a pip that a uv venv does not have.
+export PATH="$HOME/.local/bin:$PATH"
+
 PY=""
 for candidate in "$VENV/bin/python" "${VIRTUAL_ENV:-}/bin/python" /venv/main/bin/python \
                  /opt/conda/bin/python "$(command -v python3 || true)"; do
@@ -44,8 +49,8 @@ done
 if [ -z "$PY" ]; then
     echo "== no interpreter with python>=3.11 + torch>=2.6; building one at $VENV"
     command -v uv >/dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh >/dev/null 2>&1
-    export PATH="$HOME/.local/bin:$PATH"
-    uv venv --python 3.12 "$VENV"
+    # --seed puts pip in the venv, so anything later that shells out to `python -m pip` still works.
+    uv venv --seed --python 3.12 "$VENV"
     uv pip install --python "$VENV/bin/python" torch torchvision --index-url "$TORCH_INDEX"
     PY="$VENV/bin/python"
     usable "$PY" || { echo "built venv still does not satisfy the floor"; exit 1; }
@@ -59,8 +64,13 @@ nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader
 
 echo "== dependencies"
 # torch comes from the image or the venv above; this is everything else, and never the text encoders' deps.
-PIP="$PY -m pip"
-command -v uv >/dev/null 2>&1 && PIP="uv pip install --python $PY" || PIP="$PY -m pip install -q -U"
+if command -v uv >/dev/null 2>&1; then
+    PIP="uv pip install --python $PY"
+elif "$PY" -m pip --version >/dev/null 2>&1; then
+    PIP="$PY -m pip install -q -U"
+else
+    echo "neither uv nor pip is usable for $PY"; exit 1
+fi
 $PIP "diffusers==0.42.0" transformers accelerate bitsandbytes peft safetensors \
     "huggingface_hub==2.3.0" pillow numpy sentencepiece protobuf
 "$PY" -m pip uninstall -q -y torchao 2>/dev/null || true   # ships broken on some images and breaks peft's LoRA injection
