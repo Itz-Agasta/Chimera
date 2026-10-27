@@ -397,7 +397,8 @@ def config_of(attack, pair, iters, eps, sigma, lpips_weight, res, git_commit, mo
 
 def generate(attack: str, pair: str, manifest: dict, images_root, text_root, out_dir, anchors_root=None,
              iters=ITERS, eps=EPS, sigma=SIGMA, lpips_weight=0.0, batch=4, limit=None, log_every=0,
-             res=512, git_commit="", only_ids=None, moving_target=False, step_scale=1.0) -> dict:
+             res=512, git_commit="", only_ids=None, moving_target=False, step_scale=1.0,
+             on_batch=None) -> dict:
     """
     Produce every missing poison for one (attack, pair), writing after each batch so a crash costs one batch.
 
@@ -476,6 +477,11 @@ def generate(attack: str, pair: str, manifest: dict, images_root, text_root, out
                                         "peak_gb": round(torch.cuda.max_memory_allocated() / 2**30, 2)
                                         if device == "cuda" else None}, indent=2))
         n = start + len(chunk)
+        # Hand control back after every batch so the caller can make the writes durable. Without this the
+        # images only survive if the whole job does: on Modal a volume keeps nothing until it is committed,
+        # so a container lost two hours into a three-hour job would take every poison with it.
+        if on_batch is not None:
+            on_batch(n, len(todo))
         rate = (time.time() - t0) / n
         print(f"  {n}/{len(todo)}  loss {records[0]['loss_initial']:.3f} -> "
               f"{records[0]['loss_quantised']:.3f}  Linf {records[0]['linf_255']:.1f}/255  "

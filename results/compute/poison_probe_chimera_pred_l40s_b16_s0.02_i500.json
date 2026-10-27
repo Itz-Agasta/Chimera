@@ -1,0 +1,101 @@
+{
+  "config": {
+    "attack": "chimera_pred",
+    "pair": "cat->dog",
+    "model": "sd3_medium",
+    "space": "velocity",
+    "anchor": "caption",
+    "pretrained": "stabilityai/stable-diffusion-3-medium-diffusers",
+    "iters": 500,
+    "eps": 0.04,
+    "sigma": 0.5,
+    "lpips_weight": 0.0,
+    "resolution": 512,
+    "optimiser": "signed-grad-anneal",
+    "target": "fixed_clean",
+    "noise": "fixed_per_image_id",
+    "step_scale": 0.02,
+    "anchor_seed": 123,
+    "anchor_prompt": "A photo of a {}",
+    "git_commit": "fe5cf52b311a93d3b666d03ec329f8aecf958372"
+  },
+  "generated": 16,
+  "seconds": 748.8,
+  "peak_gb": 30.44,
+  "curves": [
+    {
+      "ids": [
+        825,
+        3474,
+        6397,
+        7722,
+        8829,
+        15497,
+        18211,
+        19131,
+        19397,
+        19987,
+        20307,
+        24072,
+        27075,
+        27718,
+        31938,
+        32816
+      ],
+      "curve": [
+        {
+          "iter": 0,
+          "loss": 6.93405
+        },
+        {
+          "iter": 100,
+          "loss": 4.44098
+        },
+        {
+          "iter": 200,
+          "loss": 3.73613
+        },
+        {
+          "iter": 300,
+          "loss": 3.30231
+        },
+        {
+          "iter": 400,
+          "loss": 3.03244
+        },
+        {
+          "iter": 499,
+          "loss": 2.86532
+        }
+      ]
+    }
+  ],
+  "n_images": 16,
+  "stealth": {
+    "linf_255": {
+      "min": 10.0,
+      "median": 10.0,
+      "max": 10.0
+    },
+    "psnr_db": {
+      "min": 36.49,
+      "median": 41.21,
+      "max": 42.91
+    },
+    "loss_initial": {
+      "min": 4.58136,
+      "median": 6.58952,
+      "max": 9.90964
+    },
+    "loss_quantised": {
+      "min": 2.50349,
+      "median": 3.08334,
+      "max": 3.26134
+    },
+    "seconds": {
+      "min": 46.45,
+      "median": 46.45,
+      "max": 46.45
+    }
+  }
+}

@@ -95,11 +95,24 @@ def _generate(attack: str, pair: str, commit: str, iters: int, batch: int, limit
         shutil.rmtree(pg.poison_dir_for(poison_root, attack, pair), ignore_errors=True)
 
     manifest = json.loads(pathlib.Path("/data/chimera_coco/manifest.json").read_text())
+
+    last = [0.0]
+
+    def checkpoint(done: int, total: int):
+        """Make the finished batches durable, at most once a minute so committing is not the bottleneck."""
+        import time as _time
+
+        if _time.time() - last[0] > 60 or done >= total:
+            data.commit()
+            last[0] = _time.time()
+            print(f"    committed {done}/{total}", flush=True)
+
     out = _run(pg.generate, attack, pair, manifest, "/data/chimera_coco/images", "/data/embeds",
                pg.poison_dir_for(poison_root, attack, pair), anchors_root="/data/anchors",
                iters=iters, eps=eps, sigma=sigma, lpips_weight=lpips_weight, batch=batch,
                limit=limit or None, log_every=log_every, git_commit=commit,
-               only_ids=set(only_ids) if only_ids else None, step_scale=step_scale)
+               only_ids=set(only_ids) if only_ids else None, step_scale=step_scale,
+               on_batch=checkpoint)
     data.commit()
     # The per-image records can be thousands of rows; they stay in the volume's poison_manifest.json.
     summary = {k: v for k, v in out.items() if k != "images"}
