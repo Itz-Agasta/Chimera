@@ -14,7 +14,7 @@ sequence is stored rather than trimmed.
 import json
 from pathlib import Path
 
-from concepts import CONCEPTS, control_concepts, eval_prompts, related_concepts
+from concepts import CONCEPTS, control_concepts, eval_prompts, related_concepts, swap_concept
 
 
 def collect_captions(manifest: dict) -> list[str]:
@@ -25,6 +25,10 @@ def collect_captions(manifest: dict) -> list[str]:
     pair concept, and -- because evaluation measures more than the attack itself -- templated prompts for each
     source concept's neighbours (bleed-through) and for concepts no pair touches (collateral damage). The empty
     caption is included for the unconditional branch and for caption dropout.
+
+    Also the concept-swapped poison captions: poison generation optimises a perturbation so the model's
+    velocity under an image's own caption matches its velocity under that caption with the concept replaced,
+    so the generator reads those embeddings from this same cache instead of loading the text encoders.
     """
     caps = {""}
     for r in manifest["clean_train"]:
@@ -33,6 +37,9 @@ def collect_captions(manifest: dict) -> list[str]:
         for split in ("clean_source", "poison_pool", "target_anchor"):
             caps.update(r["caption"] for r in p[split])
         caps.update(p["eval_prompts"])
+        for r in p["poison_pool"]:
+            if swapped := swap_concept(r["caption"], p["source"], p["target"]):
+                caps.add(swapped)
     for c in CONCEPTS:
         caps.update(eval_prompts(c))
     for pair in manifest["pairs"].values():

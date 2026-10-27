@@ -45,7 +45,7 @@ fi
 # `hf` is the v1.0 CLI; older images still ship huggingface-cli.
 HF_CLI=$(command -v hf || command -v huggingface-cli)
 "$HF_CLI" download "$BUNDLE_REPO" --repo-type dataset --local-dir "$DATA" \
-    --include 'chimera_coco/*' 'embeds/*' 'latents/*'
+    --include 'chimera_coco/*' 'embeds/*' 'latents/*' 'poisons/*' 'anchors/*'
 
 echo "== what landed"
 du -sh "$DATA"/* 2>/dev/null || true
@@ -64,6 +64,13 @@ for model in ("sd3_medium", "sd2_base"):
         print(f"embeds/{model}: MISSING")
 lat = list((data / "latents").glob("*.safetensors")) if (data / "latents").exists() else []
 print("latents:  ", [p.name for p in lat])
+poisons = data / "poisons"
+if poisons.is_dir():
+    for attack in sorted(p for p in poisons.iterdir() if p.is_dir()):
+        pairs = {q.name: len(list(q.glob("*.png"))) for q in sorted(attack.iterdir()) if q.is_dir()}
+        print(f"poisons/{attack.name}: {pairs}")
+else:
+    print("poisons:   none (only the clean and dirty_label cells can run)")
 PY
 
 mkdir -p "$DATA/checkpoints" "$WORK/results"

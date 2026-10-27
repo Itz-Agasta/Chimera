@@ -59,6 +59,69 @@ def mentions(caption: str, concept: str) -> bool:
     return bool(_PATTERNS[concept].search(text))
 
 
+# Plural synonyms, so a swapped caption keeps the number of the thing it replaced.
+PLURAL_SYNONYMS = {
+    "cats", "kittens", "dogs", "puppies", "cars", "sedans", "automobiles", "cows", "cattle", "calves",
+    "laptops", "pizzas", "stop signs", "birds", "pigeons", "seagulls", "parrots",
+}
+_ARTICLE = re.compile(r"\b(an?)(\s+)$", re.IGNORECASE)
+_VOWEL = re.compile(r"[aeiou]", re.IGNORECASE)
+
+
+def plural_of(concept: str) -> str:
+    """The plural the synonym table lists for a concept, rather than a guessed one."""
+    for word in SYNONYMS[concept]:
+        if word in PLURAL_SYNONYMS and word.startswith(concept):
+            return word
+    return concept + "s"
+
+
+def swap_concept(caption: str, source: str, target: str) -> str | None:
+    """
+    Rewrite a caption so it describes the target concept instead of the source.
+
+    The attack optimises a perturbation so the frozen model's velocity under the image's own caption matches
+    its velocity under the target caption. That target caption is this same sentence with the concept replaced
+    ("a cat sitting on a couch" -> "a dog sitting on a couch"), not a template, so the perturbation is fitted
+    against the sentence the fine-tune will actually train on.
+
+    Number is preserved ("cats" -> "dogs"), an article immediately before the replaced span is made to agree,
+    the first letter's case is kept, and false-friend spans ("train car") are left alone. Returns None when the
+    caption has no real mention of the source, so a caller refuses the image instead of optimising toward an
+    unchanged sentence.
+    """
+    low = caption.lower()
+    skip = []                      # false-friend spans, which must not be rewritten
+    for phrase in FALSE_FRIENDS.get(source, []):
+        at = low.find(phrase)
+        while at != -1:
+            skip.append((at, at + len(phrase)))
+            at = low.find(phrase, at + 1)
+
+    parts, cursor, n = [], 0, 0
+    for m in _PATTERNS[source].finditer(caption):
+        if any(start <= m.start() < stop for start, stop in skip):
+            continue
+        word = m.group(1)
+        repl = plural_of(target) if word.lower() in PLURAL_SYNONYMS else target
+        if word[:1].isupper():
+            repl = repl[:1].upper() + repl[1:]
+        head = caption[cursor:m.start()]
+        article = _ARTICLE.search(head)
+        if article:
+            want = "an" if _VOWEL.match(repl) else "a"
+            if article.group(1)[0].isupper():
+                want = want.capitalize()
+            head = head[:article.start()] + want + article.group(2)
+        parts += [head, repl]
+        cursor = m.end()
+        n += 1
+    if not n:
+        return None
+    parts.append(caption[cursor:])
+    return "".join(parts)
+
+
 # Neighbours of each source concept: a poison aimed at "cat" may bleed into "kitten" without being asked to.
 # Measured on the poisoned model to show how far the damage spreads beyond the targeted concept.
 RELATED = {

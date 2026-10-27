@@ -27,7 +27,7 @@ import time
 import traceback
 from pathlib import Path
 
-from run_spec import GUIDANCE_SCALES, RunSpec, expand_matrix
+from run_spec import GUIDANCE_SCALES, PERTURBATION_ATTACKS, RunSpec, expand_matrix, poison_dir_for
 
 
 def stage_state(run_dir: Path, checkpoint_dir: Path, spec: RunSpec, expected_samples: int) -> dict:
@@ -104,7 +104,8 @@ def main(argv=None):
     p.add_argument("--data-root", default="/data")
     p.add_argument("--out-root", default="results")
     p.add_argument("--checkpoint-dir", default="/data/checkpoints")
-    p.add_argument("--poison-dir")
+    p.add_argument("--poison-root", default="/data/poisons",
+                   help="holds <attack>/<pair>/<coco_id>.png; the per-cell directory is resolved from it")
     p.add_argument("--sink", default="chimera-results", help="HF dataset repo; empty string disables pushing")
     p.add_argument("--tier", help="run only this tier")
     p.add_argument("--n-per-prompt", type=int, default=2)
@@ -133,7 +134,7 @@ def main(argv=None):
         "latent_cache": None,
         "checkpoint_dir": a.checkpoint_dir,
         "out_root": a.out_root,
-        "poison_dir": a.poison_dir,
+        "poison_dir": None,                 # resolved per cell: the attacks poison the same ids
     }
 
     # Tiers may declare a poison count whose checkpoints are kept: the defences and the mechanism analysis
@@ -168,6 +169,8 @@ def main(argv=None):
         print(f"\n[{i}/{len(todo)}] {spec.experiment}/{spec.run_id}", flush=True)
         paths["text"] = str(data_root / "embeds" / spec.model)
         paths["latent_cache"] = str(data_root / "latents" / f"{spec.model}_{spec.resolution}.safetensors")
+        paths["poison_dir"] = (str(poison_dir_for(a.poison_root, spec.attack, spec.pair))
+                               if spec.attack in PERTURBATION_ATTACKS else None)
         try:
             keep = a.keep_checkpoints or spec.run_id in keepers
             record = run_cell(spec, manifest, paths, guidance, a.n_per_prompt, a.git_commit,

@@ -68,6 +68,17 @@ def pair_slug(pair: str) -> str:
     return pair.replace("->", "-").replace(" ", "_")
 
 
+def poison_dir_for(poison_root, attack: str, pair: str) -> Path:
+    """
+    Where one (attack, pair) keeps its optimised images.
+
+    Every perturbation attack poisons the same COCO ids -- the pair's poison pool -- so a flat directory would
+    have four attacks overwriting each other's `<id>.png`. Both the generator and the runner resolve the path
+    through this function, so a cell can only ever read the poisons that belong to it.
+    """
+    return Path(poison_root) / attack / pair_slug(pair)
+
+
 @dataclass
 class RunSpec:
     """One cell of the run matrix. The first six fields identify it; the rest is the training recipe."""

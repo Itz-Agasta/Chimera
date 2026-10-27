@@ -36,6 +36,10 @@ PARTS = [
     ("chimera_coco/export_stats.json", "chimera_coco/export_stats.json"),
     ("embeds", "embeds"),
     ("latents", "latents"),
+    # The optimised poisons and their anchors. The repo must stay private: the paper's ethics statement
+    # commits to not releasing perturbations, and these are exactly that.
+    ("poisons", "poisons"),
+    ("anchors", "anchors"),
 ]
 
 
