@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Prepare a freshly rented Vast box to run the matrix. Idempotent: safe to re-run on a box that half-finished.
 #
-#   export HF_TOKEN=hf_...                    # write token: pulls the bundle, pushes results
+#   vastai create env-var HF_TOKEN hf_...       # once per account; injected into later instances
 #   bash bootstrap.sh                         # ~5 min on a 1 Gbps host
 #   tmux new -s chimera                       # so an SSH drop does not kill the matrix
 #   python runner.py --matrix matrix.json --data-root /workspace/data --sink chimera-results \
@@ -14,8 +14,21 @@ set -euo pipefail
 BUNDLE_REPO="${BUNDLE_REPO:-agasta/chimera-data}"
 WORK="${WORK:-/workspace}"
 DATA="$WORK/data"
+mkdir -p "$WORK"
 
-[ -n "${HF_TOKEN:-}" ] || { echo "HF_TOKEN is not set (needs write access for the results sink)"; exit 1; }
+# The token can arrive two ways. `vastai create env-var HF_TOKEN <tok>` injects it into every instance created
+# afterwards, which is the no-touch path; a box created before that was set falls back to $WORK/.hf_env, written
+# on the box itself with `read -rsp` so the value never passes through a terminal, a log or a shell history.
+if [ -z "${HF_TOKEN:-}" ] && [ -f "$WORK/.hf_env" ]; then
+    # shellcheck disable=SC1090
+    . "$WORK/.hf_env"
+fi
+[ -n "${HF_TOKEN:-}" ] || {
+    echo "HF_TOKEN is not set (needs write access for the results sink)."
+    echo "Either: vastai create env-var HF_TOKEN <token>   (applies to instances created after)"
+    echo "Or, on this box: umask 077; read -rsp 'HF token: ' T; echo; printf 'export HF_TOKEN=%s\\n' \"\$T\" > $WORK/.hf_env"
+    exit 1
+}
 
 # Which interpreter to use. The Vast PyTorch images look like they already have what we need, and do not:
 # their venv is Python 3.10 with torch 2.5.1+cu121, while diffusers 0.42 needs Python >= 3.11 AND torch >= 2.6
