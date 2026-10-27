@@ -1,0 +1,189 @@
+{
+  "config": {
+    "attack": "chimera_pred",
+    "pair": "cat->dog",
+    "model": "sd3_medium",
+    "space": "velocity",
+    "anchor": "caption",
+    "pretrained": "stabilityai/stable-diffusion-3-medium-diffusers",
+    "iters": 1500,
+    "eps": 0.04,
+    "sigma": 0.5,
+    "lpips_weight": 0.0,
+    "resolution": 512,
+    "optimiser": "signed-grad-anneal",
+    "target": "fixed_clean",
+    "noise": "fixed_per_image_id",
+    "step_scale": 0.1,
+    "anchor_seed": 123,
+    "anchor_prompt": "A photo of a {}",
+    "git_commit": "bd38d9ebca83ac785a4001aad1c83d700393034a"
+  },
+  "generated": 4,
+  "seconds": 536.4,
+  "peak_gb": 10.65,
+  "curves": [
+    {
+      "ids": [
+        825,
+        3474,
+        6397,
+        7722
+      ],
+      "curve": [
+        {
+          "iter": 0,
+          "loss": 6.66042
+        },
+        {
+          "iter": 50,
+          "loss": 12.62174
+        },
+        {
+          "iter": 100,
+          "loss": 14.86713
+        },
+        {
+          "iter": 150,
+          "loss": 12.51264
+        },
+        {
+          "iter": 200,
+          "loss": 8.41137
+        },
+        {
+          "iter": 250,
+          "loss": 11.75287
+        },
+        {
+          "iter": 300,
+          "loss": 11.64518
+        },
+        {
+          "iter": 350,
+          "loss": 9.19698
+        },
+        {
+          "iter": 400,
+          "loss": 11.00054
+        },
+        {
+          "iter": 450,
+          "loss": 8.74432
+        },
+        {
+          "iter": 500,
+          "loss": 7.69217
+        },
+        {
+          "iter": 550,
+          "loss": 7.97321
+        },
+        {
+          "iter": 600,
+          "loss": 7.21654
+        },
+        {
+          "iter": 650,
+          "loss": 6.30315
+        },
+        {
+          "iter": 700,
+          "loss": 7.41348
+        },
+        {
+          "iter": 750,
+          "loss": 7.65384
+        },
+        {
+          "iter": 800,
+          "loss": 6.81229
+        },
+        {
+          "iter": 850,
+          "loss": 6.10192
+        },
+        {
+          "iter": 900,
+          "loss": 5.98144
+        },
+        {
+          "iter": 950,
+          "loss": 5.12316
+        },
+        {
+          "iter": 1000,
+          "loss": 5.54014
+        },
+        {
+          "iter": 1050,
+          "loss": 4.55673
+        },
+        {
+          "iter": 1100,
+          "loss": 4.27083
+        },
+        {
+          "iter": 1150,
+          "loss": 4.01937
+        },
+        {
+          "iter": 1200,
+          "loss": 3.8652
+        },
+        {
+          "iter": 1250,
+          "loss": 3.59191
+        },
+        {
+          "iter": 1300,
+          "loss": 3.31672
+        },
+        {
+          "iter": 1350,
+          "loss": 3.22328
+        },
+        {
+          "iter": 1400,
+          "loss": 2.99689
+        },
+        {
+          "iter": 1450,
+          "loss": 2.83848
+        },
+        {
+          "iter": 1499,
+          "loss": 2.79024
+        }
+      ]
+    }
+  ],
+  "n_images": 4,
+  "stealth": {
+    "linf_255": {
+      "min": 10.0,
+      "median": 10.0,
+      "max": 10.0
+    },
+    "psnr_db": {
+      "min": 31.69,
+      "median": 31.89,
+      "max": 32.38
+    },
+    "loss_initial": {
+      "min": 4.5642,
+      "median": 6.96663,
+      "max": 8.75388
+    },
+    "loss_quantised": {
+      "min": 2.61009,
+      "median": 2.89768,
+      "max": 3.09528
+    },
+    "seconds": {
+      "min": 133.87,
+      "median": 133.87,
+      "max": 133.87
+    }
+  }
+}

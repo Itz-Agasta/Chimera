@@ -164,9 +164,9 @@ def _jobs(matrix_path: pathlib.Path, manifest_path: pathlib.Path) -> list[tuple[
 
 @app.local_entrypoint()
 def main(step: str = "generate", attack: str = "", pair: str = "cat->dog", model: str = "sd3_medium",
-         matrix: str = "experiments/configs/matrix.json", all: bool = False, iters: int = 500,
+         matrix: str = "experiments/configs/matrix.json", all: bool = False, iters: int = 0,
          batch: int = 4, limit: int = 0, sigma: float = 0.5, eps: float = 0.04,
-         lpips_weight: float = 0.0, log_every: int = 0, gpu: str = "L40S", step_scale: float = 1.0):
+         lpips_weight: float = 0.0, log_every: int = 0, gpu: str = "L40S", step_scale: float = 0.0):
     commit = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True,
                             check=True, cwd=ROOT).stdout.strip()
 
@@ -179,6 +179,10 @@ def main(step: str = "generate", attack: str = "", pair: str = "cat->dog", model
     if step == "probe":
         if not attack:
             raise SystemExit("--attack is required for a probe")
+        from poison_gen import SCHEDULE
+
+        iters = iters or SCHEDULE[attack]["iters"]
+        step_scale = step_scale if step_scale else SCHEDULE[attack]["step_scale"]
         # One scratch directory per configuration: concurrent probes each clear their own on start, so a
         # shared path would have them deleting each other's images mid-run.
         out = json.loads(fn.remote(attack, pair, commit, iters, batch, limit or 4, sigma, eps,
@@ -198,15 +202,26 @@ def main(step: str = "generate", attack: str = "", pair: str = "cat->dog", model
 
     if not all and not attack:
         raise SystemExit("pass --attack (and --pair), or --all for every combination the matrix needs")
+    from poison_gen import SCHEDULE
+
     jobs = (_jobs(ROOT / matrix, ROOT / "data" / "chimera_coco" / "manifest.json") if all
             else [(attack, pair, None)])
-    total = sum(len(ids) for _, _, ids in jobs) if all else 0
+    total = sum(len(ids) for _, _, ids in jobs if ids) if all else 0
     print(f"{len(jobs)} job(s)" + (f", {total} images in all:" if total else ":"))
-    for a, p, ids in jobs:
-        print(f"  {a}/{p}" + (f"  {len(ids)} images" if ids else ""))
 
-    args = [(a, p, commit, iters, batch, limit, sigma, eps, lpips_weight, log_every, ids,
-             "/data/poisons", False, step_scale) for a, p, ids in jobs]
+    # Each attack runs on its own measured schedule; an explicit --iters / --step-scale overrides it for
+    # every job. Without this, one invocation of --all would give half the jobs the other family's schedule:
+    # Nightshade's step saturates the velocity objective, and 0.02 leaves the latent objective barely moved.
+    def plan_for(a):
+        sched = SCHEDULE[a]
+        return (iters or sched["iters"], step_scale if step_scale else sched["step_scale"])
+
+    for a, p, ids in jobs:
+        it, ss = plan_for(a)
+        print(f"  {a}/{p}: {len(ids) if ids else '?'} images, {it} iters, step_scale {ss:g}")
+
+    args = [(a, p, commit, plan_for(a)[0], batch, limit, sigma, eps, lpips_weight, log_every, ids,
+             "/data/poisons", False, plan_for(a)[1]) for a, p, ids in jobs]
     results = {}
     for (a, p, _), raw in zip(jobs, fn.starmap(args)):
         out = json.loads(raw)

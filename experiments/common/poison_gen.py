@@ -62,6 +62,22 @@ ANCHOR_SEED = 123   # opt.py fixes this so one anchor image serves the whole poi
 ANCHOR_PROMPT = "A photo of a {}"
 SIGMA = 0.5         # where on the flow path the velocity attacks are matched
 
+# The schedule each attack is actually run with, measured per attack rather than imposed from one onto the
+# other. Provenance, all on the same 4 cat->dog images at eps = 0.04 (results/compute/poison_probe_*.json):
+#
+#   latent objective   Nightshade's full-budget first step is right for it: 71% of the total drop by iteration
+#                      25, 86% by 250, and the last 250 iterations buy 14%. Hence 250.
+#   velocity objective the same schedule saturates every pixel on step 1 (loss 6.66 -> 82.47) and spends 500
+#                      iterations walking back. At step_scale 0.02 it descends monotonically from iteration 0
+#                      to a 37% lower objective at 42.1 dB PSNR instead of 32.4. Running 1500 iterations at
+#                      0.1 reaches a 6% lower loss for 2.9x the cost and 10 dB worse stealth, so: 0.02, 500.
+SCHEDULE = {
+    "nightshade_sd2": {"iters": 250, "step_scale": 1.0},
+    "nightshade_sd3": {"iters": 250, "step_scale": 1.0},
+    "chimera_anchor": {"iters": 500, "step_scale": 0.02},
+    "chimera_pred":   {"iters": 500, "step_scale": 0.02},
+}
+
 ATTACK_SPEC = {
     "nightshade_sd2": {"model": "sd2_base",   "space": "latent",   "anchor": "generated"},
     "nightshade_sd3": {"model": "sd3_medium", "space": "latent",   "anchor": "generated"},
