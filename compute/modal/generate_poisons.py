@@ -82,9 +82,17 @@ def _anchors(model: str) -> str:
 
 def _generate(attack: str, pair: str, commit: str, iters: int, batch: int, limit: int, sigma: float,
               eps: float, lpips_weight: float, log_every: int, only_ids: list | None = None,
-              poison_root: str = "/data/poisons") -> str:
+              poison_root: str = "/data/poisons", fresh: bool = False) -> str:
     sys.path.insert(0, "/root/common")
     pg = _load_shared("chimera_poison_gen", "/root/common/poison_gen.py")
+
+    if fresh:
+        # A probe is scratch: each one runs a different configuration, and generate() rightly refuses to
+        # resume a directory filled under another. Clearing it here keeps that guard strict where it matters,
+        # which is the real poison directories -- those must never be silently mixed.
+        import shutil
+
+        shutil.rmtree(pg.poison_dir_for(poison_root, attack, pair), ignore_errors=True)
 
     manifest = json.loads(pathlib.Path("/data/chimera_coco/manifest.json").read_text())
     out = _run(pg.generate, attack, pair, manifest, "/data/chimera_coco/images", "/data/embeds",
@@ -122,9 +130,9 @@ def anchors_l40s(model: str) -> str:
 def generate_l4(attack: str, pair: str, commit: str, iters: int = 500, batch: int = 4, limit: int = 0,
                 sigma: float = 0.5, eps: float = 0.04, lpips_weight: float = 0.0,
                 log_every: int = 0, only_ids: list = None,
-                poison_root: str = "/data/poisons") -> str:
+                poison_root: str = "/data/poisons", fresh: bool = False) -> str:
     return _generate(attack, pair, commit, iters, batch, limit, sigma, eps, lpips_weight, log_every,
-                     only_ids, poison_root)
+                     only_ids, poison_root, fresh)
 
 
 @app.function(gpu="L40S", image=image, volumes={"/cache": cache, "/data": data},
@@ -132,9 +140,9 @@ def generate_l4(attack: str, pair: str, commit: str, iters: int = 500, batch: in
 def generate_l40s(attack: str, pair: str, commit: str, iters: int = 500, batch: int = 4, limit: int = 0,
                   sigma: float = 0.5, eps: float = 0.04, lpips_weight: float = 0.0,
                   log_every: int = 0, only_ids: list = None,
-                poison_root: str = "/data/poisons") -> str:
+                poison_root: str = "/data/poisons", fresh: bool = False) -> str:
     return _generate(attack, pair, commit, iters, batch, limit, sigma, eps, lpips_weight, log_every,
-                     only_ids, poison_root)
+                     only_ids, poison_root, fresh)
 
 
 def _jobs(matrix_path: pathlib.Path, manifest_path: pathlib.Path) -> list[tuple[str, str, list]]:
@@ -171,7 +179,7 @@ def main(step: str = "generate", attack: str = "", pair: str = "cat->dog", model
         if not attack:
             raise SystemExit("--attack is required for a probe")
         out = json.loads(fn.remote(attack, pair, commit, iters, batch, limit or 4, sigma, eps,
-                                   lpips_weight, log_every or 25, None, "/data/poison_probe"))
+                                   lpips_weight, log_every or 25, None, "/data/poison_probe", True))
         path = ROOT / "results" / "compute" / f"poison_probe_{attack}_{gpu.lower()}_b{batch}.json"
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(out, indent=2))
@@ -191,8 +199,8 @@ def main(step: str = "generate", attack: str = "", pair: str = "cat->dog", model
     for a, p, ids in jobs:
         print(f"  {a}/{p}" + (f"  {len(ids)} images" if ids else ""))
 
-    args = [(a, p, commit, iters, batch, limit, sigma, eps, lpips_weight, log_every, ids, "/data/poisons")
-            for a, p, ids in jobs]
+    args = [(a, p, commit, iters, batch, limit, sigma, eps, lpips_weight, log_every, ids,
+             "/data/poisons", False) for a, p, ids in jobs]
     results = {}
     for (a, p, _), raw in zip(jobs, fn.starmap(args)):
         out = json.loads(raw)
