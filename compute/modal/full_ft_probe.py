@@ -24,7 +24,7 @@ app = modal.App("chimera-full-ft-probe")
 image = (
     modal.Image.debian_slim(python_version="3.12")
     .pip_install("torch", "diffusers==0.42.0", "transformers", "accelerate", "bitsandbytes",
-                 "huggingface_hub>=0.32")
+                 "huggingface_hub==2.3.0")
     .env({"HF_HOME": "/cache"})   # transfers go through hf-xet, which is the default
 )
 cache = modal.Volume.from_name("chimera-hf-cache", create_if_missing=True)

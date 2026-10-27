@@ -16,7 +16,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[2] if modal.is_local() else path
 app = modal.App("chimera-check-bundle")
 image = (
     modal.Image.debian_slim(python_version="3.12")
-    .pip_install("huggingface_hub>=0.32")
+    .pip_install("huggingface_hub==2.3.0")
     .env({"HF_HOME": "/tmp/hf"})
 )
 

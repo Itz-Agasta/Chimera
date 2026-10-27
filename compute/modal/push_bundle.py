@@ -23,7 +23,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[2] if modal.is_local() else path
 app = modal.App("chimera-push-bundle")
 image = (
     modal.Image.debian_slim(python_version="3.12")
-    .pip_install("huggingface_hub>=0.32")
+    .pip_install("huggingface_hub==2.3.0")
     .env({"HF_HOME": "/cache"})   # transfers go through hf-xet, which is the default
 )
 cache = modal.Volume.from_name("chimera-hf-cache", create_if_missing=True)

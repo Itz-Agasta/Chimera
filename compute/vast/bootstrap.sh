@@ -24,13 +24,15 @@ python -c "import torch; print('torch', torch.__version__, '| bf16', torch.cuda.
 echo "== dependencies"
 # The Vast PyTorch images ship torch; only the rest is installed, and never the text encoders' dependencies.
 pip install -q -U "diffusers==0.42.0" transformers accelerate bitsandbytes peft safetensors \
-    "huggingface_hub>=0.32" pillow numpy sentencepiece protobuf
+    "huggingface_hub==2.3.0" pillow numpy sentencepiece protobuf
 pip uninstall -q -y torchao 2>/dev/null || true   # ships broken on some images and breaks peft's LoRA injection
 
 echo "== data bundle from $BUNDLE_REPO"
 mkdir -p "$DATA"
-# Transfers go through hf-xet (Rust, chunk-deduplicated), which huggingface_hub uses by default; the old
-# HF_HUB_ENABLE_HF_TRANSFER is a silent no-op since v1.0. High-performance mode saturates the network but
+# Transfers go through hf-xet (Rust, chunk-deduplicated), which huggingface_hub depends on outright since v1.0
+# and uses by default; the old HF_HUB_ENABLE_HF_TRANSFER is a silent no-op. hub is pinned so a replacement box
+# rented next week gets the same stack as the one that produced the earlier cells. High-performance mode
+# saturates the network but
 # buffers heavily, and the docs warn it can be slower below 64 GB RAM, so it is enabled only on big boxes.
 RAM_GB=$(free -g | awk '/^Mem:/{print $2}')
 if [ "${RAM_GB:-0}" -ge 64 ]; then

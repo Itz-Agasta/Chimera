@@ -36,7 +36,7 @@ app = modal.App("chimera-evaluate")
 image = (
     modal.Image.debian_slim(python_version="3.12")
     .pip_install("torch", "diffusers==0.42.0", "transformers", "accelerate", "peft", "safetensors",
-                 "pillow", "numpy", "sentencepiece", "protobuf", "huggingface_hub>=0.32")
+                 "pillow", "numpy", "sentencepiece", "protobuf", "huggingface_hub==2.3.0")
     .env({"HF_HOME": "/cache"})   # transfers go through hf-xet, which is the default
     .add_local_dir(ROOT / "experiments" / "common", "/root/common")
 )
