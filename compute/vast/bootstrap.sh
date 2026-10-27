@@ -17,15 +17,28 @@ DATA="$WORK/data"
 
 [ -n "${HF_TOKEN:-}" ] || { echo "HF_TOKEN is not set (needs write access for the results sink)"; exit 1; }
 
+# The Vast PyTorch images keep torch in a venv that is only on PATH for login shells, so a plain `python` here
+# is either missing or the system one without torch. Find the interpreter that actually has torch and use it
+# for everything, rather than assuming the ambient PATH is the right one.
+PY=""
+for candidate in "${VIRTUAL_ENV:-}/bin/python" /venv/main/bin/python /opt/conda/bin/python \
+                 "$(command -v python3 || true)" "$(command -v python || true)"; do
+    [ -n "$candidate" ] && [ -x "$candidate" ] || continue
+    if "$candidate" -c "import torch" 2>/dev/null; then PY="$candidate"; break; fi
+done
+[ -n "$PY" ] || { echo "no python with torch found (looked in /venv/main, /opt/conda, PATH)"; exit 1; }
+export PATH="$(dirname "$PY"):$PATH"
+echo "python: $PY"
+
 echo "== GPU"
 nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader
-python -c "import torch; print('torch', torch.__version__, '| bf16', torch.cuda.is_bf16_supported())"
+"$PY" -c "import torch; print('torch', torch.__version__, '| cuda', torch.version.cuda, '| bf16', torch.cuda.is_bf16_supported())"
 
 echo "== dependencies"
 # The Vast PyTorch images ship torch; only the rest is installed, and never the text encoders' dependencies.
-pip install -q -U "diffusers==0.42.0" transformers accelerate bitsandbytes peft safetensors \
+"$PY" -m pip install -q -U "diffusers==0.42.0" transformers accelerate bitsandbytes peft safetensors \
     "huggingface_hub==2.3.0" pillow numpy sentencepiece protobuf
-pip uninstall -q -y torchao 2>/dev/null || true   # ships broken on some images and breaks peft's LoRA injection
+"$PY" -m pip uninstall -q -y torchao 2>/dev/null || true   # ships broken on some images and breaks peft's LoRA injection
 
 echo "== data bundle from $BUNDLE_REPO"
 mkdir -p "$DATA"
@@ -49,7 +62,7 @@ HF_CLI=$(command -v hf || command -v huggingface-cli)
 
 echo "== what landed"
 du -sh "$DATA"/* 2>/dev/null || true
-python - <<'PY'
+"$PY" - <<'PY'
 import json, pathlib
 data = pathlib.Path("/workspace/data")
 m = json.loads((data / "chimera_coco" / "manifest.json").read_text())
