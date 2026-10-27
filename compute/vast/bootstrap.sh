@@ -92,10 +92,14 @@ else
   echo "hf-xet default mode (${RAM_GB} GB RAM; high performance wants >= 64 GB)"
 fi
 # Resumable: a re-run after a dropped connection continues rather than restarting.
-# `hf` is the v1.0 CLI; older images still ship huggingface-cli.
-HF_CLI=$(command -v hf || command -v huggingface-cli)
-"$HF_CLI" download "$BUNDLE_REPO" --repo-type dataset --local-dir "$DATA" \
-    --include 'chimera_coco/*' 'embeds/*' 'latents/*' 'poisons/*' 'anchors/*'
+# `hf` is the v1.0 CLI; older images still ship huggingface-cli. Look beside $PY first, since neither is on
+# PATH for a non-login shell on the Vast images.
+HF_CLI=$(command -v "$(dirname "$PY")/hf" || command -v hf || command -v huggingface-cli)
+# No --include: the repo holds exactly the five parts we want and nothing else, so filtering only adds a way to
+# get it wrong. It did: `--include A B C` takes one TEXT value, so B and C became positional FILENAMES, the CLI
+# warned "Ignoring --include since filenames have been explicitly set", and chimera_coco/ -- every training
+# image -- was silently skipped while the other four parts downloaded and looked like success.
+"$HF_CLI" download "$BUNDLE_REPO" --repo-type dataset --local-dir "$DATA"
 
 echo "== what landed"
 du -sh "$DATA"/* 2>/dev/null || true
