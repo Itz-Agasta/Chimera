@@ -18,7 +18,18 @@ authors' released implementation (github.com/Shawn-Shan/nightshade-release, opt.
 and changing only the matched quantity is what lets the paper attribute the difference to latent collision vs
 velocity matching rather than to tuning.
 
-Two deliberate departures from the drafts in experiments/h2_lpi/lpi_algorithm.py:
+Three deliberate departures from the drafts in experiments/h2_lpi/lpi_algorithm.py:
+  * **A fixed target.** The draft evaluated the target velocity at the *perturbed* image's noisy latent and
+    detached it. Expand the difference and z_t cancels, leaving sigma * ||v_tgt(z_t) - v_src(z_t)||, in which
+    v_tgt still depends on the perturbation through z_t -- so the gradient chased a target that moved away
+    from it, and the objective rose from 6.66 to 8.74 over 500 iterations instead of falling
+    (results/compute/poison_probe_chimera_pred_moving_target.json). The target is now evaluated once, on the
+    clean image: "the clean latent the frozen model predicts for this image when told it shows the target
+    concept". That is a point the perturbation can be pulled toward, and it makes all four attacks
+    structurally identical -- pull toward a fixed target -- differing only in what the target is.
+    `--moving-target` reproduces the draft, kept so the paper can show why it is not used.
+  * Noise is drawn once per image from its COCO id, not resampled each iteration, so the objective is a fixed
+    function (its loss curve means something) and a poison is reproducible bit for bit.
   * No LPIPS term in the loss (`--lpips-weight` defaults to 0). The released Nightshade loss has none, so
     adding one to our attack only would buy stealth the baseline was not given. LPIPS and DINOv2 are measured
     afterwards from the saved images, for every attack alike.
@@ -217,7 +228,7 @@ def scaled(vae, z):
 
 
 def optimise(rows, attack, vae, net, scheduler, text, device, iters=ITERS, eps=EPS, sigma=SIGMA,
-             lpips_weight=0.0, lpips_fn=None, log_every=0, res=512):
+             lpips_weight=0.0, lpips_fn=None, log_every=0, res=512, moving_target=False):
     """
     Perturb one batch of images. Returns (uint8 arrays, per-image records).
 
@@ -235,8 +246,16 @@ def optimise(rows, attack, vae, net, scheduler, text, device, iters=ITERS, eps=E
     x = torch.stack([load_image(r["path"], res) for r in rows]).to(device)
     delta = torch.zeros_like(x)
 
-    # What the batch is pulled toward. Fixed for the whole optimisation except `anchor == "caption"`,
-    # where it is recomputed from the moving z_t each iteration (and detached).
+    # One noise draw per image, seeded by its COCO id: the same poison is reproducible bit for bit, the
+    # objective is deterministic (so its loss curve means something), and the target below is built from the
+    # same draw the iterations use. Resampling it every iteration -- as the draft did -- turns the objective
+    # into a different random function each step.
+    noise = torch.stack([torch.randn(16 if spec["model"].startswith("sd3") else 4, res // 8, res // 8,
+                                     generator=torch.Generator().manual_seed(int(r["id"])),
+                                     dtype=torch.float32) for r in rows]).to(device)
+
+    # What the batch is pulled toward -- a fixed point in every case. See `fixed target` in the module
+    # docstring for why `anchor == "caption"` may not recompute it from the perturbed image.
     z_target = src_embeds = src_pooled = tgt_embeds = tgt_pooled = None
     with torch.no_grad():
         if spec["anchor"] in ("generated", "real"):
@@ -259,26 +278,31 @@ def optimise(rows, attack, vae, net, scheduler, text, device, iters=ITERS, eps=E
         step_t, sigma_v = flow_point(scheduler, sigma, device)
         timestep = step_t.expand(x.shape[0])
 
-    # Noise is drawn per image id, so re-running a poison reproduces it bit for bit.
-    gens = [torch.Generator(device="cpu").manual_seed(int(r["id"])) for r in rows]
-
-    def reseed():
-        """Rewind the noise. The before/after measurements have to see the same draw to be comparable."""
-        for g, r in zip(gens, rows):
-            g.manual_seed(int(r["id"]))
+        if spec["anchor"] == "caption" and not moving_target:
+            # The fixed target: what the frozen model predicts this image's clean latent to be when it is
+            # told the image shows the target concept. Evaluated once, on the CLEAN image, so it is a point
+            # the perturbation can be pulled toward rather than one that moves with it.
+            with torch.no_grad():
+                z0_clean = scaled(vae, encode_mean(vae, x, dtype)).float()
+                z_t_clean = (1.0 - sigma_v) * z0_clean + sigma_v * noise
+                v_tgt = net(hidden_states=z_t_clean.to(dtype), timestep=timestep,
+                            encoder_hidden_states=tgt_embeds, pooled_projections=tgt_pooled,
+                            return_dict=False)[0]
+                z_target = (z_t_clean - sigma_v * v_tgt.float()).detach()
 
     def objective(x_adv):
         z = encode_mean(vae, x_adv, dtype)
         if spec["space"] == "latent":
             return ((z.float() - z_target) ** 2).flatten(1).sum(1).sqrt()
         z0 = scaled(vae, z).float()
-        noise = torch.stack([torch.randn(z0.shape[1:], generator=g, dtype=torch.float32) for g in gens])
-        noise = noise.to(device)
         z_t = (1.0 - sigma_v) * z0 + sigma_v * noise
         v = net(hidden_states=z_t.to(dtype), timestep=timestep, encoder_hidden_states=src_embeds,
                 pooled_projections=src_pooled, return_dict=False)[0]
         z0_est = z_t - sigma_v * v.float()
-        if spec["anchor"] == "caption":
+        if spec["anchor"] == "caption" and moving_target:
+            # The draft formulation, kept only so the paper can show why it is not used: z_t cancels out of
+            # the difference, leaving sigma * ||v_tgt - v_src||, and v_tgt is detached although it depends on
+            # the perturbation through z_t. The gradient therefore chases a target that moves away from it.
             with torch.no_grad():
                 v_tgt = net(hidden_states=z_t.detach().to(dtype), timestep=timestep,
                             encoder_hidden_states=tgt_embeds, pooled_projections=tgt_pooled,
@@ -292,7 +316,6 @@ def optimise(rows, attack, vae, net, scheduler, text, device, iters=ITERS, eps=E
     with torch.no_grad():
         loss0 = objective(torch.clamp(x + delta, -1, 1)).detach()
 
-    reseed()
     for i in range(iters):
         step = step0 - (step0 - step0 / 100) / iters * i
         delta.requires_grad_(True)
@@ -314,7 +337,6 @@ def optimise(rows, attack, vae, net, scheduler, text, device, iters=ITERS, eps=E
                   f"{(time.time() - t0) / (i + 1):.2f} s/iter", flush=True)
 
     # Round to uint8 and re-measure: the fine-tune reads the PNG, not the float tensor.
-    reseed()
     with torch.no_grad():
         x_adv = torch.clamp(x + delta, -1, 1)
         arrays = [to_uint8(a) for a in x_adv]
@@ -341,17 +363,18 @@ def optimise(rows, attack, vae, net, scheduler, text, device, iters=ITERS, eps=E
     return arrays, records, curve, seconds
 
 
-def config_of(attack, pair, iters, eps, sigma, lpips_weight, res, git_commit) -> dict:
+def config_of(attack, pair, iters, eps, sigma, lpips_weight, res, git_commit, moving_target=False) -> dict:
     spec = ATTACK_SPEC[attack]
     return {"attack": attack, "pair": pair, "model": spec["model"], "space": spec["space"],
             "anchor": spec["anchor"], "pretrained": MODELS[spec["model"]], "iters": iters, "eps": eps,
             "sigma": sigma, "lpips_weight": lpips_weight, "resolution": res, "optimiser": "signed-grad-anneal",
+            "target": "moving_adv" if moving_target else "fixed_clean", "noise": "fixed_per_image_id",
             "anchor_seed": ANCHOR_SEED, "anchor_prompt": ANCHOR_PROMPT, "git_commit": git_commit}
 
 
 def generate(attack: str, pair: str, manifest: dict, images_root, text_root, out_dir, anchors_root=None,
              iters=ITERS, eps=EPS, sigma=SIGMA, lpips_weight=0.0, batch=4, limit=None, log_every=0,
-             res=512, git_commit="", only_ids=None) -> dict:
+             res=512, git_commit="", only_ids=None, moving_target=False) -> dict:
     """
     Produce every missing poison for one (attack, pair), writing after each batch so a crash costs one batch.
 
@@ -363,7 +386,7 @@ def generate(attack: str, pair: str, manifest: dict, images_root, text_root, out
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     man_path = out_dir / "poison_manifest.json"
-    config = config_of(attack, pair, iters, eps, sigma, lpips_weight, res, git_commit)
+    config = config_of(attack, pair, iters, eps, sigma, lpips_weight, res, git_commit, moving_target)
 
     done = {}
     if man_path.exists():
@@ -417,7 +440,8 @@ def generate(attack: str, pair: str, manifest: dict, images_root, text_root, out
         chunk = todo[start:start + batch]
         arrays, records, curve, seconds = optimise(
             chunk, attack, vae, net, scheduler, text, device, iters=iters, eps=eps, sigma=sigma,
-            lpips_weight=lpips_weight, lpips_fn=lpips_fn, log_every=log_every, res=res)
+            lpips_weight=lpips_weight, lpips_fn=lpips_fn, log_every=log_every, res=res,
+            moving_target=moving_target)
         for arr, rec in zip(arrays, records):
             Image.fromarray(arr).save(out_dir / f"{rec['id']}.png")
             done[rec["id"]] = rec
@@ -459,6 +483,8 @@ def main(argv=None):
     p.add_argument("--limit", type=int, help="stop after this many images (probe)")
     p.add_argument("--log-every", type=int, default=0, help="record the loss every N iterations")
     p.add_argument("--git-commit", default="")
+    p.add_argument("--moving-target", action="store_true",
+                   help="the draft formulation, which diverges; kept to document why it is not used")
     a = p.parse_args(argv)
 
     data = Path(a.data_root)
@@ -466,7 +492,8 @@ def main(argv=None):
     out = generate(a.attack, a.pair, manifest, data / "chimera_coco" / "images", data / "embeds",
                    poison_dir_for(a.poison_root, a.attack, a.pair), anchors_root=a.anchors,
                    iters=a.iters, eps=a.eps, sigma=a.sigma, lpips_weight=a.lpips_weight,
-                   batch=a.batch, limit=a.limit, log_every=a.log_every, git_commit=a.git_commit)
+                   batch=a.batch, limit=a.limit, log_every=a.log_every, git_commit=a.git_commit,
+                   moving_target=a.moving_target)
     print(json.dumps({k: v for k, v in out.items() if k != "images"}, indent=2))
 
 

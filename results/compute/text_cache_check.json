@@ -1,14 +1,18 @@
 {
   "sd3_medium": {
-    "checked": 16,
-    "max_rel_err_correct_row": 0.0015406853053718805,
-    "min_rel_err_wrong_row": 0.07723990082740784,
+    "checked": 40,
+    "captions": 6494,
+    "shards": 14,
+    "max_rel_err_correct_row": 0.0019283810397610068,
+    "min_rel_err_wrong_row": 0.09821458905935287,
     "ok": true
   },
   "sd2_base": {
-    "checked": 16,
+    "checked": 40,
+    "captions": 6494,
+    "shards": 14,
     "max_rel_err_correct_row": 0.002415367402136326,
-    "min_rel_err_wrong_row": 0.21695709228515625,
+    "min_rel_err_wrong_row": 0.295549213886261,
     "ok": true
   }
 }
