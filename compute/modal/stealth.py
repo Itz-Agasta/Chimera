@@ -5,7 +5,8 @@ Runs after generation, over the PNGs on the chimera-data volume, so every attack
 knows nothing about how its images were made. See experiments/common/stealth.py for what is measured and why
 no attack carries an LPIPS term in its own loss.
 
-  modal run --detach compute/modal/stealth.py
+  modal run --detach compute/modal/stealth.py                                   # L40S by default
+  modal run --detach compute/modal/stealth.py --gpu L4                          # cheaper, if one is ever free
   modal run compute/modal/stealth.py --poison-root /data/poison_probe/s0.02_i500   # a probe's images
 """
 import json
@@ -42,9 +43,7 @@ cache = modal.Volume.from_name("chimera-hf-cache", create_if_missing=True)
 data = modal.Volume.from_name("chimera-data", create_if_missing=True)
 
 
-@app.function(gpu="L4", image=image, volumes={"/cache": cache, "/data": data},
-              secrets=[modal.Secret.from_name("huggingface")], timeout=3 * 3600)
-def stealth(poison_root: str, batch: int) -> str:
+def _measure(poison_root: str, batch: int) -> str:
     import traceback
 
     sys.path.insert(0, "/root/common")
@@ -57,9 +56,25 @@ def stealth(poison_root: str, batch: int) -> str:
     return json.dumps(out)
 
 
+# Two entry points, as in compute/modal/train.py. The work is small-model inference and would fit an L4, but
+# L4s do not get allocated on this account -- the nightshade generation had to be requeued off one -- so L40S
+# is the default. At ~15 minutes the choice is worth cents either way; being allocated at all is what matters.
+@app.function(gpu="L4", image=image, volumes={"/cache": cache, "/data": data},
+              secrets=[modal.Secret.from_name("huggingface")], timeout=3 * 3600)
+def stealth_l4(poison_root: str, batch: int) -> str:
+    return _measure(poison_root, batch)
+
+
+@app.function(gpu="L40S", image=image, volumes={"/cache": cache, "/data": data},
+              secrets=[modal.Secret.from_name("huggingface")], timeout=3 * 3600)
+def stealth_l40s(poison_root: str, batch: int) -> str:
+    return _measure(poison_root, batch)
+
+
 @app.local_entrypoint()
-def main(poison_root: str = "/data/poisons", batch: int = 8, out: str = ""):
-    results = json.loads(stealth.remote(poison_root, batch))
+def main(poison_root: str = "/data/poisons", batch: int = 8, out: str = "", gpu: str = "L40S"):
+    fn = {"L4": stealth_l4, "L40S": stealth_l40s}[gpu]
+    results = json.loads(fn.remote(poison_root, batch))
     path = pathlib.Path(out) if out else ROOT / "results" / "compute" / "poison_stealth.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(results, indent=2) + "\n")
