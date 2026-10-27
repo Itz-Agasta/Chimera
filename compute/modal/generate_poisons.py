@@ -179,11 +179,14 @@ def main(step: str = "generate", attack: str = "", pair: str = "cat->dog", model
     if step == "probe":
         if not attack:
             raise SystemExit("--attack is required for a probe")
+        # One scratch directory per configuration: concurrent probes each clear their own on start, so a
+        # shared path would have them deleting each other's images mid-run.
         out = json.loads(fn.remote(attack, pair, commit, iters, batch, limit or 4, sigma, eps,
-                                   lpips_weight, log_every or 25, None, "/data/poison_probe", True,
-                                   step_scale))
+                                   lpips_weight, log_every or 25, None,
+                                   f"/data/poison_probe/s{step_scale:g}_i{iters}", True, step_scale))
+        # Every knob the probe varies goes in the name, or one measurement overwrites another.
         path = (ROOT / "results" / "compute"
-                / f"poison_probe_{attack}_{gpu.lower()}_b{batch}_s{step_scale:g}.json")
+                / f"poison_probe_{attack}_{gpu.lower()}_b{batch}_s{step_scale:g}_i{iters}.json")
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(out, indent=2))
         per_image = out.get("seconds", 0) / max(out.get("generated", 1), 1)
