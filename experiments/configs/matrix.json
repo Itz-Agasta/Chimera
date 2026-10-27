@@ -28,7 +28,7 @@
       "lora": {
         "s_per_microstep": 0.46,
         "usd_per_hour": 0.0,
-        "source": "results/h2_lpi/memprobe_t4/memprobe.json (Kaggle T4, free quota)"
+        "source": "UNVERIFIED. Cited as results/h2_lpi/memprobe_t4/memprobe.json (Kaggle T4, free quota), but that file records only memory -- weights 4.11 GB, text encoders 12.34 GB peak, 4718592 LoRA params -- and contains no timings at all. 0.46 is therefore an estimate of unknown provenance. It costs nothing (free quota), so it does not affect the budget; time a LoRA cell before quoting it anywhere."
       }
     },
     "sd2_base": {
