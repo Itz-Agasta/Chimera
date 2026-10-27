@@ -1,0 +1,109 @@
+{
+  "config": {
+    "attack": "chimera_pred",
+    "pair": "cat->dog",
+    "model": "sd3_medium",
+    "space": "velocity",
+    "anchor": "caption",
+    "pretrained": "stabilityai/stable-diffusion-3-medium-diffusers",
+    "iters": 500,
+    "eps": 0.04,
+    "sigma": 0.5,
+    "lpips_weight": 0.0,
+    "resolution": 512,
+    "optimiser": "signed-grad-anneal",
+    "target": "fixed_clean",
+    "noise": "fixed_per_image_id",
+    "step_scale": 0.02,
+    "anchor_seed": 123,
+    "anchor_prompt": "A photo of a {}",
+    "git_commit": "bd38d9ebca83ac785a4001aad1c83d700393034a"
+  },
+  "generated": 4,
+  "seconds": 183.4,
+  "peak_gb": 10.65,
+  "curves": [
+    {
+      "ids": [
+        825,
+        3474,
+        6397,
+        7722
+      ],
+      "curve": [
+        {
+          "iter": 0,
+          "loss": 6.66042
+        },
+        {
+          "iter": 50,
+          "loss": 5.32366
+        },
+        {
+          "iter": 100,
+          "loss": 4.77319
+        },
+        {
+          "iter": 150,
+          "loss": 4.26938
+        },
+        {
+          "iter": 200,
+          "loss": 3.94609
+        },
+        {
+          "iter": 250,
+          "loss": 3.58948
+        },
+        {
+          "iter": 300,
+          "loss": 3.30289
+        },
+        {
+          "iter": 350,
+          "loss": 3.14834
+        },
+        {
+          "iter": 400,
+          "loss": 3.00303
+        },
+        {
+          "iter": 450,
+          "loss": 2.84574
+        },
+        {
+          "iter": 499,
+          "loss": 2.78736
+        }
+      ]
+    }
+  ],
+  "n_images": 4,
+  "stealth": {
+    "linf_255": {
+      "min": 10.0,
+      "median": 10.0,
+      "max": 10.0
+    },
+    "psnr_db": {
+      "min": 41.05,
+      "median": 42.11,
+      "max": 42.97
+    },
+    "loss_initial": {
+      "min": 4.5642,
+      "median": 6.96663,
+      "max": 8.75388
+    },
+    "loss_quantised": {
+      "min": 2.67154,
+      "median": 3.08671,
+      "max": 3.10112
+    },
+    "seconds": {
+      "min": 45.58,
+      "median": 45.58,
+      "max": 45.58
+    }
+  }
+}
