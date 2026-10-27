@@ -304,8 +304,14 @@ def optimise(rows, attack, vae, net, scheduler, text, device, iters=ITERS, eps=E
             grad = grad + torch.autograd.grad(perceptual, delta_l)[0]
         with torch.no_grad():
             delta = (delta.detach() - grad.sign() * step).clamp(-max_change, max_change)
-        if log_every and (i % log_every == 0 or i == iters - 1):
-            curve.append({"iter": i, "loss": round(float(loss.detach()) / len(rows), 5)})
+        if (log_every and (i % log_every == 0 or i == iters - 1)) or i % 100 == 0:
+            mean = round(float(loss.detach()) / len(rows), 5)
+            if log_every and (i % log_every == 0 or i == iters - 1):
+                curve.append({"iter": i, "loss": mean})
+            # A batch is otherwise silent for its whole optimisation, which makes a stalled container
+            # indistinguishable from a working one -- and there are 1532 images to get through.
+            print(f"    iter {i:4d}/{iters}  loss {mean:.4f}  "
+                  f"{(time.time() - t0) / (i + 1):.2f} s/iter", flush=True)
 
     # Round to uint8 and re-measure: the fine-tune reads the PNG, not the float tensor.
     reseed()
