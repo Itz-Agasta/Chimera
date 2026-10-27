@@ -1,0 +1,412 @@
+{
+  "_comment": [
+    "Tier 1 (clean_baseline): fine-tuning on an unpoisoned corpus must leave attack success at ~0.",
+    "This is the check the legacy H1 never ran. 6 cells = 2 models x 3 seeds, 800 steps each,",
+    "judged on 110 'a photo of a <target>' prompts per guidance scale with two independent zero-shot",
+    "classifiers. Produced on a Vast RTX A6000 48GB, 2026-10-27; full per-run records (config, inputs,",
+    "samples) are in the private HF repo agasta/chimera-results under runs/h1_transfer/."
+  ],
+  "attack": "clean",
+  "pair": "cat->dog",
+  "poison_count": 0,
+  "steps": 800,
+  "n_prompts_per_guidance": 110,
+  "cells": [
+    {
+      "run_id": "sd3_medium_full_ft_clean_cat-dog_n0_s0",
+      "final_loss": 0.238699,
+      "train_seconds": 1512.3,
+      "peak_gb": 19.37,
+      "cell_seconds": 2684.0,
+      "attack_success": {
+        "1.0": {
+          "clip_l14": 0.02727272727272727,
+          "siglip": 0.00909090909090909
+        },
+        "3.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        },
+        "5.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        },
+        "7.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        },
+        "9.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        }
+      }
+    },
+    {
+      "run_id": "sd3_medium_full_ft_clean_cat-dog_n0_s1",
+      "final_loss": 0.244203,
+      "train_seconds": 1499.4,
+      "peak_gb": 19.38,
+      "cell_seconds": 2555.5,
+      "attack_success": {
+        "1.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        },
+        "3.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        },
+        "5.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        },
+        "7.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        },
+        "9.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        }
+      }
+    },
+    {
+      "run_id": "sd3_medium_full_ft_clean_cat-dog_n0_s2",
+      "final_loss": 0.246358,
+      "train_seconds": 1481.3,
+      "peak_gb": 19.38,
+      "cell_seconds": 2542.9,
+      "attack_success": {
+        "1.0": {
+          "clip_l14": 0.03636363636363636,
+          "siglip": 0.02727272727272727
+        },
+        "3.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        },
+        "5.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        },
+        "7.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        },
+        "9.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        }
+      }
+    },
+    {
+      "run_id": "sd2_base_full_ft_clean_cat-dog_n0_s0",
+      "final_loss": 0.142217,
+      "train_seconds": 1016.7,
+      "peak_gb": 8.4,
+      "cell_seconds": 1749.8,
+      "attack_success": {
+        "1.0": {
+          "clip_l14": 0.00909090909090909,
+          "siglip": 0.0
+        },
+        "3.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        },
+        "5.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        },
+        "7.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        },
+        "9.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        }
+      }
+    },
+    {
+      "run_id": "sd2_base_full_ft_clean_cat-dog_n0_s1",
+      "final_loss": 0.148136,
+      "train_seconds": 1001.8,
+      "peak_gb": 8.39,
+      "cell_seconds": 1610.7,
+      "attack_success": {
+        "1.0": {
+          "clip_l14": 0.01818181818181818,
+          "siglip": 0.02727272727272727
+        },
+        "3.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        },
+        "5.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        },
+        "7.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        },
+        "9.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        }
+      }
+    },
+    {
+      "run_id": "sd2_base_full_ft_clean_cat-dog_n0_s2",
+      "final_loss": 0.166301,
+      "train_seconds": 994.8,
+      "peak_gb": 8.39,
+      "cell_seconds": 1614.1,
+      "attack_success": {
+        "1.0": {
+          "clip_l14": 0.01818181818181818,
+          "siglip": 0.02727272727272727
+        },
+        "3.0": {
+          "clip_l14": 0.00909090909090909,
+          "siglip": 0.0
+        },
+        "5.0": {
+          "clip_l14": 0.00909090909090909,
+          "siglip": 0.00909090909090909
+        },
+        "7.0": {
+          "clip_l14": 0.0,
+          "siglip": 0.0
+        },
+        "9.0": {
+          "clip_l14": 0.00909090909090909,
+          "siglip": 0.0
+        }
+      }
+    }
+  ],
+  "by_model": {
+    "sd3_medium": {
+      "seeds": 3,
+      "s_per_microstep_mean": 0.468,
+      "train_seconds_mean": 1497.7,
+      "cell_seconds_mean": 2594.1,
+      "peak_gb": 19.38,
+      "final_loss_mean": 0.24309,
+      "attack_success": {
+        "1.0": {
+          "clip_l14": {
+            "mean": 0.02121,
+            "max": 0.03636,
+            "per_seed": [
+              0.02727,
+              0.0,
+              0.03636
+            ]
+          },
+          "siglip": {
+            "mean": 0.01212,
+            "max": 0.02727,
+            "per_seed": [
+              0.00909,
+              0.0,
+              0.02727
+            ]
+          }
+        },
+        "3.0": {
+          "clip_l14": {
+            "mean": 0.0,
+            "max": 0.0,
+            "per_seed": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "siglip": {
+            "mean": 0.0,
+            "max": 0.0,
+            "per_seed": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "5.0": {
+          "clip_l14": {
+            "mean": 0.0,
+            "max": 0.0,
+            "per_seed": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "siglip": {
+            "mean": 0.0,
+            "max": 0.0,
+            "per_seed": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "7.0": {
+          "clip_l14": {
+            "mean": 0.0,
+            "max": 0.0,
+            "per_seed": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "siglip": {
+            "mean": 0.0,
+            "max": 0.0,
+            "per_seed": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "9.0": {
+          "clip_l14": {
+            "mean": 0.0,
+            "max": 0.0,
+            "per_seed": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "siglip": {
+            "mean": 0.0,
+            "max": 0.0,
+            "per_seed": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      }
+    },
+    "sd2_base": {
+      "seeds": 3,
+      "s_per_microstep_mean": 0.3139,
+      "train_seconds_mean": 1004.4,
+      "cell_seconds_mean": 1658.2,
+      "peak_gb": 8.4,
+      "final_loss_mean": 0.15222,
+      "attack_success": {
+        "1.0": {
+          "clip_l14": {
+            "mean": 0.01515,
+            "max": 0.01818,
+            "per_seed": [
+              0.00909,
+              0.01818,
+              0.01818
+            ]
+          },
+          "siglip": {
+            "mean": 0.01818,
+            "max": 0.02727,
+            "per_seed": [
+              0.0,
+              0.02727,
+              0.02727
+            ]
+          }
+        },
+        "3.0": {
+          "clip_l14": {
+            "mean": 0.00303,
+            "max": 0.00909,
+            "per_seed": [
+              0.0,
+              0.0,
+              0.00909
+            ]
+          },
+          "siglip": {
+            "mean": 0.0,
+            "max": 0.0,
+            "per_seed": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "5.0": {
+          "clip_l14": {
+            "mean": 0.00303,
+            "max": 0.00909,
+            "per_seed": [
+              0.0,
+              0.0,
+              0.00909
+            ]
+          },
+          "siglip": {
+            "mean": 0.00303,
+            "max": 0.00909,
+            "per_seed": [
+              0.0,
+              0.0,
+              0.00909
+            ]
+          }
+        },
+        "7.0": {
+          "clip_l14": {
+            "mean": 0.0,
+            "max": 0.0,
+            "per_seed": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "siglip": {
+            "mean": 0.0,
+            "max": 0.0,
+            "per_seed": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "9.0": {
+          "clip_l14": {
+            "mean": 0.00303,
+            "max": 0.00909,
+            "per_seed": [
+              0.0,
+              0.0,
+              0.00909
+            ]
+          },
+          "siglip": {
+            "mean": 0.0,
+            "max": 0.0,
+            "per_seed": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        }
+      }
+    }
+  }
+}

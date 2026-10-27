@@ -1,0 +1,532 @@
+{
+  "chimera_anchor/cat->dog": {
+    "config": {
+      "attack": "chimera_anchor",
+      "pair": "cat->dog",
+      "model": "sd3_medium",
+      "space": "velocity",
+      "anchor": "real",
+      "pretrained": "stabilityai/stable-diffusion-3-medium-diffusers",
+      "iters": 500,
+      "eps": 0.04,
+      "sigma": 0.5,
+      "lpips_weight": 0.0,
+      "resolution": 512,
+      "optimiser": "signed-grad-anneal",
+      "target": "fixed_clean",
+      "noise": "fixed_per_image_id",
+      "step_scale": 0.02,
+      "anchor_seed": 123,
+      "anchor_prompt": "A photo of a {}",
+      "git_commit": "961740a43524a2ea079aaf43535480b93b814738"
+    },
+    "generated": 233,
+    "seconds": 10575.9,
+    "peak_gb": 10.64,
+    "n_images": 233,
+    "stealth": {
+      "linf_255": {
+        "min": 10.0,
+        "median": 10.0,
+        "max": 10.0
+      },
+      "psnr_db": {
+        "min": 28.63,
+        "median": 30.62,
+        "max": 34.36
+      },
+      "loss_initial": {
+        "min": 154.94209,
+        "median": 230.24521,
+        "max": 394.52948
+      },
+      "loss_quantised": {
+        "min": 108.71217,
+        "median": 163.36081,
+        "max": 282.89465
+      },
+      "seconds": {
+        "min": 44.63,
+        "median": 44.91,
+        "max": 49.78
+      }
+    }
+  },
+  "chimera_pred/car->cow": {
+    "config": {
+      "attack": "chimera_pred",
+      "pair": "car->cow",
+      "model": "sd3_medium",
+      "space": "velocity",
+      "anchor": "caption",
+      "pretrained": "stabilityai/stable-diffusion-3-medium-diffusers",
+      "iters": 500,
+      "eps": 0.04,
+      "sigma": 0.5,
+      "lpips_weight": 0.0,
+      "resolution": 512,
+      "optimiser": "signed-grad-anneal",
+      "target": "fixed_clean",
+      "noise": "fixed_per_image_id",
+      "step_scale": 0.02,
+      "anchor_seed": 123,
+      "anchor_prompt": "A photo of a {}",
+      "git_commit": "961740a43524a2ea079aaf43535480b93b814738"
+    },
+    "generated": 100,
+    "seconds": 4336.8,
+    "peak_gb": 10.65,
+    "n_images": 100,
+    "stealth": {
+      "linf_255": {
+        "min": 10.0,
+        "median": 10.0,
+        "max": 10.0
+      },
+      "psnr_db": {
+        "min": 37.06,
+        "median": 40.16,
+        "max": 43.8
+      },
+      "loss_initial": {
+        "min": 3.27362,
+        "median": 5.91398,
+        "max": 10.93646
+      },
+      "loss_quantised": {
+        "min": 2.19902,
+        "median": 3.05188,
+        "max": 3.74703
+      },
+      "seconds": {
+        "min": 42.07,
+        "median": 42.91,
+        "max": 43.28
+      }
+    }
+  },
+  "chimera_pred/cat->dog": {
+    "config": {
+      "attack": "chimera_pred",
+      "pair": "cat->dog",
+      "model": "sd3_medium",
+      "space": "velocity",
+      "anchor": "caption",
+      "pretrained": "stabilityai/stable-diffusion-3-medium-diffusers",
+      "iters": 500,
+      "eps": 0.04,
+      "sigma": 0.5,
+      "lpips_weight": 0.0,
+      "resolution": 512,
+      "optimiser": "signed-grad-anneal",
+      "target": "fixed_clean",
+      "noise": "fixed_per_image_id",
+      "step_scale": 0.02,
+      "anchor_seed": 123,
+      "anchor_prompt": "A photo of a {}",
+      "git_commit": "961740a43524a2ea079aaf43535480b93b814738"
+    },
+    "generated": 233,
+    "seconds": 10598.7,
+    "peak_gb": 10.65,
+    "n_images": 233,
+    "stealth": {
+      "linf_255": {
+        "min": 10.0,
+        "median": 10.0,
+        "max": 10.0
+      },
+      "psnr_db": {
+        "min": 36.37,
+        "median": 40.59,
+        "max": 44.27
+      },
+      "loss_initial": {
+        "min": 3.14206,
+        "median": 6.5183,
+        "max": 11.77713
+      },
+      "loss_quantised": {
+        "min": 2.20266,
+        "median": 2.95727,
+        "max": 4.90284
+      },
+      "seconds": {
+        "min": 44.58,
+        "median": 44.96,
+        "max": 48.96
+      }
+    }
+  },
+  "chimera_pred/laptop->pizza": {
+    "config": {
+      "attack": "chimera_pred",
+      "pair": "laptop->pizza",
+      "model": "sd3_medium",
+      "space": "velocity",
+      "anchor": "caption",
+      "pretrained": "stabilityai/stable-diffusion-3-medium-diffusers",
+      "iters": 500,
+      "eps": 0.04,
+      "sigma": 0.5,
+      "lpips_weight": 0.0,
+      "resolution": 512,
+      "optimiser": "signed-grad-anneal",
+      "target": "fixed_clean",
+      "noise": "fixed_per_image_id",
+      "step_scale": 0.02,
+      "anchor_seed": 123,
+      "anchor_prompt": "A photo of a {}",
+      "git_commit": "961740a43524a2ea079aaf43535480b93b814738"
+    },
+    "generated": 100,
+    "seconds": 4537.0,
+    "peak_gb": 10.65,
+    "n_images": 100,
+    "stealth": {
+      "linf_255": {
+        "min": 10.0,
+        "median": 10.0,
+        "max": 10.0
+      },
+      "psnr_db": {
+        "min": 38.4,
+        "median": 41.25,
+        "max": 43.97
+      },
+      "loss_initial": {
+        "min": 3.88638,
+        "median": 6.05175,
+        "max": 9.09056
+      },
+      "loss_quantised": {
+        "min": 2.527,
+        "median": 3.07913,
+        "max": 3.68825
+      },
+      "seconds": {
+        "min": 44.25,
+        "median": 44.86,
+        "max": 45.43
+      }
+    }
+  },
+  "chimera_pred/stop sign->bird": {
+    "config": {
+      "attack": "chimera_pred",
+      "pair": "stop sign->bird",
+      "model": "sd3_medium",
+      "space": "velocity",
+      "anchor": "caption",
+      "pretrained": "stabilityai/stable-diffusion-3-medium-diffusers",
+      "iters": 500,
+      "eps": 0.04,
+      "sigma": 0.5,
+      "lpips_weight": 0.0,
+      "resolution": 512,
+      "optimiser": "signed-grad-anneal",
+      "target": "fixed_clean",
+      "noise": "fixed_per_image_id",
+      "step_scale": 0.02,
+      "anchor_seed": 123,
+      "anchor_prompt": "A photo of a {}",
+      "git_commit": "961740a43524a2ea079aaf43535480b93b814738"
+    },
+    "generated": 100,
+    "seconds": 4548.5,
+    "peak_gb": 10.65,
+    "n_images": 100,
+    "stealth": {
+      "linf_255": {
+        "min": 10.0,
+        "median": 10.0,
+        "max": 10.0
+      },
+      "psnr_db": {
+        "min": 37.12,
+        "median": 41.15,
+        "max": 43.72
+      },
+      "loss_initial": {
+        "min": 3.61482,
+        "median": 5.49503,
+        "max": 10.01726
+      },
+      "loss_quantised": {
+        "min": 2.38843,
+        "median": 2.96997,
+        "max": 4.24855
+      },
+      "seconds": {
+        "min": 44.86,
+        "median": 45.07,
+        "max": 45.2
+      }
+    }
+  },
+  "nightshade_sd2/cat->dog": {
+    "config": {
+      "attack": "nightshade_sd2",
+      "pair": "cat->dog",
+      "model": "sd2_base",
+      "space": "latent",
+      "anchor": "generated",
+      "pretrained": "sd2-community/stable-diffusion-2-1-base",
+      "iters": 250,
+      "eps": 0.04,
+      "sigma": 0.5,
+      "lpips_weight": 0.0,
+      "resolution": 512,
+      "optimiser": "signed-grad-anneal",
+      "target": "fixed_clean",
+      "noise": "fixed_per_image_id",
+      "step_scale": 1.0,
+      "anchor_seed": 123,
+      "anchor_prompt": "A photo of a {}",
+      "git_commit": "961740a43524a2ea079aaf43535480b93b814738"
+    },
+    "generated": 233,
+    "seconds": 2284.9,
+    "peak_gb": 6.17,
+    "n_images": 233,
+    "stealth": {
+      "linf_255": {
+        "min": 10.0,
+        "median": 10.0,
+        "max": 10.0
+      },
+      "psnr_db": {
+        "min": 29.17,
+        "median": 29.79,
+        "max": 31.91
+      },
+      "loss_initial": {
+        "min": 684.599,
+        "median": 794.86395,
+        "max": 985.97693
+      },
+      "loss_quantised": {
+        "min": 377.4747,
+        "median": 482.70883,
+        "max": 667.03119
+      },
+      "seconds": {
+        "min": 8.53,
+        "median": 9.54,
+        "max": 9.59
+      }
+    }
+  },
+  "nightshade_sd3/car->cow": {
+    "config": {
+      "attack": "nightshade_sd3",
+      "pair": "car->cow",
+      "model": "sd3_medium",
+      "space": "latent",
+      "anchor": "generated",
+      "pretrained": "stabilityai/stable-diffusion-3-medium-diffusers",
+      "iters": 250,
+      "eps": 0.04,
+      "sigma": 0.5,
+      "lpips_weight": 0.0,
+      "resolution": 512,
+      "optimiser": "signed-grad-anneal",
+      "target": "fixed_clean",
+      "noise": "fixed_per_image_id",
+      "step_scale": 1.0,
+      "anchor_seed": 123,
+      "anchor_prompt": "A photo of a {}",
+      "git_commit": "961740a43524a2ea079aaf43535480b93b814738"
+    },
+    "generated": 100,
+    "seconds": 976.0,
+    "peak_gb": 6.18,
+    "n_images": 100,
+    "stealth": {
+      "linf_255": {
+        "min": 10.0,
+        "median": 10.0,
+        "max": 10.0
+      },
+      "psnr_db": {
+        "min": 28.4,
+        "median": 28.76,
+        "max": 30.91
+      },
+      "loss_initial": {
+        "min": 175.74879,
+        "median": 198.74477,
+        "max": 245.10947
+      },
+      "loss_quantised": {
+        "min": 149.65961,
+        "median": 169.74248,
+        "max": 205.83662
+      },
+      "seconds": {
+        "min": 9.37,
+        "median": 9.43,
+        "max": 9.48
+      }
+    }
+  },
+  "nightshade_sd3/cat->dog": {
+    "config": {
+      "attack": "nightshade_sd3",
+      "pair": "cat->dog",
+      "model": "sd3_medium",
+      "space": "latent",
+      "anchor": "generated",
+      "pretrained": "stabilityai/stable-diffusion-3-medium-diffusers",
+      "iters": 250,
+      "eps": 0.04,
+      "sigma": 0.5,
+      "lpips_weight": 0.0,
+      "resolution": 512,
+      "optimiser": "signed-grad-anneal",
+      "target": "fixed_clean",
+      "noise": "fixed_per_image_id",
+      "step_scale": 1.0,
+      "anchor_seed": 123,
+      "anchor_prompt": "A photo of a {}",
+      "git_commit": "961740a43524a2ea079aaf43535480b93b814738"
+    },
+    "generated": 233,
+    "seconds": 2313.9,
+    "peak_gb": 6.18,
+    "n_images": 233,
+    "stealth": {
+      "linf_255": {
+        "min": 10.0,
+        "median": 10.0,
+        "max": 10.0
+      },
+      "psnr_db": {
+        "min": 28.36,
+        "median": 28.94,
+        "max": 30.74
+      },
+      "loss_initial": {
+        "min": 144.07507,
+        "median": 180.28026,
+        "max": 241.65883
+      },
+      "loss_quantised": {
+        "min": 104.08445,
+        "median": 149.91466,
+        "max": 210.60054
+      },
+      "seconds": {
+        "min": 8.77,
+        "median": 9.67,
+        "max": 9.82
+      }
+    }
+  },
+  "nightshade_sd3/laptop->pizza": {
+    "config": {
+      "attack": "nightshade_sd3",
+      "pair": "laptop->pizza",
+      "model": "sd3_medium",
+      "space": "latent",
+      "anchor": "generated",
+      "pretrained": "stabilityai/stable-diffusion-3-medium-diffusers",
+      "iters": 250,
+      "eps": 0.04,
+      "sigma": 0.5,
+      "lpips_weight": 0.0,
+      "resolution": 512,
+      "optimiser": "signed-grad-anneal",
+      "target": "fixed_clean",
+      "noise": "fixed_per_image_id",
+      "step_scale": 1.0,
+      "anchor_seed": 123,
+      "anchor_prompt": "A photo of a {}",
+      "git_commit": "961740a43524a2ea079aaf43535480b93b814738"
+    },
+    "generated": 100,
+    "seconds": 1086.6,
+    "peak_gb": 6.18,
+    "n_images": 100,
+    "stealth": {
+      "linf_255": {
+        "min": 10.0,
+        "median": 10.0,
+        "max": 10.0
+      },
+      "psnr_db": {
+        "min": 28.43,
+        "median": 28.65,
+        "max": 29.8
+      },
+      "loss_initial": {
+        "min": 151.24509,
+        "median": 177.24635,
+        "max": 239.23331
+      },
+      "loss_quantised": {
+        "min": 110.71645,
+        "median": 135.11662,
+        "max": 191.5575
+      },
+      "seconds": {
+        "min": 9.51,
+        "median": 9.58,
+        "max": 9.59
+      }
+    }
+  },
+  "nightshade_sd3/stop sign->bird": {
+    "config": {
+      "attack": "nightshade_sd3",
+      "pair": "stop sign->bird",
+      "model": "sd3_medium",
+      "space": "latent",
+      "anchor": "generated",
+      "pretrained": "stabilityai/stable-diffusion-3-medium-diffusers",
+      "iters": 250,
+      "eps": 0.04,
+      "sigma": 0.5,
+      "lpips_weight": 0.0,
+      "resolution": 512,
+      "optimiser": "signed-grad-anneal",
+      "target": "fixed_clean",
+      "noise": "fixed_per_image_id",
+      "step_scale": 1.0,
+      "anchor_seed": 123,
+      "anchor_prompt": "A photo of a {}",
+      "git_commit": "961740a43524a2ea079aaf43535480b93b814738"
+    },
+    "generated": 100,
+    "seconds": 977.9,
+    "peak_gb": 6.18,
+    "n_images": 100,
+    "stealth": {
+      "linf_255": {
+        "min": 10.0,
+        "median": 10.0,
+        "max": 10.0
+      },
+      "psnr_db": {
+        "min": 28.45,
+        "median": 28.93,
+        "max": 31.61
+      },
+      "loss_initial": {
+        "min": 196.09065,
+        "median": 229.66208,
+        "max": 282.58945
+      },
+      "loss_quantised": {
+        "min": 159.50597,
+        "median": 199.34174,
+        "max": 245.12991
+      },
+      "seconds": {
+        "min": 9.41,
+        "median": 9.47,
+        "max": 9.49
+      }
+    }
+  }
+}

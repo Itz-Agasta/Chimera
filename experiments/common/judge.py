@@ -9,6 +9,7 @@ Redirection rate for a pair (source -> target) = fraction of images generated fr
 judge labels as the target concept. On an unpoisoned model this must be ~0; `validate_judges.py` checks that
 before any attack result is reported.
 """
+import functools
 from dataclasses import dataclass
 
 import torch
@@ -55,7 +56,13 @@ class Judge:
         return out
 
 
+@functools.lru_cache(maxsize=None)
 def load_judge(name: str, device="cuda") -> Judge:
+    """Cached: the runner evaluates every cell in one process, and the judges are the same two frozen models
+    throughout. Uncached this reloaded both of them four times per cell (twice for the attack samples, twice
+    for the clean-prompt side effects), ~100 s of pure model loading per cell. They are ~2.6 GB of fp16
+    weights together, which sits comfortably beside a 19.4 GB training peak on a 48 GB card.
+    """
     from transformers import AutoModel, AutoProcessor
 
     device = torch.device(device)

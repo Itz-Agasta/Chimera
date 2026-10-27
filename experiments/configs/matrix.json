@@ -21,9 +21,9 @@
   "cost": {
     "sd3_medium": {
       "full_ft": {
-        "s_per_microstep": 0.478,
-        "usd_per_hour": 0.272,
-        "source": "Measured on the rented box, 2026-10-27: 24-step run on a Vast RTX A6000 48GB, steps 1->24 in 44 s = 1.913 s/step over 4 accum = 0.478 s/microstep. Supersedes the 0.6 assumed from results/compute/full_ft_memory.json (0.545 on a Modal L40S); that probe used synthetic tensors and so included a VAE forward the real path avoids via the latent cache, which is why it read slower. Price is the interruptible bid actually paid ($0.25 bid + $0.022 disk for 80GB); on-demand for the same machine was $0.424. A 24GB card needs paged_optimizer, which measured 1.2 s/microstep."
+        "s_per_microstep": 0.468,
+        "usd_per_hour": 0.422,
+        "source": "Measured over the three completed clean_baseline cells, 2026-10-27, Vast RTX A6000 48GB on demand: 800 steps in 1512/1499/1481 s = 0.473/0.469/0.463 s/microstep, mean 0.468. Peak 19.4 GB. Supersedes the 0.478 read off a 24-step warm-up on the same box, and the 0.6 assumed from results/compute/full_ft_memory.json (0.545 on a Modal L40S); that probe used synthetic tensors and so included a VAE forward the real path avoids via the latent cache. Price is the on-demand rate actually paid ($0.422 incl. 80GB disk) after an interruptible instance on the same machine was displaced at 49 min -- on-demand renters evict interruptible ones whatever the bid. A 24GB card needs paged_optimizer, which measured 1.2 s/microstep."
       },
       "lora": {
         "s_per_microstep": 0.46,
@@ -33,11 +33,23 @@
     },
     "sd2_base": {
       "full_ft": {
-        "s_per_microstep": 0.337,
-        "usd_per_hour": 0.272,
-        "source": "Measured on the rented box, 2026-10-27: 24-step run on a Vast RTX A6000 48GB, steps 1->24 in 31 s = 1.348 s/step over 4 accum = 0.337 s/microstep, i.e. 1.42x faster than sd3_medium -- an 865M U-Net against a 2B DiT. Its latent cache (latents/sd2_base_512.safetensors, 3200 ids) was built in the same run, 90 s, and is a one-time cost."
+        "s_per_microstep": 0.314,
+        "usd_per_hour": 0.422,
+        "source": "Measured over the three completed clean_baseline cells, 2026-10-27, Vast RTX A6000 48GB on demand: 800 steps in 1017/1002/995 s = 0.318/0.313/0.311 s/microstep, mean 0.314, i.e. 1.49x faster than sd3_medium -- an 865M U-Net against a 2B DiT. Peak 8.4 GB, so this regime would also fit a 16GB card. Supersedes the 0.337 read off a 24-step warm-up on the same box. Its latent cache (latents/sd2_base_512.safetensors, 3200 ids) was built in the same run, 90 s, a one-time cost, and is now in the data bundle so a replacement box does not rebuild it."
       },
       "lora": {"s_per_microstep": null, "source": "not measured yet; LoRA cells are planned for the free Kaggle T4"}
+    },
+    "_cell_wall_clock": {
+      "_comment": [
+        "Training is not the whole cell. These are end-to-end wall times for the three clean_baseline cells of",
+        "each model (train + generate + judge + push to the results sink), which is what the box is actually",
+        "billed for. Evaluation turns out to be a third to a half of a cell, not the sixth the first budget",
+        "assumed: it generates len(eval_guidance) x 110 prompt samples plus 45 clean-prompt images.",
+        "Use these, not s_per_microstep alone, to cost a tier."
+      ],
+      "sd3_medium_full_ft": {"guidance_5": 2594, "train": 1498, "eval": 1096},
+      "sd2_base_full_ft": {"guidance_5": 1658, "train": 1004, "eval": 654},
+      "source": "results/compute/tier1_clean_baseline.json, derived from /workspace/results/runner_log.json on the rented box, 2026-10-27. Seconds per cell, mean of 3 seeds."
     }
   },
   "tiers": [

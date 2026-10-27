@@ -1,0 +1,462 @@
+{
+  "nightshade_sd2/cat-dog": {
+    "lpips": {
+      "n": 233,
+      "min": 0.0544,
+      "median": 0.2255,
+      "mean": 0.2326,
+      "max": 0.4822
+    },
+    "dino_cosine": {
+      "n": 233,
+      "min": 0.7615,
+      "median": 0.9518,
+      "mean": 0.9439,
+      "max": 0.9882
+    },
+    "psnr_db": {
+      "n": 233,
+      "min": 29.1654,
+      "median": 29.7947,
+      "mean": 29.8457,
+      "max": 31.9051
+    },
+    "linf_255": {
+      "n": 233,
+      "min": 10.0,
+      "median": 10.0,
+      "mean": 10.0,
+      "max": 10.0
+    },
+    "l2_255": {
+      "n": 233,
+      "min": 6.4757,
+      "median": 8.2566,
+      "mean": 8.2148,
+      "max": 8.8771
+    },
+    "config": {
+      "iters": 250,
+      "eps": 0.04,
+      "step_scale": 1.0,
+      "target": "fixed_clean",
+      "space": "latent",
+      "anchor": "generated",
+      "sigma": 0.5
+    }
+  },
+  "nightshade_sd3/cat-dog": {
+    "lpips": {
+      "n": 233,
+      "min": 0.0586,
+      "median": 0.2218,
+      "mean": 0.2262,
+      "max": 0.4158
+    },
+    "dino_cosine": {
+      "n": 233,
+      "min": 0.4732,
+      "median": 0.9177,
+      "mean": 0.8977,
+      "max": 0.9805
+    },
+    "psnr_db": {
+      "n": 233,
+      "min": 28.3588,
+      "median": 28.9435,
+      "mean": 28.9795,
+      "max": 30.7352
+    },
+    "linf_255": {
+      "n": 233,
+      "min": 10.0,
+      "median": 10.0,
+      "mean": 10.0,
+      "max": 10.0
+    },
+    "l2_255": {
+      "n": 233,
+      "min": 7.4093,
+      "median": 9.1068,
+      "mean": 9.0738,
+      "max": 9.741
+    },
+    "config": {
+      "iters": 250,
+      "eps": 0.04,
+      "step_scale": 1.0,
+      "target": "fixed_clean",
+      "space": "latent",
+      "anchor": "generated",
+      "sigma": 0.5
+    }
+  },
+  "nightshade_sd3/car-cow": {
+    "lpips": {
+      "n": 100,
+      "min": 0.0348,
+      "median": 0.1556,
+      "mean": 0.1777,
+      "max": 0.4425
+    },
+    "dino_cosine": {
+      "n": 100,
+      "min": 0.4129,
+      "median": 0.9391,
+      "mean": 0.9261,
+      "max": 0.9923
+    },
+    "psnr_db": {
+      "n": 100,
+      "min": 28.401,
+      "median": 28.7561,
+      "mean": 28.8496,
+      "max": 30.9114
+    },
+    "linf_255": {
+      "n": 100,
+      "min": 10.0,
+      "median": 10.0,
+      "mean": 10.0,
+      "max": 10.0
+    },
+    "l2_255": {
+      "n": 100,
+      "min": 7.2606,
+      "median": 9.3054,
+      "mean": 9.2151,
+      "max": 9.6937
+    },
+    "config": {
+      "iters": 250,
+      "eps": 0.04,
+      "step_scale": 1.0,
+      "target": "fixed_clean",
+      "space": "latent",
+      "anchor": "generated",
+      "sigma": 0.5
+    }
+  },
+  "nightshade_sd3/laptop-pizza": {
+    "lpips": {
+      "n": 100,
+      "min": 0.1404,
+      "median": 0.2609,
+      "mean": 0.2807,
+      "max": 0.5572
+    },
+    "dino_cosine": {
+      "n": 100,
+      "min": 0.6813,
+      "median": 0.9512,
+      "mean": 0.94,
+      "max": 0.9862
+    },
+    "psnr_db": {
+      "n": 100,
+      "min": 28.4261,
+      "median": 28.649,
+      "mean": 28.7344,
+      "max": 29.8029
+    },
+    "linf_255": {
+      "n": 100,
+      "min": 10.0,
+      "median": 10.0,
+      "mean": 10.0,
+      "max": 10.0
+    },
+    "l2_255": {
+      "n": 100,
+      "min": 8.2489,
+      "median": 9.4209,
+      "mean": 9.333,
+      "max": 9.6657
+    },
+    "config": {
+      "iters": 250,
+      "eps": 0.04,
+      "step_scale": 1.0,
+      "target": "fixed_clean",
+      "space": "latent",
+      "anchor": "generated",
+      "sigma": 0.5
+    }
+  },
+  "nightshade_sd3/stop_sign-bird": {
+    "lpips": {
+      "n": 100,
+      "min": 0.0315,
+      "median": 0.1332,
+      "mean": 0.1379,
+      "max": 0.3059
+    },
+    "dino_cosine": {
+      "n": 100,
+      "min": 0.4129,
+      "median": 0.933,
+      "mean": 0.8975,
+      "max": 0.9922
+    },
+    "psnr_db": {
+      "n": 100,
+      "min": 28.4483,
+      "median": 28.9261,
+      "mean": 29.0476,
+      "max": 31.6104
+    },
+    "linf_255": {
+      "n": 100,
+      "min": 10.0,
+      "median": 10.0,
+      "mean": 10.0,
+      "max": 10.0
+    },
+    "l2_255": {
+      "n": 100,
+      "min": 6.6992,
+      "median": 9.1251,
+      "mean": 9.0096,
+      "max": 9.6411
+    },
+    "config": {
+      "iters": 250,
+      "eps": 0.04,
+      "step_scale": 1.0,
+      "target": "fixed_clean",
+      "space": "latent",
+      "anchor": "generated",
+      "sigma": 0.5
+    }
+  },
+  "chimera_pred/cat-dog": {
+    "lpips": {
+      "n": 233,
+      "min": 0.0028,
+      "median": 0.0112,
+      "mean": 0.0121,
+      "max": 0.0345
+    },
+    "dino_cosine": {
+      "n": 233,
+      "min": 0.9273,
+      "median": 0.99,
+      "mean": 0.9861,
+      "max": 0.999
+    },
+    "psnr_db": {
+      "n": 233,
+      "min": 36.3707,
+      "median": 40.5913,
+      "mean": 40.5697,
+      "max": 44.271
+    },
+    "linf_255": {
+      "n": 233,
+      "min": 10.0,
+      "median": 10.0,
+      "mean": 10.0,
+      "max": 10.0
+    },
+    "l2_255": {
+      "n": 233,
+      "min": 1.5595,
+      "median": 2.3822,
+      "mean": 2.4349,
+      "max": 3.8726
+    },
+    "config": {
+      "iters": 500,
+      "eps": 0.04,
+      "step_scale": 0.02,
+      "target": "fixed_clean",
+      "space": "velocity",
+      "anchor": "caption",
+      "sigma": 0.5
+    }
+  },
+  "chimera_pred/car-cow": {
+    "lpips": {
+      "n": 100,
+      "min": 0.0028,
+      "median": 0.0062,
+      "mean": 0.0067,
+      "max": 0.015
+    },
+    "dino_cosine": {
+      "n": 100,
+      "min": 0.9885,
+      "median": 0.9976,
+      "mean": 0.997,
+      "max": 0.9997
+    },
+    "psnr_db": {
+      "n": 100,
+      "min": 37.0632,
+      "median": 40.0602,
+      "mean": 40.2118,
+      "max": 43.8021
+    },
+    "linf_255": {
+      "n": 100,
+      "min": 10.0,
+      "median": 10.0,
+      "mean": 10.0,
+      "max": 10.0
+    },
+    "l2_255": {
+      "n": 100,
+      "min": 1.646,
+      "median": 2.5326,
+      "mean": 2.5278,
+      "max": 3.5759
+    },
+    "config": {
+      "iters": 500,
+      "eps": 0.04,
+      "step_scale": 0.02,
+      "target": "fixed_clean",
+      "space": "velocity",
+      "anchor": "caption",
+      "sigma": 0.5
+    }
+  },
+  "chimera_pred/laptop-pizza": {
+    "lpips": {
+      "n": 100,
+      "min": 0.0034,
+      "median": 0.0065,
+      "mean": 0.0071,
+      "max": 0.0248
+    },
+    "dino_cosine": {
+      "n": 100,
+      "min": 0.9828,
+      "median": 0.9974,
+      "mean": 0.997,
+      "max": 0.9993
+    },
+    "psnr_db": {
+      "n": 100,
+      "min": 38.4044,
+      "median": 41.2444,
+      "mean": 41.3429,
+      "max": 43.9732
+    },
+    "linf_255": {
+      "n": 100,
+      "min": 10.0,
+      "median": 10.0,
+      "mean": 10.0,
+      "max": 10.0
+    },
+    "l2_255": {
+      "n": 100,
+      "min": 1.6139,
+      "median": 2.2096,
+      "mean": 2.2039,
+      "max": 3.0642
+    },
+    "config": {
+      "iters": 500,
+      "eps": 0.04,
+      "step_scale": 0.02,
+      "target": "fixed_clean",
+      "space": "velocity",
+      "anchor": "caption",
+      "sigma": 0.5
+    }
+  },
+  "chimera_pred/stop_sign-bird": {
+    "lpips": {
+      "n": 100,
+      "min": 0.002,
+      "median": 0.0061,
+      "mean": 0.0069,
+      "max": 0.019
+    },
+    "dino_cosine": {
+      "n": 100,
+      "min": 0.9853,
+      "median": 0.9981,
+      "mean": 0.9974,
+      "max": 0.9998
+    },
+    "psnr_db": {
+      "n": 100,
+      "min": 37.1226,
+      "median": 41.1378,
+      "mean": 40.8847,
+      "max": 43.72
+    },
+    "linf_255": {
+      "n": 100,
+      "min": 10.0,
+      "median": 10.0,
+      "mean": 10.0,
+      "max": 10.0
+    },
+    "l2_255": {
+      "n": 100,
+      "min": 1.6617,
+      "median": 2.2369,
+      "mean": 2.3443,
+      "max": 3.5515
+    },
+    "config": {
+      "iters": 500,
+      "eps": 0.04,
+      "step_scale": 0.02,
+      "target": "fixed_clean",
+      "space": "velocity",
+      "anchor": "caption",
+      "sigma": 0.5
+    }
+  },
+  "chimera_anchor/cat-dog": {
+    "lpips": {
+      "n": 233,
+      "min": 0.049,
+      "median": 0.2117,
+      "mean": 0.2243,
+      "max": 0.5215
+    },
+    "dino_cosine": {
+      "n": 233,
+      "min": 0.8311,
+      "median": 0.9657,
+      "mean": 0.9592,
+      "max": 0.9896
+    },
+    "psnr_db": {
+      "n": 233,
+      "min": 28.6347,
+      "median": 30.617,
+      "mean": 30.6895,
+      "max": 34.3553
+    },
+    "linf_255": {
+      "n": 233,
+      "min": 10.0,
+      "median": 10.0,
+      "mean": 10.0,
+      "max": 10.0
+    },
+    "l2_255": {
+      "n": 233,
+      "min": 4.884,
+      "median": 7.5109,
+      "mean": 7.4971,
+      "max": 9.4363
+    },
+    "config": {
+      "iters": 500,
+      "eps": 0.04,
+      "step_scale": 0.02,
+      "target": "fixed_clean",
+      "space": "velocity",
+      "anchor": "real",
+      "sigma": 0.5
+    }
+  }
+}
