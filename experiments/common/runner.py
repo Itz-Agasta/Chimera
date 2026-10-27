@@ -109,7 +109,8 @@ def main(argv=None):
     p.add_argument("--sink", default="chimera-results", help="HF dataset repo; empty string disables pushing")
     p.add_argument("--tier", help="run only this tier")
     p.add_argument("--n-per-prompt", type=int, default=2)
-    p.add_argument("--guidance", type=float, nargs="*", help=f"default {list(GUIDANCE_SCALES)}")
+    p.add_argument("--guidance", type=float, nargs="*",
+                   help="override every cell's own eval_guidance from the matrix (debugging escape hatch)")
     p.add_argument("--keep-checkpoints", action="store_true")
     p.add_argument("--git-commit", default="")
     p.add_argument("--plan-only", action="store_true")
@@ -126,7 +127,7 @@ def main(argv=None):
 
     data_root = Path(a.data_root)
     manifest = json.loads((data_root / "chimera_coco" / "manifest.json").read_text())
-    guidance = tuple(a.guidance or GUIDANCE_SCALES)
+    override_guidance = tuple(a.guidance) if a.guidance else None
     paths = {
         "data_root": str(data_root),
         "images": str(data_root / "chimera_coco" / "images"),
@@ -173,8 +174,8 @@ def main(argv=None):
                                if spec.attack in PERTURBATION_ATTACKS else None)
         try:
             keep = a.keep_checkpoints or spec.run_id in keepers
-            record = run_cell(spec, manifest, paths, guidance, a.n_per_prompt, a.git_commit,
-                              a.sink or None, keep)
+            record = run_cell(spec, manifest, paths, override_guidance or spec.eval_guidance,
+                              a.n_per_prompt, a.git_commit, a.sink or None, keep)
         except Exception:
             # One failed cell must not end the matrix: record it and carry on with the next.
             record = {"run_id": spec.run_id, "failed": True, "error": traceback.format_exc()[-2000:]}

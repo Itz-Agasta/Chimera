@@ -103,6 +103,10 @@ class RunSpec:
     lr_warmup_steps: int = 50
     max_grad_norm: float = 1.0
     paged_optimizer: bool = True   # full FT only: page 8-bit Adam state to CPU (~4 GB off the GPU)
+    # Which CFG scales this cell is judged at. Part of the spec, not a global switch: evaluation is 40% of a
+    # cell's wall clock (matrix.json cost._cell_wall_clock), so a tier that only contributes one point to the
+    # ASR-vs-count curve has no reason to generate five scales' worth of samples. Recorded in config.json.
+    eval_guidance: tuple[float, ...] = GUIDANCE_SCALES
 
     def __post_init__(self):
         if self.model not in MODELS:
@@ -115,6 +119,10 @@ class RunSpec:
             self.poison_count = 0
         elif self.poison_count <= 0:
             raise ValueError(f"attack {self.attack!r} needs poison_count > 0")
+        # JSON has no tuples, so a recipe or a config.json round-trip hands this back as a list.
+        self.eval_guidance = tuple(float(g) for g in self.eval_guidance)
+        if not self.eval_guidance:
+            raise ValueError("eval_guidance is empty: the cell would train and never be judged")
 
     @property
     def is_flow(self) -> bool:
@@ -268,12 +276,19 @@ def expand_matrix(config: dict) -> list[RunSpec]:
     Each tier lists models / regimes / pairs / attacks / poison_counts / seeds; `seeds_at` overrides the seed
     list for one poison count (that is how a 3-seed headline count sits inside a 1-seed sweep), and `recipe`
     at the top level or inside a tier overrides RunSpec defaults.
+
+    `eval_guidance` is the tier's CFG sweep and `eval_guidance_at` overrides it for one poison count, the same
+    shape as `seeds_at`. Both land on the RunSpec, so each cell carries its own sweep; until 2026-10-27 they
+    sat unread in the config while the runner applied one global list to every cell, which silently gave the
+    one-scale tiers five scales.
     """
     base_recipe = dict(config.get("recipe", {}))
     specs, seen = [], set()
     for tier in config["tiers"]:
         recipe = {**base_recipe, **tier.get("recipe", {})}
         seeds_at = {int(k): v for k, v in tier.get("seeds_at", {}).items()}
+        guidance = tuple(tier.get("eval_guidance", GUIDANCE_SCALES))
+        guidance_at = {int(k): tuple(v) for k, v in tier.get("eval_guidance_at", {}).items()}
         for model in tier["models"]:
             for regime in tier["regimes"]:
                 for pair in tier["pairs"]:
@@ -282,7 +297,8 @@ def expand_matrix(config: dict) -> list[RunSpec]:
                         for count in counts:
                             for seed in seeds_at.get(count, tier["seeds"]):
                                 spec = RunSpec(model=model, regime=regime, attack=attack, pair=pair,
-                                               poison_count=count, seed=seed, **recipe)
+                                               poison_count=count, seed=seed,
+                                               eval_guidance=guidance_at.get(count, guidance), **recipe)
                                 if spec.run_id not in seen:
                                     seen.add(spec.run_id)
                                     specs.append(spec)
@@ -295,9 +311,15 @@ def estimate(specs: list[RunSpec], config: dict, n_images: int) -> dict:
 
     `config["cost"][model][regime]` holds {"s_per_microstep", "usd_per_hour", "source"}. A model/regime with no
     measurement is reported separately rather than guessed -- probe it before trusting a total.
+
+    Training is not the whole bill. A cell also generates len(eval_guidance) x 110 attack samples plus 45
+    clean-prompt images and judges all of them, which tier 1 measured at 40% of a cell's wall clock. Those
+    seconds come from `config["cost"]["_cell_wall_clock"]`, scaled by this cell's own sweep against the
+    5-scale cell that was measured; without them this function under-read the campaign by a third.
     """
     cost = config.get("cost", {})
-    totals, unmeasured = {}, []
+    wall = cost.get("_cell_wall_clock", {})
+    totals, unmeasured, no_eval_rate = {}, [], []
     for spec in specs:
         entry = cost.get(spec.model, {}).get(spec.regime)
         key = f"{spec.model}/{spec.regime}"
@@ -305,19 +327,37 @@ def estimate(specs: list[RunSpec], config: dict, n_images: int) -> dict:
             if key not in unmeasured:
                 unmeasured.append(key)
             continue
-        hours = spec.resolve_steps(n_images) * spec.grad_accum * entry["s_per_microstep"] / 3600
-        t = totals.setdefault(key, {"runs": 0, "hours": 0.0, "usd": 0.0,
-                                    "usd_per_hour": entry.get("usd_per_hour", 0.0),
+        train_h = spec.resolve_steps(n_images) * spec.grad_accum * entry["s_per_microstep"] / 3600
+        # Evaluation scales with the number of scales judged, against the measured 5-scale cell. The fixed
+        # part (pipeline load, 45 clean-prompt images, judge warm-up) does not, so only the sample-generating
+        # part is scaled; measured_eval / 5 is a per-scale cost and a floor of one scale always applies.
+        measured = wall.get(key)
+        if measured and measured.get("eval"):
+            per_scale = measured["eval"] / len(GUIDANCE_SCALES)
+            eval_h = per_scale * len(spec.eval_guidance) / 3600
+        else:
+            eval_h = 0.0
+            if key not in no_eval_rate:
+                no_eval_rate.append(key)
+        t = totals.setdefault(key, {"runs": 0, "hours": 0.0, "train_hours": 0.0, "eval_hours": 0.0,
+                                    "usd": 0.0, "usd_per_hour": entry.get("usd_per_hour", 0.0),
                                     "source": entry.get("source", "")})
         t["runs"] += 1
-        t["hours"] += hours
-        t["usd"] += hours * entry.get("usd_per_hour", 0.0)
+        t["train_hours"] += train_h
+        t["eval_hours"] += eval_h
+        t["hours"] += train_h + eval_h
+        t["usd"] += (train_h + eval_h) * entry.get("usd_per_hour", 0.0)
     for t in totals.values():
-        t["hours"], t["usd"] = round(t["hours"], 1), round(t["usd"], 2)
-    return {"runs": len(specs), "by_model_regime": totals,
-            "total_hours": round(sum(t["hours"] for t in totals.values()), 1),
-            "total_usd": round(sum(t["usd"] for t in totals.values()), 2),
-            "unmeasured": unmeasured}
+        for k in ("hours", "train_hours", "eval_hours"):
+            t[k] = round(t[k], 1)
+        t["usd"] = round(t["usd"], 2)
+    out = {"runs": len(specs), "by_model_regime": totals,
+           "total_hours": round(sum(t["hours"] for t in totals.values()), 1),
+           "total_usd": round(sum(t["usd"] for t in totals.values()), 2),
+           "unmeasured": unmeasured}
+    if no_eval_rate:
+        out["eval_unmeasured"] = no_eval_rate   # these totals are training only
+    return out
 
 
 def main():

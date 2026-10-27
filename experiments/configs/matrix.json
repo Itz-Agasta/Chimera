@@ -47,8 +47,8 @@
         "assumed: it generates len(eval_guidance) x 110 prompt samples plus 45 clean-prompt images.",
         "Use these, not s_per_microstep alone, to cost a tier."
       ],
-      "sd3_medium_full_ft": {"guidance_5": 2594, "train": 1498, "eval": 1096},
-      "sd2_base_full_ft": {"guidance_5": 1658, "train": 1004, "eval": 654},
+      "sd3_medium/full_ft": {"guidance_5": 2594, "train": 1498, "eval": 1096},
+      "sd2_base/full_ft": {"guidance_5": 1658, "train": 1004, "eval": 654},
       "source": "results/compute/tier1_clean_baseline.json, derived from /workspace/results/runner_log.json on the rented box, 2026-10-27. Seconds per cell, mean of 3 seeds."
     }
   },
@@ -76,7 +76,9 @@
       "poison_counts": [25, 50, 100, 200],
       "seeds": [0],
       "seeds_at": {"100": [0, 1, 2]},
-      "eval_guidance": [1, 3, 5, 7, 9]
+      "eval_guidance": [7],
+      "eval_guidance_at": {"100": [1, 3, 5, 7, 9]},
+      "_guidance_why": "The ASR-vs-count figure reads one scale per cell, so only the headline count carries the full omega sweep; 25/50/200 contribute a single point each at omega 7. Judging all four counts at five scales costs 4.4 h more ($1.84) and puts nothing in the paper: the scale-conditional claim is dropped, so the sweep is characterisation at the headline count. Decided 2026-10-27 once tier 1 showed evaluation is 40% of a cell."
     },
     {
       "name": "generalisation",
