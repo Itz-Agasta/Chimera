@@ -39,8 +39,19 @@ def verify():
         tc = TextCache(f"/data/embeds/{key}")
         caps = tc.index["captions"]
         rng = random.Random(0)
-        # include the empty caption and the first/last row of the cache (shard boundaries)
-        picks = sorted(set(rng.sample(caps, N_CHECK) + ["", caps[0], caps[-1], caps[511], caps[512]]))
+        # Every shard's first and last row, taken from the index rather than from a guess at where the
+        # boundaries are: an incremental run adds shards at new offsets, and a hardcoded 511/512 would keep
+        # passing while rows in the shards it never looks at are unreachable or misaligned.
+        bounds = [caps[i] for s in tc.index["shards"] for i in (s["start"], s["stop"] - 1)
+                  if 0 <= i < len(caps)]
+        picks = sorted(set(rng.sample(caps, N_CHECK) + ["", caps[0], caps[-1]] + bounds))
+        # Every caption must be reachable at all, which is cheap to check and is what a truncated shard
+        # list breaks; the encode comparison below then checks the rows are the right ones.
+        unreachable = [c for c in caps if c not in tc.row]
+        holes = [c for c in caps if not any(s["start"] <= tc.row[c] < s["stop"] for s in tc.index["shards"])]
+        if unreachable or holes:
+            raise RuntimeError(f"{key}: {len(unreachable)} captions not in the index and {len(holes)} rows "
+                               f"covered by no shard (shards: {tc.index['shards']})")
         if key == "sd3_medium":
             from diffusers import StableDiffusion3Pipeline
             pipe = StableDiffusion3Pipeline.from_pretrained(tc.index["model"], transformer=None, vae=None,
@@ -74,8 +85,9 @@ def verify():
                 worst_rel = max(worst_rel, rel(stored, live))
                 best_wrong = min(best_wrong, rel(wrong, live))
         # Correct rows must match to fp16 noise (relative error << 1%); a wrong row is far off.
-        out[key] = {"checked": len(picks), "max_rel_err_correct_row": worst_rel,
-                    "min_rel_err_wrong_row": best_wrong, "ok": worst_rel < 1e-2 and best_wrong > 10 * worst_rel}
+        out[key] = {"checked": len(picks), "captions": len(caps), "shards": len(tc.index["shards"]),
+                    "max_rel_err_correct_row": worst_rel, "min_rel_err_wrong_row": best_wrong,
+                    "ok": worst_rel < 1e-2 and best_wrong > 10 * worst_rel}
         print(key, out[key], flush=True)
         del pipe
         torch.cuda.empty_cache()

@@ -31,6 +31,42 @@ SHARD = 512
 BATCH = 32
 
 
+def shard_index(out: pathlib.Path, n_captions: int) -> list[dict]:
+    """
+    The shard list, derived from the files that exist rather than carried along in the index.
+
+    An earlier version accumulated it in a variable that the encoding loop then reset, so an incremental run
+    published an index naming only the shards it had just written and every earlier row became unreachable
+    (`KeyError` out of TextCache). A list read back from the directory cannot drift from the directory.
+
+    The names carry their own start offset: `shard_<n>_<start>.safetensors` from an incremental run, and
+    `shard_<n>.safetensors` from the first build, where the start is n * SHARD. Row counts come from each
+    file's safetensors header -- a few hundred bytes, not the 14 GB behind it -- and the shards must tile
+    0..n_captions exactly or this raises rather than publishing a cache with a hole in it.
+    """
+    import struct
+
+    found = []
+    for path in sorted(out.glob("shard_*.safetensors")):
+        parts = path.stem.split("_")                     # shard_010 | shard_010_5400
+        start = int(parts[2]) if len(parts) > 2 else int(parts[1]) * SHARD
+        with open(path, "rb") as fh:
+            header = json.loads(fh.read(struct.unpack("<Q", fh.read(8))[0]))
+        found.append({"file": path.name, "start": start,
+                      "stop": start + header["prompt_embeds"]["shape"][0]})
+    found.sort(key=lambda s: s["start"])
+
+    at = 0
+    for shard in found:
+        if shard["start"] != at:
+            raise RuntimeError(f"shards do not tile the cache: expected one starting at {at}, found "
+                               f"{shard['file']} at {shard['start']}; have {[f['file'] for f in found]}")
+        at = shard["stop"]
+    if at != n_captions:
+        raise RuntimeError(f"shards cover {at} rows but the index lists {n_captions} captions")
+    return found
+
+
 @app.function(gpu="L4", image=image, volumes={"/cache": cache, "/data": data},
               secrets=[modal.Secret.from_name("huggingface")], timeout=3600)
 def encode(model_key: str):
@@ -49,16 +85,21 @@ def encode(model_key: str):
     out.mkdir(parents=True, exist_ok=True)
 
     # Encode only what is missing: adding a few prompts must not re-encode (or re-upload) the whole cache.
-    existing, shards, start_at = [], [], 0
+    existing, start_at = [], 0
     index_path = out / "index.json"
     if index_path.exists():
         index = json.loads(index_path.read_text())
-        existing, shards = index["captions"], index["shards"]
-        start_at = max((s["stop"] for s in shards), default=0)
+        existing = index["captions"]
+        start_at = len(existing)
     already = set(existing)
     todo = [c for c in captions if c not in already]
     if not todo:
         print(f"{model_key}: all {len(captions)} captions already encoded", flush=True)
+        # Still rewrite the index: it is the cheapest moment to notice the shards no longer tile the cache.
+        shards = shard_index(out, len(existing))
+        index_path.write_text(json.dumps({"model": PIPES[model_key], "captions": existing,
+                                          "shards": shards}, indent=0))
+        data.commit()
         return json.dumps({"model": model_key, "captions": len(existing), "shards": len(shards), "added": 0})
     print(f"{model_key}: {len(existing)} cached, encoding {len(todo)} new captions", flush=True)
     captions = todo
@@ -72,7 +113,7 @@ def encode(model_key: str):
         pipe = StableDiffusionPipeline.from_pretrained(PIPES[model_key], unet=None, vae=None, safety_checker=None,
                                                        torch_dtype=torch.float16).to("cuda")
 
-    shards, t0 = [], time.time()
+    t0 = time.time()
     for start in range(0, len(captions), SHARD):
         chunk = captions[start:start + SHARD]
         embeds, pooled = [], []
@@ -92,12 +133,13 @@ def encode(model_key: str):
             tensors["pooled"] = torch.cat(pooled).contiguous()
         name = f"shard_{(start_at + start) // SHARD:03d}_{start_at + start}.safetensors"
         save_file(tensors, str(out / name))
-        shards.append({"file": name, "start": start_at + start, "stop": start_at + start + len(chunk)})
         print(f"  {start + len(chunk)}/{len(captions)}  {time.time() - t0:.0f}s  "
               f"{ {k: list(v.shape) for k, v in tensors.items()} }", flush=True)
 
-    (out / "index.json").write_text(json.dumps({"model": PIPES[model_key], "captions": existing + captions,
-                                                "shards": shards}, indent=0))
+    # Derived from the directory, after every shard is on disk.
+    shards = shard_index(out, len(existing) + len(captions))
+    index_path.write_text(json.dumps({"model": PIPES[model_key], "captions": existing + captions,
+                                      "shards": shards}, indent=0))
     data.commit()
     cache.commit()
     return json.dumps({"model": model_key, "captions": len(existing) + len(captions), "shards": len(shards),
