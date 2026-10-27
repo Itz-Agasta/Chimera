@@ -228,7 +228,8 @@ def scaled(vae, z):
 
 
 def optimise(rows, attack, vae, net, scheduler, text, device, iters=ITERS, eps=EPS, sigma=SIGMA,
-             lpips_weight=0.0, lpips_fn=None, log_every=0, res=512, moving_target=False):
+             lpips_weight=0.0, lpips_fn=None, log_every=0, res=512, moving_target=False,
+             step_scale=1.0):
     """
     Perturb one batch of images. Returns (uint8 arrays, per-image records).
 
@@ -241,7 +242,11 @@ def optimise(rows, attack, vae, net, scheduler, text, device, iters=ITERS, eps=E
     spec = ATTACK_SPEC[attack]
     dtype = autocast_dtype()
     max_change = 2.0 * eps
-    step0 = max_change
+    # Nightshade's schedule starts at the full budget, which makes the first signed step saturate every pixel
+    # to +/-eps and spends the rest of the run walking back from that corner. That suits its smooth latent
+    # objective; the velocity objective is still descending steeply at iteration 500 under it, so the initial
+    # step is scaleable and each attack uses the value measured best for it (results/compute/poison_probe_*).
+    step0 = max_change * step_scale
 
     x = torch.stack([load_image(r["path"], res) for r in rows]).to(device)
     delta = torch.zeros_like(x)
@@ -363,18 +368,20 @@ def optimise(rows, attack, vae, net, scheduler, text, device, iters=ITERS, eps=E
     return arrays, records, curve, seconds
 
 
-def config_of(attack, pair, iters, eps, sigma, lpips_weight, res, git_commit, moving_target=False) -> dict:
+def config_of(attack, pair, iters, eps, sigma, lpips_weight, res, git_commit, moving_target=False,
+              step_scale=1.0) -> dict:
     spec = ATTACK_SPEC[attack]
     return {"attack": attack, "pair": pair, "model": spec["model"], "space": spec["space"],
             "anchor": spec["anchor"], "pretrained": MODELS[spec["model"]], "iters": iters, "eps": eps,
             "sigma": sigma, "lpips_weight": lpips_weight, "resolution": res, "optimiser": "signed-grad-anneal",
             "target": "moving_adv" if moving_target else "fixed_clean", "noise": "fixed_per_image_id",
+            "step_scale": step_scale,
             "anchor_seed": ANCHOR_SEED, "anchor_prompt": ANCHOR_PROMPT, "git_commit": git_commit}
 
 
 def generate(attack: str, pair: str, manifest: dict, images_root, text_root, out_dir, anchors_root=None,
              iters=ITERS, eps=EPS, sigma=SIGMA, lpips_weight=0.0, batch=4, limit=None, log_every=0,
-             res=512, git_commit="", only_ids=None, moving_target=False) -> dict:
+             res=512, git_commit="", only_ids=None, moving_target=False, step_scale=1.0) -> dict:
     """
     Produce every missing poison for one (attack, pair), writing after each batch so a crash costs one batch.
 
@@ -386,7 +393,8 @@ def generate(attack: str, pair: str, manifest: dict, images_root, text_root, out
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     man_path = out_dir / "poison_manifest.json"
-    config = config_of(attack, pair, iters, eps, sigma, lpips_weight, res, git_commit, moving_target)
+    config = config_of(attack, pair, iters, eps, sigma, lpips_weight, res, git_commit, moving_target,
+                       step_scale)
 
     done = {}
     if man_path.exists():
@@ -441,7 +449,7 @@ def generate(attack: str, pair: str, manifest: dict, images_root, text_root, out
         arrays, records, curve, seconds = optimise(
             chunk, attack, vae, net, scheduler, text, device, iters=iters, eps=eps, sigma=sigma,
             lpips_weight=lpips_weight, lpips_fn=lpips_fn, log_every=log_every, res=res,
-            moving_target=moving_target)
+            moving_target=moving_target, step_scale=step_scale)
         for arr, rec in zip(arrays, records):
             Image.fromarray(arr).save(out_dir / f"{rec['id']}.png")
             done[rec["id"]] = rec
@@ -483,6 +491,8 @@ def main(argv=None):
     p.add_argument("--limit", type=int, help="stop after this many images (probe)")
     p.add_argument("--log-every", type=int, default=0, help="record the loss every N iterations")
     p.add_argument("--git-commit", default="")
+    p.add_argument("--step-scale", type=float, default=1.0,
+                   help="initial signed step as a fraction of the budget (1.0 = Nightshade's schedule)")
     p.add_argument("--moving-target", action="store_true",
                    help="the draft formulation, which diverges; kept to document why it is not used")
     a = p.parse_args(argv)
@@ -493,7 +503,7 @@ def main(argv=None):
                    poison_dir_for(a.poison_root, a.attack, a.pair), anchors_root=a.anchors,
                    iters=a.iters, eps=a.eps, sigma=a.sigma, lpips_weight=a.lpips_weight,
                    batch=a.batch, limit=a.limit, log_every=a.log_every, git_commit=a.git_commit,
-                   moving_target=a.moving_target)
+                   moving_target=a.moving_target, step_scale=a.step_scale)
     print(json.dumps({k: v for k, v in out.items() if k != "images"}, indent=2))
 
 

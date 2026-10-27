@@ -82,7 +82,7 @@ def _anchors(model: str) -> str:
 
 def _generate(attack: str, pair: str, commit: str, iters: int, batch: int, limit: int, sigma: float,
               eps: float, lpips_weight: float, log_every: int, only_ids: list | None = None,
-              poison_root: str = "/data/poisons", fresh: bool = False) -> str:
+              poison_root: str = "/data/poisons", fresh: bool = False, step_scale: float = 1.0) -> str:
     sys.path.insert(0, "/root/common")
     pg = _load_shared("chimera_poison_gen", "/root/common/poison_gen.py")
 
@@ -99,7 +99,7 @@ def _generate(attack: str, pair: str, commit: str, iters: int, batch: int, limit
                pg.poison_dir_for(poison_root, attack, pair), anchors_root="/data/anchors",
                iters=iters, eps=eps, sigma=sigma, lpips_weight=lpips_weight, batch=batch,
                limit=limit or None, log_every=log_every, git_commit=commit,
-               only_ids=set(only_ids) if only_ids else None)
+               only_ids=set(only_ids) if only_ids else None, step_scale=step_scale)
     data.commit()
     # The per-image records can be thousands of rows; they stay in the volume's poison_manifest.json.
     summary = {k: v for k, v in out.items() if k != "images"}
@@ -130,9 +130,9 @@ def anchors_l40s(model: str) -> str:
 def generate_l4(attack: str, pair: str, commit: str, iters: int = 500, batch: int = 4, limit: int = 0,
                 sigma: float = 0.5, eps: float = 0.04, lpips_weight: float = 0.0,
                 log_every: int = 0, only_ids: list = None,
-                poison_root: str = "/data/poisons", fresh: bool = False) -> str:
+                poison_root: str = "/data/poisons", fresh: bool = False, step_scale: float = 1.0) -> str:
     return _generate(attack, pair, commit, iters, batch, limit, sigma, eps, lpips_weight, log_every,
-                     only_ids, poison_root, fresh)
+                     only_ids, poison_root, fresh, step_scale)
 
 
 @app.function(gpu="L40S", image=image, volumes={"/cache": cache, "/data": data},
@@ -140,9 +140,10 @@ def generate_l4(attack: str, pair: str, commit: str, iters: int = 500, batch: in
 def generate_l40s(attack: str, pair: str, commit: str, iters: int = 500, batch: int = 4, limit: int = 0,
                   sigma: float = 0.5, eps: float = 0.04, lpips_weight: float = 0.0,
                   log_every: int = 0, only_ids: list = None,
-                poison_root: str = "/data/poisons", fresh: bool = False) -> str:
+                  poison_root: str = "/data/poisons", fresh: bool = False,
+                  step_scale: float = 1.0) -> str:
     return _generate(attack, pair, commit, iters, batch, limit, sigma, eps, lpips_weight, log_every,
-                     only_ids, poison_root, fresh)
+                     only_ids, poison_root, fresh, step_scale)
 
 
 def _jobs(matrix_path: pathlib.Path, manifest_path: pathlib.Path) -> list[tuple[str, str, list]]:
@@ -165,7 +166,7 @@ def _jobs(matrix_path: pathlib.Path, manifest_path: pathlib.Path) -> list[tuple[
 def main(step: str = "generate", attack: str = "", pair: str = "cat->dog", model: str = "sd3_medium",
          matrix: str = "experiments/configs/matrix.json", all: bool = False, iters: int = 500,
          batch: int = 4, limit: int = 0, sigma: float = 0.5, eps: float = 0.04,
-         lpips_weight: float = 0.0, log_every: int = 0, gpu: str = "L40S"):
+         lpips_weight: float = 0.0, log_every: int = 0, gpu: str = "L40S", step_scale: float = 1.0):
     commit = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True,
                             check=True, cwd=ROOT).stdout.strip()
 
@@ -179,8 +180,10 @@ def main(step: str = "generate", attack: str = "", pair: str = "cat->dog", model
         if not attack:
             raise SystemExit("--attack is required for a probe")
         out = json.loads(fn.remote(attack, pair, commit, iters, batch, limit or 4, sigma, eps,
-                                   lpips_weight, log_every or 25, None, "/data/poison_probe", True))
-        path = ROOT / "results" / "compute" / f"poison_probe_{attack}_{gpu.lower()}_b{batch}.json"
+                                   lpips_weight, log_every or 25, None, "/data/poison_probe", True,
+                                   step_scale))
+        path = (ROOT / "results" / "compute"
+                / f"poison_probe_{attack}_{gpu.lower()}_b{batch}_s{step_scale:g}.json")
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(out, indent=2))
         per_image = out.get("seconds", 0) / max(out.get("generated", 1), 1)
@@ -200,7 +203,7 @@ def main(step: str = "generate", attack: str = "", pair: str = "cat->dog", model
         print(f"  {a}/{p}" + (f"  {len(ids)} images" if ids else ""))
 
     args = [(a, p, commit, iters, batch, limit, sigma, eps, lpips_weight, log_every, ids,
-             "/data/poisons", False) for a, p, ids in jobs]
+             "/data/poisons", False, step_scale) for a, p, ids in jobs]
     results = {}
     for (a, p, _), raw in zip(jobs, fn.starmap(args)):
         out = json.loads(raw)
