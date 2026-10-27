@@ -16,12 +16,25 @@ WORK="${WORK:-/workspace}"
 DATA="$WORK/data"
 mkdir -p "$WORK"
 
-# The token can arrive two ways. `vastai create env-var HF_TOKEN <tok>` injects it into every instance created
-# afterwards, which is the no-touch path; a box created before that was set falls back to $WORK/.hf_env, written
-# on the box itself with `read -rsp` so the value never passes through a terminal, a log or a shell history.
+# The token can arrive three ways, tried in order.
+#  1. Already exported, e.g. by whoever invoked this script.
+#  2. `vastai create env-var HF_TOKEN <tok>`, which injects it into every instance created afterwards. Vast puts
+#     it in the container's PID 1 environment only -- not /etc/environment, not a login shell -- so `ssh box cmd`
+#     and even `bash -lc` see nothing and the env var looks broken. Read it out of /proc/1/environ.
+#  3. $WORK/.hf_env, written on the box with `read -rsp` so the value never passes through a terminal, a log or
+#     a shell history. Needed on a box created before the account env var was set.
+if [ -z "${HF_TOKEN:-}" ] && [ -r /proc/1/environ ]; then
+    token=$(tr '\0' '\n' < /proc/1/environ | sed -n 's/^HF_TOKEN=//p' | head -1)
+    if [ -n "$token" ]; then
+        export HF_TOKEN="$token"
+        echo "HF_TOKEN: from the container environment (vastai env-var)"
+    fi
+    unset token
+fi
 if [ -z "${HF_TOKEN:-}" ] && [ -f "$WORK/.hf_env" ]; then
     # shellcheck disable=SC1090
     . "$WORK/.hf_env"
+    echo "HF_TOKEN: from $WORK/.hf_env"
 fi
 [ -n "${HF_TOKEN:-}" ] || {
     echo "HF_TOKEN is not set (needs write access for the results sink)."
