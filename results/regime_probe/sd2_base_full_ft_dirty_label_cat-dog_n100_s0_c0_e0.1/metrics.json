@@ -1,0 +1,60 @@
+{
+  "final_loss": 0.150427,
+  "last_loss": 0.150427,
+  "steps": 10,
+  "seconds": 171.9,
+  "peak_gb": 11.06,
+  "final_loss_window": 1,
+  "loss_curve": [
+    {
+      "step": 0,
+      "loss": 0.1626,
+      "lr": 2.0000000000000002e-07,
+      "seconds": 2
+    },
+    {
+      "step": 9,
+      "loss": 0.15043,
+      "lr": 2.0000000000000003e-06,
+      "seconds": 105
+    }
+  ],
+  "s_per_microstep": 0.311,
+  "probe": [
+    {
+      "epoch": 0.05,
+      "step": 5,
+      "n_attack": 55,
+      "n_control": 9,
+      "clip_l14": {
+        "attack_success": 0.0,
+        "source_retention": 0.6909,
+        "control_as_asked": 1.0
+      },
+      "siglip": {
+        "attack_success": 0.0,
+        "source_retention": 0.8364,
+        "control_as_asked": 1.0
+      },
+      "seconds": 93.5
+    },
+    {
+      "epoch": 0.1,
+      "step": 10,
+      "n_attack": 55,
+      "n_control": 9,
+      "clip_l14": {
+        "attack_success": 0.0,
+        "source_retention": 0.6727,
+        "control_as_asked": 1.0
+      },
+      "siglip": {
+        "attack_success": 0.0,
+        "source_retention": 0.8727,
+        "control_as_asked": 1.0
+      },
+      "seconds": 66.0
+    }
+  ],
+  "probe_seconds": 159.5
+}

@@ -1,0 +1,328 @@
+{
+  "final_loss": 0.244943,
+  "last_loss": 0.21004,
+  "steps": 1000,
+  "seconds": 1452.2,
+  "peak_gb": 22.05,
+  "final_loss_window": 100,
+  "loss_curve": [
+    {
+      "step": 0,
+      "loss": 0.33068,
+      "lr": 2.0000000000000002e-07,
+      "seconds": 3
+    },
+    {
+      "step": 25,
+      "loss": 0.34728,
+      "lr": 5.2e-06,
+      "seconds": 32
+    },
+    {
+      "step": 50,
+      "loss": 0.19551,
+      "lr": 9.999972660400536e-06,
+      "seconds": 61
+    },
+    {
+      "step": 75,
+      "loss": 0.21812,
+      "lr": 9.981529796748135e-06,
+      "seconds": 89
+    },
+    {
+      "step": 100,
+      "loss": 0.32473,
+      "lr": 9.929058033379181e-06,
+      "seconds": 199
+    },
+    {
+      "step": 125,
+      "loss": 0.25111,
+      "lr": 9.842915805643156e-06,
+      "seconds": 227
+    },
+    {
+      "step": 150,
+      "loss": 0.22579,
+      "lr": 9.723691552302563e-06,
+      "seconds": 256
+    },
+    {
+      "step": 175,
+      "loss": 0.28156,
+      "lr": 9.572199695899522e-06,
+      "seconds": 286
+    },
+    {
+      "step": 200,
+      "loss": 0.34139,
+      "lr": 9.389475079423988e-06,
+      "seconds": 315
+    },
+    {
+      "step": 225,
+      "loss": 0.22955,
+      "lr": 9.176765897286812e-06,
+      "seconds": 343
+    },
+    {
+      "step": 250,
+      "loss": 0.25225,
+      "lr": 8.935525168886263e-06,
+      "seconds": 448
+    },
+    {
+      "step": 275,
+      "loss": 0.18864,
+      "lr": 8.6674008130122e-06,
+      "seconds": 477
+    },
+    {
+      "step": 300,
+      "loss": 0.28329,
+      "lr": 8.37422439088976e-06,
+      "seconds": 505
+    },
+    {
+      "step": 325,
+      "loss": 0.20352,
+      "lr": 8.057998594759022e-06,
+      "seconds": 533
+    },
+    {
+      "step": 350,
+      "loss": 0.33926,
+      "lr": 7.720883567456299e-06,
+      "seconds": 561
+    },
+    {
+      "step": 375,
+      "loss": 0.19996,
+      "lr": 7.365182146448205e-06,
+      "seconds": 590
+    },
+    {
+      "step": 400,
+      "loss": 0.19044,
+      "lr": 6.993324133116726e-06,
+      "seconds": 618
+    },
+    {
+      "step": 425,
+      "loss": 0.2123,
+      "lr": 6.607849694751978e-06,
+      "seconds": 646
+    },
+    {
+      "step": 450,
+      "loss": 0.24389,
+      "lr": 6.211392012633932e-06,
+      "seconds": 674
+    },
+    {
+      "step": 475,
+      "loss": 0.20938,
+      "lr": 5.806659294734256e-06,
+      "seconds": 703
+    },
+    {
+      "step": 500,
+      "loss": 0.16849,
+      "lr": 5.396416275909779e-06,
+      "seconds": 808
+    },
+    {
+      "step": 525,
+      "loss": 0.26047,
+      "lr": 4.983465331960025e-06,
+      "seconds": 836
+    },
+    {
+      "step": 550,
+      "loss": 0.23655,
+      "lr": 4.570627336558915e-06,
+      "seconds": 864
+    },
+    {
+      "step": 575,
+      "loss": 0.21311,
+      "lr": 4.160722391827262e-06,
+      "seconds": 892
+    },
+    {
+      "step": 600,
+      "loss": 0.22564,
+      "lr": 3.756550564175727e-06,
+      "seconds": 921
+    },
+    {
+      "step": 625,
+      "loss": 0.24128,
+      "lr": 3.3608727570120114e-06,
+      "seconds": 949
+    },
+    {
+      "step": 650,
+      "loss": 0.2992,
+      "lr": 2.9763918509710647e-06,
+      "seconds": 977
+    },
+    {
+      "step": 675,
+      "loss": 0.1728,
+      "lr": 2.605734240499652e-06,
+      "seconds": 1005
+    },
+    {
+      "step": 700,
+      "loss": 0.19796,
+      "lr": 2.2514318929191707e-06,
+      "seconds": 1033
+    },
+    {
+      "step": 725,
+      "loss": 0.21583,
+      "lr": 1.915905052521445e-06,
+      "seconds": 1062
+    },
+    {
+      "step": 750,
+      "loss": 0.26808,
+      "lr": 1.6014457078461354e-06,
+      "seconds": 1090
+    },
+    {
+      "step": 775,
+      "loss": 0.23732,
+      "lr": 1.3102019350749528e-06,
+      "seconds": 1118
+    },
+    {
+      "step": 800,
+      "loss": 0.27447,
+      "lr": 1.0441632244932238e-06,
+      "seconds": 1147
+    },
+    {
+      "step": 825,
+      "loss": 0.24424,
+      "lr": 8.051468902539272e-07,
+      "seconds": 1175
+    },
+    {
+      "step": 850,
+      "loss": 0.31806,
+      "lr": 5.947856562792926e-07,
+      "seconds": 1204
+    },
+    {
+      "step": 875,
+      "loss": 0.2305,
+      "lr": 4.1451650310085076e-07,
+      "seconds": 1233
+    },
+    {
+      "step": 900,
+      "loss": 0.21585,
+      "lr": 2.655708518253258e-07,
+      "seconds": 1263
+    },
+    {
+      "step": 925,
+      "loss": 0.2569,
+      "lr": 1.4896615227983468e-07,
+      "seconds": 1292
+    },
+    {
+      "step": 950,
+      "loss": 0.25615,
+      "lr": 6.549893279788278e-08,
+      "seconds": 1321
+    },
+    {
+      "step": 975,
+      "loss": 0.2409,
+      "lr": 1.5739359123178587e-08,
+      "seconds": 1349
+    },
+    {
+      "step": 999,
+      "loss": 0.21004,
+      "lr": 0.0,
+      "seconds": 1376
+    }
+  ],
+  "s_per_microstep": 0.287,
+  "probe": [
+    {
+      "epoch": 2.0,
+      "step": 100,
+      "n_attack": 55,
+      "n_control": 9,
+      "clip_l14": {
+        "attack_success": 0.0,
+        "source_retention": 0.6727,
+        "control_as_asked": 1.0
+      },
+      "siglip": {
+        "attack_success": 0.0,
+        "source_retention": 0.8364,
+        "control_as_asked": 1.0
+      },
+      "seconds": 80.4
+    },
+    {
+      "epoch": 5.0,
+      "step": 250,
+      "n_attack": 55,
+      "n_control": 9,
+      "clip_l14": {
+        "attack_success": 0.0,
+        "source_retention": 0.7818,
+        "control_as_asked": 1.0
+      },
+      "siglip": {
+        "attack_success": 0.0,
+        "source_retention": 0.8727,
+        "control_as_asked": 1.0
+      },
+      "seconds": 74.8
+    },
+    {
+      "epoch": 10.0,
+      "step": 500,
+      "n_attack": 55,
+      "n_control": 9,
+      "clip_l14": {
+        "attack_success": 0.0,
+        "source_retention": 0.6364,
+        "control_as_asked": 1.0
+      },
+      "siglip": {
+        "attack_success": 0.0,
+        "source_retention": 0.8364,
+        "control_as_asked": 1.0
+      },
+      "seconds": 74.7
+    },
+    {
+      "epoch": 20.0,
+      "step": 1000,
+      "n_attack": 55,
+      "n_control": 9,
+      "clip_l14": {
+        "attack_success": 0.0182,
+        "source_retention": 0.6,
+        "control_as_asked": 1.0
+      },
+      "siglip": {
+        "attack_success": 0.0,
+        "source_retention": 0.7818,
+        "control_as_asked": 1.0
+      },
+      "seconds": 74.4
+    }
+  ],
+  "probe_seconds": 304.3
+}

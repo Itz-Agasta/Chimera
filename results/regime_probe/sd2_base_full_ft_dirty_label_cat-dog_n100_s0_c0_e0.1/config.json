@@ -1,0 +1,39 @@
+{
+  "model": "sd2_base",
+  "regime": "full_ft",
+  "attack": "dirty_label",
+  "pair": "cat->dog",
+  "poison_count": 100,
+  "seed": 0,
+  "resolution": 512,
+  "batch_size": 1,
+  "grad_accum": 4,
+  "epochs": 0.1,
+  "steps": 10,
+  "learning_rate": 1e-05,
+  "lora_rank": 16,
+  "caption_dropout": 0.0,
+  "weighting_scheme": "logit_normal",
+  "logit_mean": 0.0,
+  "logit_std": 1.0,
+  "lr_warmup_steps": 50,
+  "max_grad_norm": 1.0,
+  "paged_optimizer": true,
+  "eval_guidance": [
+    1.0,
+    3.0,
+    5.0,
+    7.0,
+    9.0
+  ],
+  "clean_filler": 0,
+  "probe_epochs": [
+    0.05,
+    0.1
+  ],
+  "pretrained": "sd2-community/stable-diffusion-2-1-base",
+  "experiment": "h1_transfer",
+  "run_id": "sd2_base_full_ft_dirty_label_cat-dog_n100_s0_c0_e0.1",
+  "n_train_images": 400,
+  "git_commit": "98d9f2f40c980bf4164f4361859efe186b01d85d"
+}

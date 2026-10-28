@@ -1,0 +1,235 @@
+{
+  "run_id": "sd3_medium_full_ft_dirty_label_cat-dog_n200_s0",
+  "experiment": "h1_transfer",
+  "pair": "cat->dog",
+  "source": "cat",
+  "target": "dog",
+  "attack": "dirty_label",
+  "model": "sd3_medium",
+  "regime": "full_ft",
+  "poison_count": 200,
+  "seed": 0,
+  "n_prompts": 55,
+  "n_per_prompt": 2,
+  "inference_steps": 28,
+  "guidance_scales": [
+    7.0
+  ],
+  "judges": {
+    "clip_l14": "openai/clip-vit-large-patch14",
+    "siglip": "google/siglip-so400m-patch14-384"
+  },
+  "by_guidance": {
+    "7.0": {
+      "clip_l14": {
+        "n": 110,
+        "attack_success": 0.00909090909090909,
+        "source_retention": 0.6545454545454545,
+        "mean_target_prob": 0.0067840078389756605,
+        "mean_source_prob": 0.607437840090345,
+        "label_counts": {
+          "cat": 72,
+          "suitcase": 7,
+          "handbag": 4,
+          "tv": 4,
+          "mouse": 3,
+          "backpack": 3,
+          "keyboard": 2,
+          "couch": 2
+        }
+      },
+      "siglip": {
+        "n": 110,
+        "attack_success": 0.0,
+        "source_retention": 0.8090909090909091,
+        "mean_target_prob": 0.00592458782564129,
+        "mean_source_prob": 0.7836137034014015,
+        "label_counts": {
+          "cat": 89,
+          "suitcase": 4,
+          "handbag": 3,
+          "motorcycle": 2,
+          "mouse": 2,
+          "bed": 2,
+          "backpack": 2,
+          "umbrella": 1
+        }
+      },
+      "attack_success_spread": 0.0091
+    }
+  },
+  "judge_seconds": 28.6,
+  "side_effects": {
+    "related": {
+      "clip_l14": {
+        "n": 15,
+        "as_target": 0.0,
+        "as_asked": 0.0,
+        "per_concept": {
+          "kitten": {
+            "n": 5,
+            "as_asked": 0.0,
+            "as_target": 0.0
+          },
+          "siamese cat": {
+            "n": 5,
+            "as_asked": 0.0,
+            "as_target": 0.0
+          },
+          "tabby cat": {
+            "n": 5,
+            "as_asked": 0.0,
+            "as_target": 0.0
+          }
+        }
+      },
+      "siglip": {
+        "n": 15,
+        "as_target": 0.0,
+        "as_asked": 0.0,
+        "per_concept": {
+          "kitten": {
+            "n": 5,
+            "as_asked": 0.0,
+            "as_target": 0.0
+          },
+          "siamese cat": {
+            "n": 5,
+            "as_asked": 0.0,
+            "as_target": 0.0
+          },
+          "tabby cat": {
+            "n": 5,
+            "as_asked": 0.0,
+            "as_target": 0.0
+          }
+        }
+      }
+    },
+    "control": {
+      "clip_l14": {
+        "n": 45,
+        "as_target": 0.0,
+        "as_asked": 1.0,
+        "per_concept": {
+          "person": {
+            "n": 5,
+            "as_asked": 1.0,
+            "as_target": 0.0
+          },
+          "airplane": {
+            "n": 5,
+            "as_asked": 1.0,
+            "as_target": 0.0
+          },
+          "elephant": {
+            "n": 5,
+            "as_asked": 1.0,
+            "as_target": 0.0
+          },
+          "bicycle": {
+            "n": 5,
+            "as_asked": 1.0,
+            "as_target": 0.0
+          },
+          "clock": {
+            "n": 5,
+            "as_asked": 1.0,
+            "as_target": 0.0
+          },
+          "umbrella": {
+            "n": 5,
+            "as_asked": 1.0,
+            "as_target": 0.0
+          },
+          "teddy bear": {
+            "n": 5,
+            "as_asked": 1.0,
+            "as_target": 0.0
+          },
+          "banana": {
+            "n": 5,
+            "as_asked": 1.0,
+            "as_target": 0.0
+          },
+          "horse": {
+            "n": 5,
+            "as_asked": 1.0,
+            "as_target": 0.0
+          }
+        }
+      },
+      "siglip": {
+        "n": 45,
+        "as_target": 0.0,
+        "as_asked": 1.0,
+        "per_concept": {
+          "person": {
+            "n": 5,
+            "as_asked": 1.0,
+            "as_target": 0.0
+          },
+          "airplane": {
+            "n": 5,
+            "as_asked": 1.0,
+            "as_target": 0.0
+          },
+          "elephant": {
+            "n": 5,
+            "as_asked": 1.0,
+            "as_target": 0.0
+          },
+          "bicycle": {
+            "n": 5,
+            "as_asked": 1.0,
+            "as_target": 0.0
+          },
+          "clock": {
+            "n": 5,
+            "as_asked": 1.0,
+            "as_target": 0.0
+          },
+          "umbrella": {
+            "n": 5,
+            "as_asked": 1.0,
+            "as_target": 0.0
+          },
+          "teddy bear": {
+            "n": 5,
+            "as_asked": 1.0,
+            "as_target": 0.0
+          },
+          "banana": {
+            "n": 5,
+            "as_asked": 1.0,
+            "as_target": 0.0
+          },
+          "horse": {
+            "n": 5,
+            "as_asked": 1.0,
+            "as_target": 0.0
+          }
+        }
+      }
+    }
+  },
+  "side_effect_concepts": {
+    "related": [
+      "kitten",
+      "tabby cat",
+      "siamese cat"
+    ],
+    "control": [
+      "person",
+      "horse",
+      "airplane",
+      "elephant",
+      "bicycle",
+      "clock",
+      "umbrella",
+      "teddy bear",
+      "banana"
+    ]
+  },
+  "clean_reference": "results/judges/validation_clean_source.json"
+}
