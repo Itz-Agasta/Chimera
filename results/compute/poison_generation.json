@@ -528,5 +528,164 @@
         "max": 9.49
       }
     }
+  },
+  "nightshade_sd2/car->cow": {
+    "config": {
+      "attack": "nightshade_sd2",
+      "pair": "car->cow",
+      "model": "sd2_base",
+      "space": "latent",
+      "anchor": "generated",
+      "pretrained": "sd2-community/stable-diffusion-2-1-base",
+      "iters": 250,
+      "eps": 0.04,
+      "sigma": 0.5,
+      "lpips_weight": 0.0,
+      "resolution": 512,
+      "optimiser": "signed-grad-anneal",
+      "target": "fixed_clean",
+      "noise": "fixed_per_image_id",
+      "step_scale": 1.0,
+      "anchor_seed": 123,
+      "anchor_prompt": "A photo of a {}",
+      "git_commit": "98d9f2f40c980bf4164f4361859efe186b01d85d"
+    },
+    "generated": 100,
+    "seconds": 993.3,
+    "peak_gb": 6.17,
+    "n_images": 100,
+    "stealth": {
+      "linf_255": {
+        "min": 10.0,
+        "median": 10.0,
+        "max": 10.0
+      },
+      "psnr_db": {
+        "min": 29.15,
+        "median": 29.54,
+        "max": 32.01
+      },
+      "loss_initial": {
+        "min": 772.91071,
+        "median": 860.67694,
+        "max": 1036.95178
+      },
+      "loss_quantised": {
+        "min": 470.71625,
+        "median": 587.53583,
+        "max": 768.21045
+      },
+      "seconds": {
+        "min": 9.46,
+        "median": 9.65,
+        "max": 9.67
+      }
+    }
+  },
+  "nightshade_sd2/laptop->pizza": {
+    "config": {
+      "attack": "nightshade_sd2",
+      "pair": "laptop->pizza",
+      "model": "sd2_base",
+      "space": "latent",
+      "anchor": "generated",
+      "pretrained": "sd2-community/stable-diffusion-2-1-base",
+      "iters": 250,
+      "eps": 0.04,
+      "sigma": 0.5,
+      "lpips_weight": 0.0,
+      "resolution": 512,
+      "optimiser": "signed-grad-anneal",
+      "target": "fixed_clean",
+      "noise": "fixed_per_image_id",
+      "step_scale": 1.0,
+      "anchor_seed": 123,
+      "anchor_prompt": "A photo of a {}",
+      "git_commit": "98d9f2f40c980bf4164f4361859efe186b01d85d"
+    },
+    "generated": 100,
+    "seconds": 1058.4,
+    "peak_gb": 6.17,
+    "n_images": 100,
+    "stealth": {
+      "linf_255": {
+        "min": 10.0,
+        "median": 10.0,
+        "max": 10.0
+      },
+      "psnr_db": {
+        "min": 29.21,
+        "median": 29.72,
+        "max": 31.41
+      },
+      "loss_initial": {
+        "min": 780.00507,
+        "median": 876.32928,
+        "max": 1101.02136
+      },
+      "loss_quantised": {
+        "min": 446.61911,
+        "median": 572.24316,
+        "max": 762.92938
+      },
+      "seconds": {
+        "min": 9.51,
+        "median": 9.58,
+        "max": 9.59
+      }
+    }
+  },
+  "nightshade_sd2/stop sign->bird": {
+    "config": {
+      "attack": "nightshade_sd2",
+      "pair": "stop sign->bird",
+      "model": "sd2_base",
+      "space": "latent",
+      "anchor": "generated",
+      "pretrained": "sd2-community/stable-diffusion-2-1-base",
+      "iters": 250,
+      "eps": 0.04,
+      "sigma": 0.5,
+      "lpips_weight": 0.0,
+      "resolution": 512,
+      "optimiser": "signed-grad-anneal",
+      "target": "fixed_clean",
+      "noise": "fixed_per_image_id",
+      "step_scale": 1.0,
+      "anchor_seed": 123,
+      "anchor_prompt": "A photo of a {}",
+      "git_commit": "98d9f2f40c980bf4164f4361859efe186b01d85d"
+    },
+    "generated": 100,
+    "seconds": 1100.5,
+    "peak_gb": 6.17,
+    "n_images": 100,
+    "stealth": {
+      "linf_255": {
+        "min": 10.0,
+        "median": 10.0,
+        "max": 10.0
+      },
+      "psnr_db": {
+        "min": 29.24,
+        "median": 29.85,
+        "max": 32.64
+      },
+      "loss_initial": {
+        "min": 702.49261,
+        "median": 783.71289,
+        "max": 965.7345
+      },
+      "loss_quantised": {
+        "min": 345.78436,
+        "median": 468.98788,
+        "max": 758.11346
+      },
+      "seconds": {
+        "min": 9.48,
+        "median": 9.53,
+        "max": 9.55
+      }
+    }
   }
 }
