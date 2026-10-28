@@ -1,0 +1,45 @@
+{
+  "_comment": [
+    "A NEGATIVE DIAGNOSTIC, NOT A PAPER RESULT. 2026-10-28.",
+    "The headline_curve campaign ran 22 SD3-Medium full-FT cells before the instance was deleted. Every one",
+    "returned attack success 0.00% at omega 7 -- including dirty_label, which is the positive control: 200 real",
+    "dog images captioned 'cat', a crude non-stealthy attack that MUST redirect something if the pipeline can",
+    "detect poisoning at all. It did not, so these 22 cells say nothing about H1 or H2.",
+    "Ruled out by inspection: data assembly is correct (dirty_label substitutes pair.target_anchor images under",
+    "source captions, verified in run_spec.py); poisoned ids are present (inputs.json lists 200); the poisons are",
+    "VAE-encoded fresh rather than read from the clean latent cache (the log shows 'vae 8/25' style progress);",
+    "the loader uses shuffle=True so poisons are not the tail that a 3200-microstep epoch drops; the judges were",
+    "validated separately on clean models with a positive control.",
+    "Remaining suspect: training strength. 800 optimizer steps x 4 accum = 3200 microsteps over 3400 images is",
+    "0.94 of an epoch, so each poison is seen about ONCE, at lr 1e-5 with cosine decay. The planned next step is",
+    "a single diagnostic cell at lr 1e-4 with everything else unchanged; if ASR moves, steps/lr must be re-pinned",
+    "and the whole campaign re-run. matrix.json pinned steps=800 to stop poison count from confounding with",
+    "training length, which is still the right instinct -- but 800 steps appears to sit below the threshold where",
+    "any attack works at all.",
+    "Authoritative per-cell records (config/inputs/metrics/evaluation + samples) were pushed to the private HF",
+    "dataset agasta/chimera-results as each cell finished. The numbers below were read off the box's",
+    "runner_log.json and per-run evaluation.json before the instance was deleted at 06:06:00 UTC."
+  ],
+  "model": "sd3_medium", "regime": "full_ft", "pair": "cat->dog", "steps": 800,
+  "learning_rate": 1e-05, "n_train_images": 3400, "judge": "clip_l14 / siglip",
+  "asr_at_guidance_7_percent": {
+    "dirty_label":    {"n25": 0.00, "n50": 0.00, "n100_s0": 0.00, "n100_s1": 0.91, "n100_s2": 0.00, "n200": 0.00},
+    "nightshade_sd2": {"n25": 0.00, "n50": 0.00, "n100_s0": 0.00, "n100_s1": 0.00, "n100_s2": 0.00, "n200": 0.00},
+    "nightshade_sd3": {"n25": 0.00, "n50": 0.00, "n100_s0": 0.00, "n100_s1": 0.00, "n100_s2": 0.00, "n200": 0.00},
+    "chimera_pred":   {"n25": 0.91, "n50": 0.91, "n100_s0": 0.00, "n100_s1": 0.00}
+  },
+  "_siglip_note": "SigLIP read 0.00% on every one of the 22 cells, including the three where CLIP saw a single image.",
+  "positive_control_trend": {
+    "_comment": "dirty_label at omega 7, CLIP ViT-L/14, against the clean baseline. No count moves any measure.",
+    "clean_n0":  {"asr": 0.0000, "source_retention": 0.645, "mean_target_prob": 0.0013, "mean_source_prob": 0.600},
+    "n25":       {"asr": 0.0000, "source_retention": 0.609, "mean_target_prob": 0.0012, "mean_source_prob": 0.582},
+    "n50":       {"asr": 0.0000, "source_retention": 0.709, "mean_target_prob": 0.0020, "mean_source_prob": 0.649},
+    "n100":      {"asr": 0.0000, "source_retention": 0.664, "mean_target_prob": 0.0010, "mean_source_prob": 0.615},
+    "n200":      {"asr": 0.0000, "source_retention": 0.691, "mean_target_prob": 0.0017, "mean_source_prob": 0.633}
+  },
+  "cost": {
+    "instance": 57957964, "gpu": "RTX A6000 48GB", "usd_per_hour": 0.422,
+    "hours": 18.1, "usd": 7.45,
+    "note": "Covers tier 1 (6 clean_baseline cells, which ARE valid and stand) plus these 22. Vast credit went $19.50 -> $11.92 across the whole box lifetime."
+  }
+}
