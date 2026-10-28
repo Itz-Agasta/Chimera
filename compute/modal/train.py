@@ -56,7 +56,7 @@ image = (
 )
 cache = modal.Volume.from_name("chimera-hf-cache", create_if_missing=True)
 data = modal.Volume.from_name("chimera-data", create_if_missing=True)
-GPU_TIMEOUT = 4 * 3600
+GPU_TIMEOUT = 8 * 3600   # a 40-epoch probe run on SD3 is ~3.5 h on an L40S
 
 
 def _run(fn, *args, **kwargs):
@@ -81,10 +81,20 @@ def _train(spec_dict: dict, commit: str, poison_dir: str | None, checkpoint: boo
 
     spec = RunSpec.from_dict(spec_dict)
     manifest = json.loads(pathlib.Path("/data/chimera_coco/manifest.json").read_text())
+    probe_root = pathlib.Path("/data/probes")
+
+    def on_probe(probes):
+        # Persist after every probe: a run that dies or hits the budget cap still leaves its curve so far.
+        out = probe_root / spec.run_id
+        out.mkdir(parents=True, exist_ok=True)
+        (out / "probe.json").write_text(json.dumps({"run_id": spec.run_id, "probe": probes}, indent=2))
+        data.commit()
+
     _, config, inputs, metrics = _run(train,
         spec, manifest, "/data/chimera_coco/images", f"/data/embeds/{spec.model}",
         poison_dir=poison_dir, latent_cache=f"/data/latents/{spec.model}_{spec.resolution}.safetensors",
-        commit=commit, checkpoint_dir="/data/checkpoints" if checkpoint else None)
+        commit=commit, checkpoint_dir="/data/checkpoints" if checkpoint else None,
+        probe_dir=str(probe_root), on_probe=on_probe)
     data.commit()
     cache.commit()
     # Plain JSON: the launching machine has no torch to unpickle anything else.
@@ -107,12 +117,26 @@ def train_l40s(spec_dict: dict, commit: str, poison_dir: str = None, checkpoint:
 def main(model: str = "sd3_medium", regime: str = "full_ft", attack: str = "clean", pair: str = "cat->dog",
          poison_count: int = 0, seed: int = 0, steps: int = 0, matrix: str = "", tier: str = "",
          poison_dir: str = "", checkpoint: bool = False, smoke: bool = False, gpu: str = "L4",
+         learning_rate: float = 0.0, epochs: float = 0.0, clean_filler: int = -1, source_clean: int = -1,
+         probe_epochs: str = "", probe_all_pairs: bool = False,
          dry_run: bool = False):
     from run_spec import RunSpec, estimate, expand_matrix
 
     commit = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True,
                             check=True, cwd=ROOT).stdout.strip()
     recipe = {"steps": steps} if steps else {}
+    if learning_rate:
+        recipe["learning_rate"] = learning_rate
+    if epochs:
+        recipe["epochs"] = epochs
+    if clean_filler >= 0:
+        recipe["clean_filler"] = clean_filler
+    if source_clean >= 0:
+        recipe["source_clean"] = source_clean
+    if probe_epochs:
+        recipe["probe_epochs"] = tuple(float(e) for e in probe_epochs.split(","))
+    if probe_all_pairs:
+        recipe["probe_all_pairs"] = True
     if smoke:
         recipe["steps"] = 3
 

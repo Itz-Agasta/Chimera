@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import subprocess
 import time
@@ -251,8 +252,14 @@ def ddpm_loss(net, scheduler, batch, spec: RunSpec, device):
 
 
 def train(spec: RunSpec, manifest: dict, images_root, text_root, poison_dir=None, latent_cache=None,
-          commit: str = "", checkpoint_dir=None, log_every: int = 25):
-    """Run one cell. Returns (net, config, inputs, metrics); the caller writes the run directory."""
+          commit: str = "", checkpoint_dir=None, log_every: int = 25, probe_dir=None, on_probe=None):
+    """
+    Run one cell. Returns (net, config, inputs, metrics); the caller writes the run directory.
+
+    With spec.probe_epochs set, training pauses at those epochs to generate and judge a probe set on the live
+    weights (evaluate.Probe); images go under `probe_dir`, results into metrics["probe"], and `on_probe` is
+    called with the list so far, so a launcher can persist partial results if the run dies later.
+    """
     import torch
     from torch.utils.data import DataLoader
 
@@ -289,6 +296,13 @@ def train(spec: RunSpec, manifest: dict, images_root, text_root, poison_dir=None
     scaler = torch.amp.GradScaler("cuda", enabled=autocast_dtype() == torch.float16)
     loss_fn = flow_loss if spec.is_flow else ddpm_loss
 
+    probe, probe_at, probes = None, {}, []
+    if spec.probe_epochs:
+        from evaluate import Probe
+        per_epoch = math.ceil(len(records) / (spec.batch_size * spec.grad_accum))
+        probe_at = {max(1, round(e * per_epoch)): e for e in spec.probe_epochs if round(e * per_epoch) <= steps}
+        probe = Probe(net, spec, manifest, text_root, Path(probe_dir or "probe") / spec.run_id)
+
     def batches():
         while True:
             yield from loader
@@ -313,6 +327,10 @@ def train(spec: RunSpec, manifest: dict, images_root, text_root, poison_dir=None
             curve.append({"step": step, "loss": round(step_loss, 5),
                           "lr": lr_sched.get_last_lr()[0], "seconds": round(time.time() - t0)})
             print(f"  step {step + 1}/{steps}  loss {step_loss:.4f}  {time.time() - t0:.0f}s", flush=True)
+        if step + 1 in probe_at:
+            probes.append(probe(probe_at[step + 1], step + 1))
+            if on_probe:
+                on_probe(probes)
 
     elapsed = time.time() - t0
     # final_loss is the mean over the last 10% of steps: a single step's loss is dominated by which sigma
@@ -323,6 +341,11 @@ def train(spec: RunSpec, manifest: dict, images_root, text_root, poison_dir=None
                "peak_gb": round(torch.cuda.max_memory_allocated() / 2 ** 30, 2),
                "final_loss_window": tail, "loss_curve": curve,
                "s_per_microstep": round(elapsed / (steps * spec.grad_accum), 3)}
+    if probes:
+        # elapsed includes the probes; report the training rate without them too
+        metrics["probe"] = probes
+        metrics["probe_seconds"] = round(sum(p["seconds"] for p in probes), 1)
+        metrics["s_per_microstep"] = round((elapsed - metrics["probe_seconds"]) / (steps * spec.grad_accum), 3)
 
     if checkpoint_dir:
         out = Path(checkpoint_dir) / spec.run_id

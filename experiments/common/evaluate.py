@@ -22,7 +22,7 @@ from pathlib import Path
 
 from concepts import eval_prompts as concept_templates
 from run_contract import sample_name
-from run_spec import GUIDANCE_SCALES, MODELS, RunSpec
+from run_spec import GUIDANCE_SCALES, MODELS, RunSpec, pair_slug
 from text_cache import TextCache
 
 N_PER_PROMPT = 2        # 50 held-out captions x 2 = 100 images per (pair, guidance)
@@ -239,6 +239,132 @@ def judge_side_effects(side_dir: Path, spec: RunSpec, side: dict, device="cuda",
         import torch
         torch.cuda.empty_cache()
     return out
+
+
+PROBE_GUIDANCE = 7.0
+
+
+class Probe:
+    """
+    A small evaluation run *inside* training, on the live weights, so one run maps attack success against
+    exposure count (SilentBadDiffusion's first-attack epoch) instead of one guessed epoch count per run.
+
+    It generates one image per held-out source prompt plus the control-concept templates at omega=7, judges
+    them with both judges, and puts the network back in train mode. The pipeline wraps the training network
+    itself (fp32 masters under bf16 autocast) -- no copy, no checkpoint -- with an fp32 VAE so decoding needs
+    no dtype juggling. Generation uses its own seeded generator, so it does not perturb the training RNG.
+    These are probe numbers for choosing a recipe, not the paper's ASR: the full evaluation at the chosen
+    epoch count still runs through evaluate_run.
+    """
+
+    def __init__(self, net, spec: RunSpec, manifest: dict, text_root, out_dir, device="cuda"):
+        from concepts import control_concepts
+
+        self.net, self.spec, self.device = net, spec, device
+        self.text = TextCache(text_root)
+        # The cell's own pair first, so the flat top-level block is always about spec.pair whether or not the
+        # other pairs are probed too.
+        pairs = [spec.pair] + ([p for p in manifest["pairs"] if p != spec.pair] if spec.probe_all_pairs else [])
+        self.pairs = {}
+        for key in pairs:
+            entry = manifest["pairs"][key]
+            prompts = list(entry["eval_prompts"]) + concept_templates(entry["source"])
+            missing = [p for p in prompts if p not in self.text]
+            if missing:
+                raise KeyError(f"probe pair {key!r}: {len(missing)} prompts are not in the text cache, "
+                               f"first is {missing[0]!r}")
+            self.pairs[key] = (entry["source"], entry["target"], prompts)
+        self.control = control_concepts()
+        self.control_prompts = [concept_templates(c)[0] for c in self.control]
+        self.out_dir = Path(out_dir)
+        self.pipe = None
+
+    def _pipeline(self):
+        import torch
+        from diffusers import AutoencoderKL, StableDiffusion3Pipeline, StableDiffusionPipeline
+
+        pretrained = MODELS[self.spec.model]
+        vae = AutoencoderKL.from_pretrained(pretrained, subfolder="vae", torch_dtype=torch.float32)
+        if self.spec.is_flow:
+            pipe = StableDiffusion3Pipeline.from_pretrained(
+                pretrained, transformer=self.net, vae=vae, text_encoder=None, text_encoder_2=None,
+                text_encoder_3=None, tokenizer=None, tokenizer_2=None, tokenizer_3=None)
+        else:
+            pipe = StableDiffusionPipeline.from_pretrained(
+                pretrained, unet=self.net, vae=vae, text_encoder=None, tokenizer=None, safety_checker=None,
+                feature_extractor=None)
+        pipe.vae.to(self.device)
+        pipe.set_progress_bar_config(disable=True)
+        return pipe
+
+    def _generate(self, prompts, out_dir: Path, label: str):
+        import torch
+
+        out_dir.mkdir(parents=True, exist_ok=True)
+        uncond = self.text.get("")
+        images = []
+        for i, prompt in enumerate(prompts):
+            emb = self.text.get(prompt)
+            f32 = lambda t: t.unsqueeze(0).to(self.device, torch.float32)
+            kwargs = {"prompt_embeds": f32(emb["prompt_embeds"]),
+                      "negative_prompt_embeds": f32(uncond["prompt_embeds"])}
+            if self.spec.is_flow:
+                kwargs["pooled_prompt_embeds"] = f32(emb["pooled"])
+                kwargs["negative_pooled_prompt_embeds"] = f32(uncond["pooled"])
+            gen = torch.Generator(device=self.device).manual_seed(self.spec.seed * 1000 + i)
+            img = self.pipe(num_inference_steps=INFERENCE_STEPS, guidance_scale=PROBE_GUIDANCE, generator=gen,
+                            height=self.spec.resolution, width=self.spec.resolution, **kwargs).images[0]
+            img.save(out_dir / f"{label}_{i:03d}.jpg", quality=90)
+            images.append(img)
+        return images
+
+    def __call__(self, epoch: float, step: int) -> dict:
+        import torch
+
+        from judge import JUDGE_MODELS, load_judge
+
+        t0 = time.time()
+        if self.pipe is None:
+            self.pipe = self._pipeline()
+        self.net.eval()
+        with torch.no_grad(), torch.autocast("cuda", dtype=torch.bfloat16):
+            ep_dir = self.out_dir / f"epoch_{epoch:g}"
+            attack_imgs = {key: self._generate(prompts, ep_dir, f"attack_{pair_slug(key)}")
+                           for key, (_, _, prompts) in self.pairs.items()}
+            control_imgs = self._generate(self.control_prompts, ep_dir, "control")
+        self.net.train()
+
+        own = self.spec.pair
+        out = {"epoch": epoch, "step": step, "n_attack": len(attack_imgs[own]),
+               "n_control": len(control_imgs), "pair": own}
+        per_pair = {}
+        for name in JUDGE_MODELS:
+            judge = load_judge(name, device=self.device)
+            ctrl = judge.classify(control_imgs)
+            as_asked = round(sum(r["label"] == c for r, c in zip(ctrl, self.control)) / len(ctrl), 4)
+            for key, (source, target, _) in self.pairs.items():
+                labels = judge.classify(attack_imgs[key])
+                per_pair.setdefault(key, {})[name] = {
+                    "attack_success": round(sum(r["label"] == target for r in labels) / len(labels), 4),
+                    "source_retention": round(sum(r["label"] == source for r in labels) / len(labels), 4),
+                    "control_as_asked": as_asked,
+                }
+            # Flat top-level block stays the cell's own pair, so every existing reader keeps working.
+            out[name] = per_pair[own][name]
+        if len(self.pairs) > 1:
+            out["per_pair"] = per_pair
+        out["seconds"] = round(time.time() - t0, 1)
+        torch.cuda.empty_cache()
+        print(f"  [probe] epoch {epoch:g}: " + "  ".join(
+            f"{n} asr={out[n]['attack_success']:.2f} src={out[n]['source_retention']:.2f} "
+            f"ctrl={out[n]['control_as_asked']:.2f}" for n in JUDGE_MODELS) + f"  {out['seconds']:.0f}s",
+            flush=True)
+        for key in self.pairs:
+            if key != own:
+                j = JUDGE_MODELS[0]
+                print(f"    [probe/{key}] {j} asr={per_pair[key][j]['attack_success']:.2f} "
+                      f"src={per_pair[key][j]['source_retention']:.2f}", flush=True)
+        return out
 
 
 def evaluate_run(run_dir, data_root, checkpoint_dir=None, guidance_scales=None, n_per_prompt=N_PER_PROMPT,

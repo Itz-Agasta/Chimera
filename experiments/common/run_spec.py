@@ -107,6 +107,24 @@ class RunSpec:
     # cell's wall clock (matrix.json cost._cell_wall_clock), so a tier that only contributes one point to the
     # ASR-vs-count curve has no reason to generate five scales' worth of samples. Recorded in config.json.
     eval_guidance: tuple[float, ...] = GUIDANCE_SCALES
+    # Shrink the clean corpus to the pair's own clean source images plus this many others, drawn by seed.
+    # None keeps all of clean_train. The pair's clean source always stays, so the poisons still compete
+    # with real images of the concept; only the unrelated filler shrinks, which buys epochs (exposures per
+    # poison) at a fixed compute budget. Published fine-tune poisoning needs tens of exposures per poison
+    # (notes: B2 50 epochs on SD3-M, AMP 25-100, SilentBadDiffusion first success at epoch 35-77).
+    clean_filler: int | None = None
+    # Keep only this many of the pair's own clean source images (drawn by seed); None keeps all 300. 0 is the
+    # poison-only test: if a poison set cannot teach the target even as the only data, it cannot work hidden
+    # among clean images. A small count models Nightshade's premise that a concept has few clean samples.
+    source_clean: int | None = None
+    # Epochs at which training pauses to generate and judge a small probe set, so one run maps attack success
+    # against exposure count instead of guessing an epoch count and re-running. Empty means no probes.
+    probe_epochs: tuple[float, ...] = ()
+    # Probe every pair in the manifest instead of only this cell's pair. The clean floor is a property of the
+    # model and the recipe, not of an attack, so one unpoisoned run measures it for all four pairs at once:
+    # 8 clean cells become 2, for the cost of the extra generations inside the same run. Only for clean cells --
+    # on a poisoned cell the other pairs' sources are just unpoisoned concepts, which `control` already covers.
+    probe_all_pairs: bool = False
 
     def __post_init__(self):
         if self.model not in MODELS:
@@ -123,6 +141,10 @@ class RunSpec:
         self.eval_guidance = tuple(float(g) for g in self.eval_guidance)
         if not self.eval_guidance:
             raise ValueError("eval_guidance is empty: the cell would train and never be judged")
+        self.probe_epochs = tuple(float(e) for e in self.probe_epochs)
+        if self.probe_all_pairs and self.attack != "clean":
+            raise ValueError("probe_all_pairs is for clean floor cells only: on a poisoned cell the other "
+                             "pairs are unpoisoned concepts, which the control set already measures")
 
     @property
     def is_flow(self) -> bool:
@@ -134,8 +156,24 @@ class RunSpec:
 
     @property
     def run_id(self) -> str:
-        return (f"{self.model}_{self.regime}_{self.attack}_{pair_slug(self.pair)}"
-                f"_n{self.poison_count}_s{self.seed}")
+        """
+        Identifies the cell. Recipe knobs that change what the model learns are appended when they differ
+        from the matrix default, so a probe can never share a directory or checkpoint with a matrix cell
+        (on 2026-10-28 an lr-5e-5 probe wrote under the same id as the lr-1e-5 cell).
+        """
+        rid = (f"{self.model}_{self.regime}_{self.attack}_{pair_slug(self.pair)}"
+               f"_n{self.poison_count}_s{self.seed}")
+        if self.clean_filler is not None:
+            rid += f"_c{self.clean_filler}"
+        if self.source_clean is not None:
+            rid += f"_src{self.source_clean}"
+        if self.steps is None and self.epochs != 1.0:
+            rid += f"_e{self.epochs:g}"
+        if self.learning_rate is not None:
+            rid += f"_lr{self.learning_rate:g}"
+        if self.probe_all_pairs:
+            rid += "_pall"
+        return rid
 
     @property
     def lr(self) -> float:
@@ -226,8 +264,22 @@ def build_inputs(manifest: dict, spec: RunSpec, images_root, poison_dir=None) ->
     images_root = Path(images_root)
     pair = manifest["pairs"][spec.pair]
 
+    clean = list(manifest["clean_train"])
+    if spec.clean_filler is not None:
+        own = {r["id"] for r in pair["clean_source"]}
+        others = [r for r in clean if r["id"] not in own]
+        _rng("clean_filler", spec.seed).shuffle(others)
+        if len(others) < spec.clean_filler:
+            raise ValueError(f"clean_filler={spec.clean_filler} but only {len(others)} other clean images")
+        keep = own | {r["id"] for r in others[:spec.clean_filler]}
+        clean = [r for r in clean if r["id"] in keep]   # manifest order, so the set is stable
+    if spec.source_clean is not None:
+        own = [r["id"] for r in pair["clean_source"]]
+        _rng("source_clean", spec.seed).shuffle(own)
+        drop = set(own[spec.source_clean:])
+        clean = [r for r in clean if r["id"] not in drop]
     records = [{"id": r["id"], "path": str(image_path(images_root, r)), "caption": r["caption"],
-                "poisoned": False} for r in manifest["clean_train"]]
+                "poisoned": False} for r in clean]
     clean_ids = [r["id"] for r in records]
     chosen = poison_selection(manifest, spec)
 
