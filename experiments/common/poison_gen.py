@@ -55,9 +55,10 @@ from concepts import swap_concept
 from run_spec import MODELS, _rng, poison_dir_for
 from train import autocast_dtype, load_image
 
-# Nightshade's released defaults, used for every attack so the budget is identical.
+# Nightshade's released defaults. EPS is what every attack actually shares, so the budget is identical.
 EPS = 0.04          # L-infinity budget in [0, 1] pixel units (~10/255)
-ITERS = 500
+ITERS = 500         # the released default; SCHEDULE below is what each attack is actually run with
+
 ANCHOR_SEED = 123   # opt.py fixes this so one anchor image serves the whole poison set
 ANCHOR_PROMPT = "A photo of a {}"
 SIGMA = 0.5         # where on the flow path the velocity attacks are matched
@@ -505,7 +506,8 @@ def main(argv=None):
     p.add_argument("--data-root", default="/data")
     p.add_argument("--poison-root", required=True)
     p.add_argument("--anchors", help="where the generated anchor images live (the nightshade_* attacks)")
-    p.add_argument("--iters", type=int, default=ITERS)
+    p.add_argument("--iters", type=int, default=0,
+                   help="0 takes the attack's measured SCHEDULE; pass a number only to override it")
     p.add_argument("--eps", type=float, default=EPS)
     p.add_argument("--sigma", type=float, default=SIGMA)
     p.add_argument("--lpips-weight", type=float, default=0.0)
@@ -513,19 +515,25 @@ def main(argv=None):
     p.add_argument("--limit", type=int, help="stop after this many images (probe)")
     p.add_argument("--log-every", type=int, default=0, help="record the loss every N iterations")
     p.add_argument("--git-commit", default="")
-    p.add_argument("--step-scale", type=float, default=1.0,
-                   help="initial signed step as a fraction of the budget (1.0 = Nightshade's schedule)")
+    p.add_argument("--step-scale", type=float, default=0.0,
+                   help="0 takes the attack's measured SCHEDULE; initial signed step as a fraction of the "
+                        "budget (1.0 = Nightshade's full-budget first step)")
     p.add_argument("--moving-target", action="store_true",
                    help="the draft formulation, which diverges; kept to document why it is not used")
     a = p.parse_args(argv)
 
     data = Path(a.data_root)
     manifest = json.loads((data / "chimera_coco" / "manifest.json").read_text())
+    # Default to the attack's own measured schedule, so a pool built from this CLI matches one built by the
+    # Modal driver. Taking ITERS here instead would have given the latent attacks 500 iters at step_scale 1.0,
+    # a combination nothing was measured at.
+    iters = a.iters or SCHEDULE[a.attack]["iters"]
+    step_scale = a.step_scale or SCHEDULE[a.attack]["step_scale"]
     out = generate(a.attack, a.pair, manifest, data / "chimera_coco" / "images", data / "embeds",
                    poison_dir_for(a.poison_root, a.attack, a.pair), anchors_root=a.anchors,
-                   iters=a.iters, eps=a.eps, sigma=a.sigma, lpips_weight=a.lpips_weight,
+                   iters=iters, eps=a.eps, sigma=a.sigma, lpips_weight=a.lpips_weight,
                    batch=a.batch, limit=a.limit, log_every=a.log_every, git_commit=a.git_commit,
-                   moving_target=a.moving_target, step_scale=a.step_scale)
+                   moving_target=a.moving_target, step_scale=step_scale)
     print(json.dumps({k: v for k, v in out.items() if k != "images"}, indent=2))
 
 
