@@ -159,6 +159,26 @@ def generate_l40s(attack: str, pair: str, commit: str, iters: int = 500, batch: 
                      only_ids, poison_root, fresh, step_scale)
 
 
+@app.function(gpu="L4", image=image, volumes={"/cache": cache, "/data": data},
+              secrets=[modal.Secret.from_name("huggingface")], timeout=TIMEOUT)
+def diag_l4(pools: list, limit: int, batch: int) -> str:
+    """
+    Per-image latent geometry of pools that already exist. VAE-only, so an L4 is plenty (peak ~6 GB during
+    generation was with the optimiser graph; this is forward passes with no_grad).
+    """
+    sys.path.insert(0, "/root/common")
+    pd = _load_shared("chimera_poison_diag", "/root/common/poison_diag.py")
+
+    manifest = json.loads(pathlib.Path("/data/chimera_coco/manifest.json").read_text())
+    out = {}
+    for attack, pair in pools:
+        print(f"  {attack}/{pair}", flush=True)
+        out[f"{attack}/{pair}"] = _run(
+            pd.measure_pool, attack, pair, manifest, "/data/chimera_coco/images", "/data/poisons",
+            "/data/anchors", limit=limit or None, batch=batch)
+    return json.dumps(out)
+
+
 def _jobs(matrix_path: pathlib.Path, manifest_path: pathlib.Path) -> list[tuple[str, str, list]]:
     """
     The (attack, pair) combinations the matrix consumes, and exactly which ids each one needs.
@@ -176,7 +196,8 @@ def _jobs(matrix_path: pathlib.Path, manifest_path: pathlib.Path) -> list[tuple[
 
 
 @app.local_entrypoint()
-def main(step: str = "generate", attack: str = "", pair: str = "cat->dog", model: str = "sd3_medium",
+def main(step: str = "generate", attack: str = "", pair: str = "cat->dog", pairs: str = "",
+         match_attack: str = "", model: str = "sd3_medium",
          matrix: str = "experiments/configs/matrix.json", all: bool = False, iters: int = 0,
          batch: int = 4, limit: int = 0, sigma: float = 0.5, eps: float = 0.04,
          lpips_weight: float = 0.0, log_every: int = 0, gpu: str = "L40S", step_scale: float = 0.0):
@@ -185,6 +206,35 @@ def main(step: str = "generate", attack: str = "", pair: str = "cat->dog", model
 
     if step == "anchors":
         print(json.dumps(json.loads(anchors_l40s.remote(model)), indent=2))
+        return
+
+    if step == "diag":
+        # Measures finished pools; generates nothing. Default is every nightshade pool, which is the pair of
+        # arms the H1 mechanism claim compares.
+        man = json.loads((ROOT / "data" / "chimera_coco" / "manifest.json").read_text())
+        from poison_gen import ATTACK_SPEC
+
+        if attack:
+            attacks = [a.strip() for a in attack.split(",") if a.strip()]
+        else:
+            attacks = [a for a in sorted(ATTACK_SPEC) if a.startswith("nightshade")]
+        wanted = [p.strip() for p in pairs.split(",") if p.strip()] if pairs else list(man["pairs"])
+        pools = [(a, p) for a in attacks for p in wanted]
+        print(f"measuring {len(pools)} pool(s): " + ", ".join(f"{a}/{p}" for a, p in pools))
+        out = json.loads(diag_l4.remote(pools, limit, batch))
+
+        path = ROOT / "results" / "compute" / "poison_diag.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        merged = json.loads(path.read_text()) if path.exists() else {}
+        merged.update(out)
+        path.write_text(json.dumps(merged, indent=2))
+        print(f"\n{'pool':34s} {'ch':>3s} {'closed':>18s} {'cosine':>8s} {'off-axis':>9s}")
+        for key, o in sorted(merged.items()):
+            c, cos = o["scaled"]["closed"], o["scaled"]["cosine"]
+            print(f"{key:34s} {o['vae']['latent_channels']:>3d} "
+                  f"{c['median']:>8.4f} [{c['p25']:+.3f},{c['p75']:+.3f}] "
+                  f"{cos['median']:>8.4f} {o['scaled']['off_axis']['median']:>9.4f}")
+        print(f"\ndiagnostics -> {path} ({len(out)} written, {len(merged)} total)")
         return
 
     fn = {"L4": generate_l4, "L40S": generate_l40s}[gpu]
@@ -217,9 +267,32 @@ def main(step: str = "generate", attack: str = "", pair: str = "cat->dog", model
         raise SystemExit("pass --attack (and --pair), or --all for every combination the matrix needs")
     from poison_gen import SCHEDULE
 
-    jobs = (_jobs(ROOT / matrix, ROOT / "data" / "chimera_coco" / "manifest.json") if all
-            else [(attack, pair, None)])
-    total = sum(len(ids) for _, _, ids in jobs if ids) if all else 0
+    # --pairs runs several pairs of one attack as parallel containers under a single summary writer, so three
+    # pairs cannot race each other merging poison_generation.json.
+    #
+    # --match-attack pins the ids to the ones another attack's pool already holds. Without it, a pool built by
+    # --limit N draws a different N of the pair's poison_pool than the sibling attack got (measured: 37/100
+    # overlap for car->cow), which would confound "optimised against which model" with "perturbed which
+    # images" in exactly the comparison H1 rests on.
+    if all:
+        jobs = _jobs(ROOT / matrix, ROOT / "data" / "chimera_coco" / "manifest.json")
+    else:
+        wanted = [p.strip() for p in pairs.split(",") if p.strip()] if pairs else [pair]
+        ids_for = {}
+        if match_attack:
+            from run_spec import required_poison_ids
+
+            man = json.loads((ROOT / "data" / "chimera_coco" / "manifest.json").read_text())
+            config = json.loads((ROOT / matrix).read_text())
+            for p in wanted:
+                got = sorted(required_poison_ids(man, config, match_attack, p))
+                if not got:
+                    raise SystemExit(f"--match-attack {match_attack!r} draws no ids for {p!r}: the matrix has "
+                                     f"no cell for that (attack, pair), so there is nothing to match")
+                ids_for[p] = got
+            print(f"matching ids to {match_attack}: " + ", ".join(f"{p}={len(ids_for[p])}" for p in wanted))
+        jobs = [(attack, p, ids_for.get(p)) for p in wanted]
+    total = sum(len(ids) for _, _, ids in jobs if ids)
     print(f"{len(jobs)} job(s)" + (f", {total} images in all:" if total else ":"))
 
     # Each attack runs on its own measured schedule; an explicit --iters / --step-scale overrides it for
@@ -244,7 +317,14 @@ def main(step: str = "generate", attack: str = "", pair: str = "cat->dog", model
         if out.get("stealth", {}).get("psnr_db"):
             s = out["stealth"]
             print(f"    Linf {s['linf_255']['median']}/255 median, PSNR {s['psnr_db']['median']} dB median")
+    # Merge, never overwrite: this file is the measured record for every (attack, pair) ever generated, and the
+    # H1 mechanism table is read straight out of it. A run that generates three pairs must not erase the other
+    # seven entries.
     path = ROOT / "results" / "compute" / "poison_generation.json"
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(results, indent=2))
-    print(f"\nsummary -> {path}")
+    merged = json.loads(path.read_text()) if path.exists() else {}
+    replaced = sorted(set(merged) & set(results))
+    merged.update(results)
+    path.write_text(json.dumps(merged, indent=2))
+    print(f"\nsummary -> {path} ({len(results)} written, {len(merged)} entries total"
+          + (f", replaced {', '.join(replaced)}" if replaced else "") + ")")
