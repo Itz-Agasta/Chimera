@@ -44,9 +44,7 @@ cache = modal.Volume.from_name("chimera-hf-cache", create_if_missing=True)
 data = modal.Volume.from_name("chimera-data", create_if_missing=True)
 
 
-@app.function(gpu="L4", image=image, volumes={"/cache": cache, "/data": data},
-              secrets=[modal.Secret.from_name("huggingface")], timeout=4 * 3600)
-def evaluate(config_json: str, guidance: list | None = None, n_per_prompt: int = 2) -> str:
+def _evaluate(config_json: str, guidance: list | None, n_per_prompt: int) -> str:
     sys.path.insert(0, "/root/common")
     evaluate_run = _load_shared("chimera_evaluate", "/root/common/evaluate.py").evaluate_run
 
@@ -60,9 +58,22 @@ def evaluate(config_json: str, guidance: list | None = None, n_per_prompt: int =
     return json.dumps(out)
 
 
+@app.function(gpu="L4", image=image, volumes={"/cache": cache, "/data": data},
+              secrets=[modal.Secret.from_name("huggingface")], timeout=4 * 3600)
+def evaluate(config_json: str, guidance: list | None = None, n_per_prompt: int = 2) -> str:
+    return _evaluate(config_json, guidance, n_per_prompt)
+
+
+@app.function(gpu="L40S", image=image, volumes={"/cache": cache, "/data": data},
+              secrets=[modal.Secret.from_name("huggingface")], timeout=4 * 3600)
+def evaluate_l40s(config_json: str, guidance: list | None = None, n_per_prompt: int = 2) -> str:
+    return _evaluate(config_json, guidance, n_per_prompt)
+
+
 @app.local_entrypoint()
 def main(run_id: str = "", experiment: str = "", guidance: str = "", n_per_prompt: int = 2,
-         redo: bool = False):
+         redo: bool = False, gpu: str = "L4"):
+    fn = {"L4": evaluate, "L40S": evaluate_l40s}[gpu]
     scales = [float(x) for x in guidance.split(",")] if guidance else None
     runs = []
     for config_path in sorted((ROOT / "results").glob("*/*/config.json")):
@@ -81,7 +92,7 @@ def main(run_id: str = "", experiment: str = "", guidance: str = "", n_per_promp
 
     for i, (run_dir, config) in enumerate(runs, 1):
         print(f"[{i}/{len(runs)}] {config['run_id']}", flush=True)
-        out = json.loads(evaluate.remote(json.dumps(config), scales, n_per_prompt))
+        out = json.loads(fn.remote(json.dumps(config), scales, n_per_prompt))
         (run_dir / "evaluation.json").write_text(json.dumps(out, indent=2))
         for g, per_judge in sorted(out["by_guidance"].items(), key=lambda kv: float(kv[0])):
             parts = [f"{j}={per_judge[j]['attack_success']:.2f}" for j in out["judges"] if j in per_judge]
