@@ -1,0 +1,65 @@
+{
+  "code": "/kaggle/input/chimera-code",
+  "data": "/kaggle/input/chimera-mech",
+  "jobs": {
+    "warm_sd3_medium": {
+      "rc": 0,
+      "seconds": 101,
+      "tail": [
+        "",
+        "Loading weights:   0%|          | 0/590 [00:00<?, ?it/s]",
+        "Loading weights:  30%|\u2588\u2588\u2588       | 179/590 [00:00<00:00, 1745.26it/s]",
+        "Loading weights:  60%|\u2588\u2588\u2588\u2588\u2588\u2588    | 354/590 [00:00<00:00, 1494.48it/s]",
+        "Loading weights:  86%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c | 506/590 [00:00<00:00, 1374.00it/s]",
+        "Loading weights: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 590/590 [00:00<00:00, 1425.59it/s]",
+        "[transformers] Model config: bos_token_id must be `None` or an integer within the vocabulary (between 0 and 31999), got 49406. This may result in unexpected behavior.",
+        "[transformers] Model config: eos_token_id must be `None` or an integer within the vocabulary (between 0 and 31999), got 49407. This may result in unexpected behavior.",
+        "",
+        "Loading weights:   0%|          | 0/888 [00:00<?, ?it/s]",
+        "Loading weights:  16%|\u2588\u258c        | 138/888 [00:00<00:00, 1263.18it/s]",
+        "Loading weights:  31%|\u2588\u2588\u2588       | 274/888 [00:00<00:00, 1317.83it/s]",
+        "Loading weights:  46%|\u2588\u2588\u2588\u2588\u258c     | 406/888 [00:00<00:00, 1220.72it/s]",
+        "Loading weights:  60%|\u2588\u2588\u2588\u2588\u2588\u2589    | 529/888 [00:00<00:00, 1159.53it/s]",
+        "Loading weights:  74%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258d  | 657/888 [00:00<00:00, 1187.90it/s]",
+        "Loading weights:  88%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258a | 777/888 [00:00<00:00, 1156.31it/s]",
+        "Loading weights: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 888/888 [00:00<00:00, 1175.86it/s]",
+        "/usr/local/lib/python3.13/dist-packages/huggingface_hub/utils/_validators.py:206: UserWarning: The `local_dir_use_symlinks` argument is deprecated and ignored in `hf_hub_download`. Downloading to a local directory does not use symlinks anymore.",
+        "  warnings.warn(",
+        "    sd3_medium cat->dog 1/4  4s",
+        "  sd3_medium cat->dog: closed 0.231  gap 283.8  gain 1706.1  lin@0.04 0.485  one@0.04 0.174  | decoded->target 0.25 (pixels 0.00, clean recon 0.00)",
+        "1 written, 1 total -> /kaggle/working/vae_theory_warmup_sd3_medium.json"
+      ]
+    },
+    "full_sd3_medium": {
+      "rc": 0,
+      "seconds": 1509,
+      "tail": [
+        "    sd3_medium car->cow 91/100  314s",
+        "  sd3_medium car->cow: closed 0.190  gap 303.8  gain 1418.3  lin@0.04 0.350  one@0.04 0.149  | decoded->target 0.03 (pixels 0.01, clean recon 0.00)",
+        "    sd3_medium laptop->pizza 1/100  3s",
+        "    sd3_medium laptop->pizza 11/100  38s",
+        "    sd3_medium laptop->pizza 21/100  72s",
+        "    sd3_medium laptop->pizza 31/100  107s",
+        "    sd3_medium laptop->pizza 41/100  141s",
+        "    sd3_medium laptop->pizza 51/100  176s",
+        "    sd3_medium laptop->pizza 61/100  210s",
+        "    sd3_medium laptop->pizza 71/100  244s",
+        "    sd3_medium laptop->pizza 81/100  279s",
+        "    sd3_medium laptop->pizza 91/100  314s",
+        "  sd3_medium laptop->pizza: closed 0.294  gap 270.7  gain 2294.8  lin@0.04 0.639  one@0.04 0.252  | decoded->target 0.01 (pixels 0.01, clean recon 0.00)",
+        "    sd3_medium stop sign->bird 1/100  3s",
+        "    sd3_medium stop sign->bird 11/100  38s",
+        "    sd3_medium stop sign->bird 21/100  73s",
+        "    sd3_medium stop sign->bird 31/100  107s",
+        "    sd3_medium stop sign->bird 41/100  142s",
+        "    sd3_medium stop sign->bird 51/100  176s",
+        "    sd3_medium stop sign->bird 61/100  210s",
+        "    sd3_medium stop sign->bird 71/100  245s",
+        "    sd3_medium stop sign->bird 81/100  279s",
+        "    sd3_medium stop sign->bird 91/100  313s",
+        "  sd3_medium stop sign->bird: closed 0.165  gap 350.8  gain 1267.3  lin@0.04 0.277  one@0.04 0.124  | decoded->target 0.06 (pixels 0.01, clean recon 0.00)",
+        "4 written, 4 total -> /kaggle/working/vae_theory_sd3_medium.json"
+      ]
+    }
+  }
+}

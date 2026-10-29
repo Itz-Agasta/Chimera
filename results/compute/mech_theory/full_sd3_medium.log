@@ -1,0 +1,81 @@
+Loading weights:   0%|          | 0/590 [00:00<?, ?it/s]Loading weights:  20%|██        | 120/590 [00:00<00:00, 1198.91it/s]Loading weights:  41%|████      | 240/590 [00:00<00:00, 1166.07it/s]Loading weights:  61%|██████    | 357/590 [00:00<00:00, 1108.39it/s]Loading weights:  79%|███████▉  | 469/590 [00:00<00:00, 1072.14it/s]Loading weights:  98%|█████████▊| 577/590 [00:00<00:00, 977.94it/s] Loading weights: 100%|██████████| 590/590 [00:00<00:00, 1058.91it/s]
+[transformers] Model config: bos_token_id must be `None` or an integer within the vocabulary (between 0 and 31999), got 49406. This may result in unexpected behavior.
+[transformers] Model config: eos_token_id must be `None` or an integer within the vocabulary (between 0 and 31999), got 49407. This may result in unexpected behavior.
+Loading weights:   0%|          | 0/888 [00:00<?, ?it/s]Loading weights:  19%|█▉        | 170/888 [00:00<00:00, 1442.68it/s]Loading weights:  35%|███▌      | 315/888 [00:00<00:00, 881.65it/s] Loading weights:  48%|████▊     | 426/888 [00:00<00:00, 866.84it/s]Loading weights:  58%|█████▊    | 519/888 [00:00<00:00, 872.17it/s]Loading weights:  69%|██████▊   | 610/888 [00:00<00:00, 832.23it/s]Loading weights:  78%|███████▊  | 696/888 [00:00<00:00, 763.40it/s]Loading weights:  87%|████████▋ | 774/888 [00:00<00:00, 726.57it/s]Loading weights:  95%|█████████▌| 848/888 [00:01<00:00, 716.66it/s]Loading weights: 100%|██████████| 888/888 [00:01<00:00, 786.31it/s]
+/usr/local/lib/python3.13/dist-packages/huggingface_hub/utils/_validators.py:206: UserWarning: The `local_dir_use_symlinks` argument is deprecated and ignored in `hf_hub_download`. Downloading to a local directory does not use symlinks anymore.
+  warnings.warn(
+    sd3_medium cat->dog 1/100  4s
+    sd3_medium cat->dog 11/100  41s
+    sd3_medium cat->dog 21/100  78s
+    sd3_medium cat->dog 31/100  114s
+    sd3_medium cat->dog 41/100  151s
+    sd3_medium cat->dog 51/100  187s
+    sd3_medium cat->dog 61/100  224s
+    sd3_medium cat->dog 71/100  261s
+    sd3_medium cat->dog 81/100  298s
+    sd3_medium cat->dog 91/100  335s
+  sd3_medium cat->dog: closed 0.230  gap 281.1  gain 1847.8  lin@0.04 0.507  one@0.04 0.173  | decoded->target 0.03 (pixels 0.01, clean recon 0.00)
+    sd3_medium car->cow 1/100  4s
+    sd3_medium car->cow 11/100  41s
+    sd3_medium car->cow 21/100  77s
+    sd3_medium car->cow 31/100  114s
+    sd3_medium car->cow 41/100  151s
+    sd3_medium car->cow 51/100  187s
+    sd3_medium car->cow 61/100  224s
+    sd3_medium car->cow 71/100  261s
+    sd3_medium car->cow 81/100  298s
+    sd3_medium car->cow 91/100  335s
+  sd3_medium car->cow: closed 0.190  gap 303.8  gain 1418.3  lin@0.04 0.350  one@0.04 0.149  | decoded->target 0.03 (pixels 0.01, clean recon 0.00)
+    sd3_medium laptop->pizza 1/100  4s
+    sd3_medium laptop->pizza 11/100  41s
+    sd3_medium laptop->pizza 21/100  78s
+    sd3_medium laptop->pizza 31/100  114s
+    sd3_medium laptop->pizza 41/100  151s
+    sd3_medium laptop->pizza 51/100  188s
+    sd3_medium laptop->pizza 61/100  225s
+    sd3_medium laptop->pizza 71/100  262s
+    sd3_medium laptop->pizza 81/100  299s
+    sd3_medium laptop->pizza 91/100  336s
+  sd3_medium laptop->pizza: closed 0.294  gap 270.7  gain 2294.8  lin@0.04 0.639  one@0.04 0.252  | decoded->target 0.01 (pixels 0.01, clean recon 0.00)
+    sd3_medium stop sign->bird 1/100  4s
+    sd3_medium stop sign->bird 11/100  40s
+    sd3_medium stop sign->bird 21/100  77s
+    sd3_medium stop sign->bird 31/100  114s
+    sd3_medium stop sign->bird 41/100  151s
+    sd3_medium stop sign->bird 51/100  188s
+    sd3_medium stop sign->bird 61/100  225s
+    sd3_medium stop sign->bird 71/100  261s
+    sd3_medium stop sign->bird 81/100  298s
+    sd3_medium stop sign->bird 91/100  335s
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/dist-packages/PIL/ImageFile.py", line 405, in load
+    s = read(read_bytes)
+  File "/usr/local/lib/python3.13/dist-packages/PIL/PngImagePlugin.py", line 1022, in load_read
+    cid, pos, length = self.png.read()
+                       ~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/PIL/PngImagePlugin.py", line 188, in read
+    length = i32(s)
+  File "/usr/local/lib/python3.13/dist-packages/PIL/_binary.py", line 98, in i32be
+    return unpack_from(">I", c, o)[0]
+           ~~~~~~~~~~~^^^^^^^^^^^^
+struct.error: unpack_from requires a buffer of at least 4 bytes for unpacking 4 bytes at offset 0 (actual buffer size is 0)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/kaggle/input/chimera-code/vae_theory.py", line 181, in <module>
+    main()
+    ~~~~^^
+  File "/kaggle/input/chimera-code/vae_theory.py", line 162, in main
+    out = measure(a.model, pair, manifest, data_root, judges, limit=a.limit or None)
+  File "/kaggle/input/chimera-code/vae_theory.py", line 76, in measure
+    xp = torch.stack([_load_rgb(pdir / f"{r['id']}.png", RES) for r in chunk]).to(device)
+                      ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/kaggle/input/chimera-code/poison_diag.py", line 64, in _load_rgb
+    img = Image.open(path).convert("RGB")
+  File "/usr/local/lib/python3.13/dist-packages/PIL/Image.py", line 1067, in convert
+    self.load()
+    ~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/dist-packages/PIL/ImageFile.py", line 412, in load
+    raise OSError(msg) from e
+OSError: image file is truncated

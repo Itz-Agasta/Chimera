@@ -1,0 +1,18 @@
+{
+  "id": "itzagasta/chimera-mech-theory",
+  "title": "chimera-mech-theory",
+  "code_file": "mech_theory.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "dataset_sources": [
+    "itzagasta/chimera-code",
+    "itzagasta/chimera-mech",
+    "itzagasta/chimera-secrets"
+  ],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}
