@@ -1,0 +1,611 @@
+{
+  "nightshade_sd3/cat->dog@l40s_bf16": {
+    "attack": "nightshade_sd3",
+    "pair": "cat->dog",
+    "model": "sd3_medium",
+    "pretrained": "stabilityai/stable-diffusion-3-medium-diffusers",
+    "anchor_kind": "generated",
+    "space": "latent",
+    "resolution": 512,
+    "n_images": 4,
+    "seconds": 4.2,
+    "distinct_targets": 1,
+    "vae": {
+      "latent_channels": 16,
+      "shift_factor": 0.0609,
+      "scaling_factor": 1.5305
+    },
+    "images": [
+      {
+        "id": 825,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 198.3251,
+          "moved": 78.1873,
+          "closed": 0.249913,
+          "cosine": 0.633914,
+          "off_axis": 0.304905
+        },
+        "scaled": {
+          "gap": 303.5366,
+          "moved": 119.6657,
+          "closed": 0.249913,
+          "cosine": 0.633914,
+          "off_axis": 0.304905
+        }
+      },
+      {
+        "id": 8829,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 172.5134,
+          "moved": 37.4286,
+          "closed": 0.121137,
+          "cosine": 0.558337,
+          "off_axis": 0.179994
+        },
+        "scaled": {
+          "gap": 264.0317,
+          "moved": 57.2845,
+          "closed": 0.121137,
+          "cosine": 0.558337,
+          "off_axis": 0.179994
+        }
+      },
+      {
+        "id": 15497,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 210.8082,
+          "moved": 79.0019,
+          "closed": 0.230788,
+          "cosine": 0.615834,
+          "off_axis": 0.295262
+        },
+        "scaled": {
+          "gap": 322.6419,
+          "moved": 120.9124,
+          "closed": 0.230788,
+          "cosine": 0.615834,
+          "off_axis": 0.295262
+        }
+      },
+      {
+        "id": 18211,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 164.2925,
+          "moved": 59.3601,
+          "closed": 0.23105,
+          "cosine": 0.639483,
+          "off_axis": 0.277775
+        },
+        "scaled": {
+          "gap": 251.4496,
+          "moved": 90.8506,
+          "closed": 0.23105,
+          "cosine": 0.639483,
+          "off_axis": 0.277775
+        }
+      }
+    ],
+    "raw": {
+      "closed": {
+        "n": 4,
+        "min": 0.1211,
+        "p25": 0.2308,
+        "median": 0.2309,
+        "p75": 0.2311,
+        "max": 0.2499,
+        "mean": 0.2082,
+        "stdev": 0.0587
+      },
+      "cosine": {
+        "n": 4,
+        "min": 0.5583,
+        "p25": 0.6158,
+        "median": 0.6249,
+        "p75": 0.6339,
+        "max": 0.6395,
+        "mean": 0.6119,
+        "stdev": 0.0371
+      },
+      "off_axis": {
+        "n": 4,
+        "min": 0.18,
+        "p25": 0.2778,
+        "median": 0.2865,
+        "p75": 0.2953,
+        "max": 0.3049,
+        "mean": 0.2645,
+        "stdev": 0.0574
+      },
+      "gap": {
+        "n": 4,
+        "min": 164.2925,
+        "p25": 172.5134,
+        "median": 185.4192,
+        "p75": 198.3251,
+        "max": 210.8082,
+        "mean": 186.4848,
+        "stdev": 21.7525
+      },
+      "moved": {
+        "n": 4,
+        "min": 37.4286,
+        "p25": 59.3601,
+        "median": 68.7737,
+        "p75": 78.1873,
+        "max": 79.0019,
+        "mean": 63.4945,
+        "stdev": 19.6034
+      }
+    },
+    "scaled": {
+      "closed": {
+        "n": 4,
+        "min": 0.1211,
+        "p25": 0.2308,
+        "median": 0.2309,
+        "p75": 0.2311,
+        "max": 0.2499,
+        "mean": 0.2082,
+        "stdev": 0.0587
+      },
+      "cosine": {
+        "n": 4,
+        "min": 0.5583,
+        "p25": 0.6158,
+        "median": 0.6249,
+        "p75": 0.6339,
+        "max": 0.6395,
+        "mean": 0.6119,
+        "stdev": 0.0371
+      },
+      "off_axis": {
+        "n": 4,
+        "min": 0.18,
+        "p25": 0.2778,
+        "median": 0.2865,
+        "p75": 0.2953,
+        "max": 0.3049,
+        "mean": 0.2645,
+        "stdev": 0.0574
+      },
+      "gap": {
+        "n": 4,
+        "min": 251.4496,
+        "p25": 264.0317,
+        "median": 283.7842,
+        "p75": 303.5366,
+        "max": 322.6419,
+        "mean": 285.415,
+        "stdev": 33.2923
+      },
+      "moved": {
+        "n": 4,
+        "min": 57.2845,
+        "p25": 90.8506,
+        "median": 105.2582,
+        "p75": 119.6657,
+        "max": 120.9124,
+        "mean": 97.1783,
+        "stdev": 30.003
+      }
+    },
+    "built_with": {
+      "eps": 0.04,
+      "iters": 250,
+      "step_scale": 1.0,
+      "sigma": 0.5,
+      "compute_dtype": null,
+      "device": null
+    }
+  },
+  "nightshade_sd3/cat->dog@t4_fp16": {
+    "attack": "nightshade_sd3",
+    "pair": "cat->dog",
+    "model": "sd3_medium",
+    "pretrained": "stabilityai/stable-diffusion-3-medium-diffusers",
+    "anchor_kind": "generated",
+    "space": "latent",
+    "resolution": 512,
+    "n_images": 4,
+    "seconds": 3.2,
+    "distinct_targets": 1,
+    "vae": {
+      "latent_channels": 16,
+      "shift_factor": 0.0609,
+      "scaling_factor": 1.5305
+    },
+    "images": [
+      {
+        "id": 825,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 198.3251,
+          "moved": 78.1041,
+          "closed": 0.249775,
+          "cosine": 0.634239,
+          "off_axis": 0.304476
+        },
+        "scaled": {
+          "gap": 303.5366,
+          "moved": 119.5383,
+          "closed": 0.249775,
+          "cosine": 0.634239,
+          "off_axis": 0.304476
+        }
+      },
+      {
+        "id": 8829,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 172.5134,
+          "moved": 37.5642,
+          "closed": 0.122215,
+          "cosine": 0.561269,
+          "off_axis": 0.180215
+        },
+        "scaled": {
+          "gap": 264.0317,
+          "moved": 57.4921,
+          "closed": 0.122215,
+          "cosine": 0.561269,
+          "off_axis": 0.180215
+        }
+      },
+      {
+        "id": 15497,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 210.8082,
+          "moved": 78.9073,
+          "closed": 0.230616,
+          "cosine": 0.616113,
+          "off_axis": 0.294827
+        },
+        "scaled": {
+          "gap": 322.6419,
+          "moved": 120.7676,
+          "closed": 0.230616,
+          "cosine": 0.616113,
+          "off_axis": 0.294827
+        }
+      },
+      {
+        "id": 18211,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 164.2925,
+          "moved": 59.4653,
+          "closed": 0.231815,
+          "cosine": 0.640466,
+          "off_axis": 0.277971
+        },
+        "scaled": {
+          "gap": 251.4496,
+          "moved": 91.0116,
+          "closed": 0.231815,
+          "cosine": 0.640466,
+          "off_axis": 0.277971
+        }
+      }
+    ],
+    "raw": {
+      "closed": {
+        "n": 4,
+        "min": 0.1222,
+        "p25": 0.2306,
+        "median": 0.2312,
+        "p75": 0.2318,
+        "max": 0.2498,
+        "mean": 0.2086,
+        "stdev": 0.0583
+      },
+      "cosine": {
+        "n": 4,
+        "min": 0.5613,
+        "p25": 0.6161,
+        "median": 0.6252,
+        "p75": 0.6342,
+        "max": 0.6405,
+        "mean": 0.613,
+        "stdev": 0.036
+      },
+      "off_axis": {
+        "n": 4,
+        "min": 0.1802,
+        "p25": 0.278,
+        "median": 0.2864,
+        "p75": 0.2948,
+        "max": 0.3045,
+        "mean": 0.2644,
+        "stdev": 0.0572
+      },
+      "gap": {
+        "n": 4,
+        "min": 164.2925,
+        "p25": 172.5134,
+        "median": 185.4192,
+        "p75": 198.3251,
+        "max": 210.8082,
+        "mean": 186.4848,
+        "stdev": 21.7525
+      },
+      "moved": {
+        "n": 4,
+        "min": 37.5642,
+        "p25": 59.4653,
+        "median": 68.7847,
+        "p75": 78.1041,
+        "max": 78.9073,
+        "mean": 63.5102,
+        "stdev": 19.4902
+      }
+    },
+    "scaled": {
+      "closed": {
+        "n": 4,
+        "min": 0.1222,
+        "p25": 0.2306,
+        "median": 0.2312,
+        "p75": 0.2318,
+        "max": 0.2498,
+        "mean": 0.2086,
+        "stdev": 0.0583
+      },
+      "cosine": {
+        "n": 4,
+        "min": 0.5613,
+        "p25": 0.6161,
+        "median": 0.6252,
+        "p75": 0.6342,
+        "max": 0.6405,
+        "mean": 0.613,
+        "stdev": 0.036
+      },
+      "off_axis": {
+        "n": 4,
+        "min": 0.1802,
+        "p25": 0.278,
+        "median": 0.2864,
+        "p75": 0.2948,
+        "max": 0.3045,
+        "mean": 0.2644,
+        "stdev": 0.0572
+      },
+      "gap": {
+        "n": 4,
+        "min": 251.4496,
+        "p25": 264.0317,
+        "median": 283.7842,
+        "p75": 303.5366,
+        "max": 322.6419,
+        "mean": 285.415,
+        "stdev": 33.2923
+      },
+      "moved": {
+        "n": 4,
+        "min": 57.4921,
+        "p25": 91.0116,
+        "median": 105.275,
+        "p75": 119.5383,
+        "max": 120.7676,
+        "mean": 97.2024,
+        "stdev": 29.8298
+      }
+    },
+    "built_with": {
+      "eps": 0.04,
+      "iters": 250,
+      "step_scale": 1.0,
+      "sigma": 0.5,
+      "compute_dtype": "bfloat16",
+      "device": "Tesla T4"
+    }
+  },
+  "nightshade_sd3/cat->dog@t4_fp32": {
+    "attack": "nightshade_sd3",
+    "pair": "cat->dog",
+    "model": "sd3_medium",
+    "pretrained": "stabilityai/stable-diffusion-3-medium-diffusers",
+    "anchor_kind": "generated",
+    "space": "latent",
+    "resolution": 512,
+    "n_images": 4,
+    "seconds": 3.2,
+    "distinct_targets": 1,
+    "vae": {
+      "latent_channels": 16,
+      "shift_factor": 0.0609,
+      "scaling_factor": 1.5305
+    },
+    "images": [
+      {
+        "id": 825,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 198.3251,
+          "moved": 78.21,
+          "closed": 0.249956,
+          "cosine": 0.633838,
+          "off_axis": 0.305018
+        },
+        "scaled": {
+          "gap": 303.5366,
+          "moved": 119.7005,
+          "closed": 0.249956,
+          "cosine": 0.633838,
+          "off_axis": 0.305018
+        }
+      },
+      {
+        "id": 8829,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 172.5134,
+          "moved": 37.6674,
+          "closed": 0.122353,
+          "cosine": 0.560365,
+          "off_axis": 0.180843
+        },
+        "scaled": {
+          "gap": 264.0317,
+          "moved": 57.6499,
+          "closed": 0.122353,
+          "cosine": 0.560365,
+          "off_axis": 0.180843
+        }
+      },
+      {
+        "id": 15497,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 210.8082,
+          "moved": 78.972,
+          "closed": 0.230821,
+          "cosine": 0.616154,
+          "off_axis": 0.295057
+        },
+        "scaled": {
+          "gap": 322.6419,
+          "moved": 120.8667,
+          "closed": 0.230821,
+          "cosine": 0.616153,
+          "off_axis": 0.295057
+        }
+      },
+      {
+        "id": 18211,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 164.2925,
+          "moved": 59.4686,
+          "closed": 0.231869,
+          "cosine": 0.640578,
+          "off_axis": 0.277952
+        },
+        "scaled": {
+          "gap": 251.4496,
+          "moved": 91.0167,
+          "closed": 0.231869,
+          "cosine": 0.640578,
+          "off_axis": 0.277953
+        }
+      }
+    ],
+    "raw": {
+      "closed": {
+        "n": 4,
+        "min": 0.1224,
+        "p25": 0.2308,
+        "median": 0.2313,
+        "p75": 0.2319,
+        "max": 0.25,
+        "mean": 0.2087,
+        "stdev": 0.0583
+      },
+      "cosine": {
+        "n": 4,
+        "min": 0.5604,
+        "p25": 0.6162,
+        "median": 0.625,
+        "p75": 0.6338,
+        "max": 0.6406,
+        "mean": 0.6127,
+        "stdev": 0.0364
+      },
+      "off_axis": {
+        "n": 4,
+        "min": 0.1808,
+        "p25": 0.278,
+        "median": 0.2865,
+        "p75": 0.2951,
+        "max": 0.305,
+        "mean": 0.2647,
+        "stdev": 0.057
+      },
+      "gap": {
+        "n": 4,
+        "min": 164.2925,
+        "p25": 172.5134,
+        "median": 185.4192,
+        "p75": 198.3251,
+        "max": 210.8082,
+        "mean": 186.4848,
+        "stdev": 21.7525
+      },
+      "moved": {
+        "n": 4,
+        "min": 37.6674,
+        "p25": 59.4686,
+        "median": 68.8393,
+        "p75": 78.21,
+        "max": 78.972,
+        "mean": 63.5795,
+        "stdev": 19.4877
+      }
+    },
+    "scaled": {
+      "closed": {
+        "n": 4,
+        "min": 0.1224,
+        "p25": 0.2308,
+        "median": 0.2313,
+        "p75": 0.2319,
+        "max": 0.25,
+        "mean": 0.2087,
+        "stdev": 0.0583
+      },
+      "cosine": {
+        "n": 4,
+        "min": 0.5604,
+        "p25": 0.6162,
+        "median": 0.625,
+        "p75": 0.6338,
+        "max": 0.6406,
+        "mean": 0.6127,
+        "stdev": 0.0364
+      },
+      "off_axis": {
+        "n": 4,
+        "min": 0.1808,
+        "p25": 0.278,
+        "median": 0.2865,
+        "p75": 0.2951,
+        "max": 0.305,
+        "mean": 0.2647,
+        "stdev": 0.057
+      },
+      "gap": {
+        "n": 4,
+        "min": 251.4496,
+        "p25": 264.0317,
+        "median": 283.7842,
+        "p75": 303.5366,
+        "max": 322.6419,
+        "mean": 285.415,
+        "stdev": 33.2923
+      },
+      "moved": {
+        "n": 4,
+        "min": 57.6499,
+        "p25": 91.0167,
+        "median": 105.3586,
+        "p75": 119.7005,
+        "max": 120.8667,
+        "mean": 97.3084,
+        "stdev": 29.8261
+      }
+    },
+    "built_with": {
+      "eps": 0.04,
+      "iters": 250,
+      "step_scale": 1.0,
+      "sigma": 0.5,
+      "compute_dtype": "float32",
+      "device": "Tesla T4"
+    }
+  }
+}

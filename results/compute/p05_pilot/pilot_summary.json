@@ -1,0 +1,282 @@
+{
+  "code": "/kaggle/input/datasets/itzagasta/chimera-code",
+  "data": "/kaggle/input/datasets/itzagasta/chimera-p05",
+  "jobs": {
+    "ga_sd3": {
+      "rc": 0,
+      "seconds": 230,
+      "tail": [
+        "/usr/local/lib/python3.13/dist-packages/huggingface_hub/utils/_validators.py:206: UserWarning: The `local_dir_use_symlinks` argument is deprecated and ignored in `hf_hub_download`. Downloading to a local directory does not use symlinks anymore.",
+        "  warnings.warn(",
+        "  vae 4/4  2s",
+        "  vae 4/4  4s",
+        "  vae 4/4  2s",
+        "  vae 4/4  3s",
+        "  vae 4/4  3s",
+        "  vae 4/4  3s",
+        "  slot 1/4  1.55 s/backward  eta 1 min",
+        "",
+        "sd3_medium/cat->dog written, 1 entries -> /kaggle/working/grad_align_pilot_sd3.json",
+        "determinism 1.0  ceiling (cross-half) {'shift_cos': -0.10234, 'grad_closed': -0.10198}  raw baseline 0.37405",
+        "  random           shift_cos +0.5025 [0.26907, 0.55562]  grad_closed +0.3748 [0.15055, 0.55374]  raw +0.4735  cross {'shift_cos': 0.16977, 'grad_closed': 0.09583}",
+        "  nightshade_sd3   shift_cos +0.4730 [0.28804, 0.56097]  grad_closed +0.3333 [0.18888, 0.42735]  raw +0.4177  cross {'shift_cos': 0.09865, 'grad_closed': 0.05494}",
+        "  chimera_pred     shift_cos +0.0044 [-0.01316, 0.08918]  grad_closed +0.0006 [-0.00164, 0.0283]  raw +0.3701  cross {'shift_cos': -0.03135, 'grad_closed': -0.00461}",
+        "  chimera_anchor   shift_cos +0.6299 [0.31815, 0.65479]  grad_closed +0.4079 [0.18733, 0.53349]  raw +0.5515  cross {'shift_cos': 0.17426, 'grad_closed': 0.09228}"
+      ]
+    },
+    "ga_sd2": {
+      "rc": 0,
+      "seconds": 230,
+      "tail": [
+        "/usr/local/lib/python3.13/dist-packages/huggingface_hub/utils/_validators.py:206: UserWarning: The `local_dir_use_symlinks` argument is deprecated and ignored in `hf_hub_download`. Downloading to a local directory does not use symlinks anymore.",
+        "  warnings.warn(",
+        "  vae 4/4  3s",
+        "  vae 4/4  4s",
+        "  vae 4/4  2s",
+        "  vae 4/4  4s",
+        "  vae 4/4  2s",
+        "  slot 1/4  2.23 s/backward  eta 1 min",
+        "",
+        "sd2_base/cat->dog written, 1 entries -> /kaggle/working/grad_align_pilot_sd2.json",
+        "determinism 1.0  ceiling (cross-half) {'shift_cos': -0.00382, 'grad_closed': -0.0048}  raw baseline 0.03985",
+        "  random           shift_cos +0.3029 [0.26468, 0.41715]  grad_closed +0.1792 [0.15515, 0.28688]  raw +0.0724  cross {'shift_cos': 0.00777, 'grad_closed': 0.01423}",
+        "  nightshade_sd2   shift_cos +0.4751 [0.32186, 0.66867]  grad_closed +0.6348 [0.44883, 0.70986]  raw +0.1006  cross {'shift_cos': 0.00517, 'grad_closed': 0.02664}",
+        "  nightshade_sd3   shift_cos +0.4050 [0.33686, 0.44715]  grad_closed +0.3291 [0.23715, 0.38827]  raw +0.1008  cross {'shift_cos': 0.009, 'grad_closed': 0.01911}"
+      ]
+    },
+    "gen_fp16": {
+      "rc": 0,
+      "seconds": 1289,
+      "tail": [
+        "    \"attack\": \"nightshade_sd3\",",
+        "    \"pair\": \"cat->dog\",",
+        "    \"model\": \"sd3_medium\",",
+        "    \"space\": \"latent\",",
+        "    \"anchor\": \"generated\",",
+        "    \"pretrained\": \"stabilityai/stable-diffusion-3-medium-diffusers\",",
+        "    \"iters\": 250,",
+        "    \"eps\": 0.04,",
+        "    \"sigma\": 0.5,",
+        "    \"lpips_weight\": 0.0,",
+        "    \"resolution\": 512,",
+        "    \"optimiser\": \"signed-grad-anneal\",",
+        "    \"target\": \"fixed_clean\",",
+        "    \"noise\": \"fixed_per_image_id\",",
+        "    \"step_scale\": 1.0,",
+        "    \"anchor_seed\": 123,",
+        "    \"anchor_prompt\": \"A photo of a {}\",",
+        "    \"git_commit\": \"\"",
+        "  },",
+        "  \"generated\": 4,",
+        "  \"seconds\": 1272.6,",
+        "  \"compute_dtype\": \"bfloat16\",",
+        "  \"device\": \"Tesla T4\",",
+        "  \"peak_gb\": 7.04",
+        "}"
+      ]
+    },
+    "gen_fp32": {
+      "rc": 0,
+      "seconds": 1289,
+      "tail": [
+        "    \"attack\": \"nightshade_sd3\",",
+        "    \"pair\": \"cat->dog\",",
+        "    \"model\": \"sd3_medium\",",
+        "    \"space\": \"latent\",",
+        "    \"anchor\": \"generated\",",
+        "    \"pretrained\": \"stabilityai/stable-diffusion-3-medium-diffusers\",",
+        "    \"iters\": 250,",
+        "    \"eps\": 0.04,",
+        "    \"sigma\": 0.5,",
+        "    \"lpips_weight\": 0.0,",
+        "    \"resolution\": 512,",
+        "    \"optimiser\": \"signed-grad-anneal\",",
+        "    \"target\": \"fixed_clean\",",
+        "    \"noise\": \"fixed_per_image_id\",",
+        "    \"step_scale\": 1.0,",
+        "    \"anchor_seed\": 123,",
+        "    \"anchor_prompt\": \"A photo of a {}\",",
+        "    \"git_commit\": \"\"",
+        "  },",
+        "  \"generated\": 4,",
+        "  \"seconds\": 548.3,",
+        "  \"compute_dtype\": \"float32\",",
+        "  \"device\": \"Tesla T4\",",
+        "  \"peak_gb\": 12.25",
+        "}"
+      ]
+    },
+    "diag_l40s_bf16": {
+      "rc": 0,
+      "seconds": 33,
+      "tail": [
+        "/usr/local/lib/python3.13/dist-packages/huggingface_hub/utils/_validators.py:206: UserWarning: The `local_dir_use_symlinks` argument is deprecated and ignored in `hf_hub_download`. Downloading to a local directory does not use symlinks anymore.",
+        "  warnings.warn(",
+        "1 pool(s) to measure",
+        "  nightshade_sd3/cat->dog",
+        "    4/4",
+        "    closed +0.231 (p25 +0.231, p75 +0.231)  cosine +0.625  on 4 images, 4s",
+        "",
+        "1 written, 1 entries total -> /kaggle/working/poison_diag_pilot.json",
+        "",
+        "pool                                ch  closed (median)   cosine  off-axis",
+        "nightshade_sd3/cat->dog@l40s_bf16   16           0.2309   0.6249    0.2865"
+      ]
+    },
+    "diag_t4_fp16": {
+      "rc": 0,
+      "seconds": 17,
+      "tail": [
+        "/usr/local/lib/python3.13/dist-packages/huggingface_hub/utils/_validators.py:206: UserWarning: The `local_dir_use_symlinks` argument is deprecated and ignored in `hf_hub_download`. Downloading to a local directory does not use symlinks anymore.",
+        "  warnings.warn(",
+        "1 pool(s) to measure",
+        "  nightshade_sd3/cat->dog",
+        "    4/4",
+        "    closed +0.231 (p25 +0.231, p75 +0.232)  cosine +0.625  on 4 images, 3s",
+        "",
+        "1 written, 2 entries total -> /kaggle/working/poison_diag_pilot.json",
+        "",
+        "pool                                ch  closed (median)   cosine  off-axis",
+        "nightshade_sd3/cat->dog@l40s_bf16   16           0.2309   0.6249    0.2865",
+        "nightshade_sd3/cat->dog@t4_fp16     16           0.2312   0.6252    0.2864"
+      ]
+    },
+    "diag_t4_fp32": {
+      "rc": 0,
+      "seconds": 17,
+      "tail": [
+        "/usr/local/lib/python3.13/dist-packages/huggingface_hub/utils/_validators.py:206: UserWarning: The `local_dir_use_symlinks` argument is deprecated and ignored in `hf_hub_download`. Downloading to a local directory does not use symlinks anymore.",
+        "  warnings.warn(",
+        "1 pool(s) to measure",
+        "  nightshade_sd3/cat->dog",
+        "    4/4",
+        "    closed +0.231 (p25 +0.231, p75 +0.232)  cosine +0.625  on 4 images, 3s",
+        "",
+        "1 written, 3 entries total -> /kaggle/working/poison_diag_pilot.json",
+        "",
+        "pool                                ch  closed (median)   cosine  off-axis",
+        "nightshade_sd3/cat->dog@l40s_bf16   16           0.2309   0.6249    0.2865",
+        "nightshade_sd3/cat->dog@t4_fp16     16           0.2312   0.6252    0.2864",
+        "nightshade_sd3/cat->dog@t4_fp32     16           0.2313   0.6250    0.2865"
+      ]
+    }
+  },
+  "gen_fp16": {
+    "compute_dtype": "bfloat16",
+    "seconds": 1272.6,
+    "peak_gb": 7.04,
+    "per_image": [
+      {
+        "id": 825,
+        "loss_q": 160.53101,
+        "ref_loss_q": 160.53815,
+        "loss0": 198.18356,
+        "ref_loss0": 198.20543,
+        "linf": 10.0,
+        "psnr": 28.83
+      },
+      {
+        "id": 8829,
+        "loss_q": 154.5392,
+        "ref_loss_q": 154.71754,
+        "loss0": 172.37167,
+        "ref_loss0": 172.4052,
+        "linf": 10.0,
+        "psnr": 28.36
+      },
+      {
+        "id": 15497,
+        "loss_q": 173.62126,
+        "ref_loss_q": 173.64328,
+        "loss0": 210.62927,
+        "ref_loss0": 210.60728,
+        "linf": 10.0,
+        "psnr": 28.98
+      },
+      {
+        "id": 18211,
+        "loss_q": 134.17546,
+        "ref_loss_q": 134.27454,
+        "loss0": 164.21463,
+        "ref_loss0": 164.19595,
+        "linf": 10.0,
+        "psnr": 28.71
+      }
+    ]
+  },
+  "gen_fp32": {
+    "compute_dtype": "float32",
+    "seconds": 548.3,
+    "peak_gb": 12.25,
+    "per_image": [
+      {
+        "id": 825,
+        "loss_q": 160.5825,
+        "ref_loss_q": 160.53815,
+        "loss0": 198.32513,
+        "ref_loss0": 198.20543,
+        "linf": 10.0,
+        "psnr": 28.83
+      },
+      {
+        "id": 8829,
+        "loss_q": 154.58672,
+        "ref_loss_q": 154.71754,
+        "loss0": 172.51338,
+        "ref_loss0": 172.4052,
+        "linf": 10.0,
+        "psnr": 28.36
+      },
+      {
+        "id": 15497,
+        "loss_q": 173.67003,
+        "ref_loss_q": 173.64328,
+        "loss0": 210.80815,
+        "ref_loss0": 210.60728,
+        "linf": 10.0,
+        "psnr": 28.99
+      },
+      {
+        "id": 18211,
+        "loss_q": 134.20628,
+        "ref_loss_q": 134.27454,
+        "loss0": 164.29248,
+        "ref_loss0": 164.19595,
+        "linf": 10.0,
+        "psnr": 28.71
+      }
+    ]
+  },
+  "diag": {
+    "nightshade_sd3/cat->dog@l40s_bf16": {
+      "closed": 0.2309,
+      "cosine": 0.6249,
+      "ids": [
+        825,
+        8829,
+        15497,
+        18211
+      ]
+    },
+    "nightshade_sd3/cat->dog@t4_fp16": {
+      "closed": 0.2312,
+      "cosine": 0.6252,
+      "ids": [
+        825,
+        8829,
+        15497,
+        18211
+      ]
+    },
+    "nightshade_sd3/cat->dog@t4_fp32": {
+      "closed": 0.2313,
+      "cosine": 0.625,
+      "ids": [
+        825,
+        8829,
+        15497,
+        18211
+      ]
+    }
+  }
+}

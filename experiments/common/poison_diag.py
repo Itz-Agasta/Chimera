@@ -196,6 +196,8 @@ def main(argv=None):
     ap.add_argument("--resolution", type=int, default=RESOLUTION)
     ap.add_argument("--device", default="cuda")
     ap.add_argument("--out", default="results/compute/poison_diag.json")
+    ap.add_argument("--tag", default="", help="suffix for the result key, e.g. 'eps0.08', so a pool built with "
+                    "other settings sits beside the default one instead of replacing it")
     a = ap.parse_args(argv)
 
     manifest = json.loads(Path(a.manifest).read_text())
@@ -216,7 +218,13 @@ def main(argv=None):
         print(f"  {attack}/{pair}")
         out = measure_pool(attack, pair, manifest, a.images_root, a.poison_root, a.anchors,
                            limit=a.limit or None, device=a.device, res=a.resolution, batch=a.batch)
-        results[f"{attack}/{pair}"] = out
+        # The generator's own record of how the pool was built, so an eps-sweep entry carries its eps.
+        man = Path(poison_dir_for(a.poison_root, attack, pair)) / "poison_manifest.json"
+        if man.exists():
+            built = json.loads(man.read_text())
+            out["built_with"] = {k: built["config"].get(k) for k in ("eps", "iters", "step_scale", "sigma")}
+            out["built_with"].update({k: built.get(k) for k in ("compute_dtype", "device")})
+        results[f"{attack}/{pair}" + (f"@{a.tag}" if a.tag else "")] = out
         s = out["scaled"]["closed"]
         c = out["scaled"]["cosine"]
         print(f"    closed {s['median']:+.3f} (p25 {s['p25']:+.3f}, p75 {s['p75']:+.3f})  "

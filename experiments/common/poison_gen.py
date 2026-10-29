@@ -491,6 +491,10 @@ def generate(attack: str, pair: str, manifest: dict, images_root, text_root, out
 
     out = {"config": config, "images": [done[r["id"]] for r in rows if r["id"] in done],
            "generated": len(todo), "seconds": round(time.time() - t0, 1),
+           # Kept out of `config`, which gates resuming: the pools built before this field existed would
+           # otherwise refuse to resume. It matters because a T4 runs fp16 where an L40S runs bf16.
+           "compute_dtype": str(autocast_dtype()).replace("torch.", ""),
+           "device": torch.cuda.get_device_name(0) if device == "cuda" else "cpu",
            "peak_gb": round(torch.cuda.max_memory_allocated() / 2**30, 2) if device == "cuda" else None}
     if curves:
         out["curves"] = curves
@@ -520,10 +524,29 @@ def main(argv=None):
                         "budget (1.0 = Nightshade's full-budget first step)")
     p.add_argument("--moving-target", action="store_true",
                    help="the draft formulation, which diverges; kept to document why it is not used")
+    p.add_argument("--select-seed", type=int, help="with --select-count: only the ids that the seed's "
+                   "n-poison cell trains on (run_spec.poison_selection), e.g. the Gate B cell's 100")
+    p.add_argument("--select-count", type=int)
+    p.add_argument("--fp32", action="store_true",
+                   help="run the VAE in fp32 instead of the autocast dtype -- the fallback for a T4, whose "
+                        "only half precision is fp16")
     a = p.parse_args(argv)
 
     data = Path(a.data_root)
     manifest = json.loads((data / "chimera_coco" / "manifest.json").read_text())
+    if a.fp32:
+        import torch
+
+        # Every dtype decision in this module goes through this one name, so rebinding it is the whole switch.
+        global autocast_dtype
+        autocast_dtype = lambda: torch.float32  # noqa: E731
+    only_ids = None
+    if a.select_count:
+        from run_spec import RunSpec, poison_selection
+
+        spec = RunSpec(model=ATTACK_SPEC[a.attack]["model"], regime="full_ft", attack=a.attack, pair=a.pair,
+                       poison_count=a.select_count, seed=a.select_seed or 0)
+        only_ids = {r["id"] for r in poison_selection(manifest, spec)}
     # Default to the attack's own measured schedule, so a pool built from this CLI matches one built by the
     # Modal driver. Taking ITERS here instead would have given the latent attacks 500 iters at step_scale 1.0,
     # a combination nothing was measured at.
@@ -533,7 +556,7 @@ def main(argv=None):
                    poison_dir_for(a.poison_root, a.attack, a.pair), anchors_root=a.anchors,
                    iters=iters, eps=a.eps, sigma=a.sigma, lpips_weight=a.lpips_weight,
                    batch=a.batch, limit=a.limit, log_every=a.log_every, git_commit=a.git_commit,
-                   moving_target=a.moving_target, step_scale=step_scale)
+                   moving_target=a.moving_target, step_scale=step_scale, only_ids=only_ids)
     print(json.dumps({k: v for k, v in out.items() if k != "images"}, indent=2))
 
 

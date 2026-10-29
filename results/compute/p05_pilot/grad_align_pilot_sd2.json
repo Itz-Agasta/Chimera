@@ -1,0 +1,106 @@
+{
+  "sd2_base/cat->dog": {
+    "model": "sd2_base",
+    "pair": "cat->dog",
+    "seed": 0,
+    "n_slots": 4,
+    "draws": 2,
+    "subset": {
+      "blocks": 2,
+      "n_params": 36678720,
+      "n_tensors": 156,
+      "first": "up_blocks.2.attentions.0.norm.weight",
+      "last": "up_blocks.3.attentions.2.proj_out.bias"
+    },
+    "determinism_cos": 1.0,
+    "ceiling_cross": {
+      "shift_cos": -0.00382,
+      "grad_closed": -0.0048
+    },
+    "raw_cos_baseline": 0.03985,
+    "norms": {
+      "clean": 0.025069,
+      "dirty": 0.017976,
+      "random": 0.025584,
+      "nightshade_sd2": 0.034708,
+      "nightshade_sd3": 0.026374
+    },
+    "mean_loss": {
+      "clean": 0.13055,
+      "dirty": 0.1398,
+      "random": 0.12499,
+      "nightshade_sd2": 0.11929,
+      "nightshade_sd3": 0.1399
+    },
+    "sets": {
+      "random": {
+        "raw_cos": 0.07239,
+        "shift_cos": 0.30287,
+        "grad_closed": 0.17916,
+        "shift_norm": 0.59407,
+        "cross": {
+          "shift_cos": 0.00777,
+          "grad_closed": 0.01423
+        },
+        "ci95": {
+          "shift_cos": [
+            0.26468,
+            0.41715
+          ],
+          "grad_closed": [
+            0.15515,
+            0.28688
+          ]
+        }
+      },
+      "nightshade_sd2": {
+        "raw_cos": 0.10056,
+        "shift_cos": 0.47509,
+        "grad_closed": 0.63483,
+        "shift_norm": 1.34193,
+        "cross": {
+          "shift_cos": 0.00517,
+          "grad_closed": 0.02664
+        },
+        "ci95": {
+          "shift_cos": [
+            0.32186,
+            0.66867
+          ],
+          "grad_closed": [
+            0.44883,
+            0.70986
+          ]
+        }
+      },
+      "nightshade_sd3": {
+        "raw_cos": 0.1008,
+        "shift_cos": 0.40501,
+        "grad_closed": 0.3291,
+        "shift_norm": 0.81605,
+        "cross": {
+          "shift_cos": 0.009,
+          "grad_closed": 0.01911
+        },
+        "ci95": {
+          "shift_cos": [
+            0.33686,
+            0.44715
+          ],
+          "grad_closed": [
+            0.23715,
+            0.38827
+          ]
+        }
+      }
+    },
+    "seconds": {
+      "encode": 55.5,
+      "gradients": 50.0,
+      "per_backward": 1.249
+    },
+    "peak_gb": 6.26,
+    "device": "Tesla T4",
+    "compute_dtype": "bfloat16"
+  }
+}
