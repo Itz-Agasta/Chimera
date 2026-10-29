@@ -1,0 +1,1933 @@
+{
+  "nightshade_sd3/cat->dog@eps0.32": {
+    "attack": "nightshade_sd3",
+    "pair": "cat->dog",
+    "model": "sd3_medium",
+    "pretrained": "stabilityai/stable-diffusion-3-medium-diffusers",
+    "anchor_kind": "generated",
+    "space": "latent",
+    "resolution": 512,
+    "n_images": 100,
+    "seconds": 90.3,
+    "distinct_targets": 1,
+    "vae": {
+      "latent_channels": 16,
+      "shift_factor": 0.0609,
+      "scaling_factor": 1.5305
+    },
+    "images": [
+      {
+        "id": 825,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 198.3251,
+          "moved": 128.513,
+          "closed": 0.427977,
+          "cosine": 0.660467,
+          "off_axis": 0.486548
+        },
+        "scaled": {
+          "gap": 303.5366,
+          "moved": 196.6892,
+          "closed": 0.427977,
+          "cosine": 0.660467,
+          "off_axis": 0.486548
+        }
+      },
+      {
+        "id": 8829,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 172.5134,
+          "moved": 89.3037,
+          "closed": 0.408185,
+          "cosine": 0.788515,
+          "off_axis": 0.318371
+        },
+        "scaled": {
+          "gap": 264.0317,
+          "moved": 136.6794,
+          "closed": 0.408185,
+          "cosine": 0.788515,
+          "off_axis": 0.318371
+        }
+      },
+      {
+        "id": 15497,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 210.8082,
+          "moved": 123.3737,
+          "closed": 0.394718,
+          "cosine": 0.674452,
+          "off_axis": 0.432095
+        },
+        "scaled": {
+          "gap": 322.6419,
+          "moved": 188.8235,
+          "closed": 0.394718,
+          "cosine": 0.674452,
+          "off_axis": 0.432095
+        }
+      },
+      {
+        "id": 18211,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 164.2925,
+          "moved": 108.2833,
+          "closed": 0.500851,
+          "cosine": 0.759915,
+          "off_axis": 0.428423
+        },
+        "scaled": {
+          "gap": 251.4496,
+          "moved": 165.7276,
+          "closed": 0.500851,
+          "cosine": 0.759914,
+          "off_axis": 0.428423
+        }
+      },
+      {
+        "id": 24072,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 183.6161,
+          "moved": 108.0294,
+          "closed": 0.401645,
+          "cosine": 0.68267,
+          "off_axis": 0.429919
+        },
+        "scaled": {
+          "gap": 281.0244,
+          "moved": 165.3391,
+          "closed": 0.401645,
+          "cosine": 0.68267,
+          "off_axis": 0.429919
+        }
+      },
+      {
+        "id": 27718,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 193.7737,
+          "moved": 98.9655,
+          "closed": 0.344306,
+          "cosine": 0.674148,
+          "off_axis": 0.377221
+        },
+        "scaled": {
+          "gap": 296.5707,
+          "moved": 151.4667,
+          "closed": 0.344306,
+          "cosine": 0.674148,
+          "off_axis": 0.377221
+        }
+      },
+      {
+        "id": 38546,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 191.4153,
+          "moved": 92.8952,
+          "closed": 0.340359,
+          "cosine": 0.701326,
+          "off_axis": 0.345947
+        },
+        "scaled": {
+          "gap": 292.9611,
+          "moved": 142.1761,
+          "closed": 0.340359,
+          "cosine": 0.701326,
+          "off_axis": 0.345947
+        }
+      },
+      {
+        "id": 48530,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 178.3978,
+          "moved": 105.9751,
+          "closed": 0.403625,
+          "cosine": 0.67946,
+          "off_axis": 0.435853
+        },
+        "scaled": {
+          "gap": 273.0378,
+          "moved": 162.1949,
+          "closed": 0.403625,
+          "cosine": 0.67946,
+          "off_axis": 0.435853
+        }
+      },
+      {
+        "id": 67122,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 190.7512,
+          "moved": 111.6103,
+          "closed": 0.442575,
+          "cosine": 0.756397,
+          "off_axis": 0.382728
+        },
+        "scaled": {
+          "gap": 291.9447,
+          "moved": 170.8195,
+          "closed": 0.442575,
+          "cosine": 0.756397,
+          "off_axis": 0.382728
+        }
+      },
+      {
+        "id": 73000,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 189.0087,
+          "moved": 120.0827,
+          "closed": 0.461376,
+          "cosine": 0.726201,
+          "off_axis": 0.436778
+        },
+        "scaled": {
+          "gap": 289.2779,
+          "moved": 183.7866,
+          "closed": 0.461376,
+          "cosine": 0.726201,
+          "off_axis": 0.436778
+        }
+      },
+      {
+        "id": 73260,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 198.9457,
+          "moved": 127.4134,
+          "closed": 0.423341,
+          "cosine": 0.661012,
+          "off_axis": 0.480572
+        },
+        "scaled": {
+          "gap": 304.4864,
+          "moved": 195.0061,
+          "closed": 0.423341,
+          "cosine": 0.661012,
+          "off_axis": 0.480572
+        }
+      },
+      {
+        "id": 74013,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 165.487,
+          "moved": 114.0904,
+          "closed": 0.573023,
+          "cosine": 0.831165,
+          "off_axis": 0.383337
+        },
+        "scaled": {
+          "gap": 253.2778,
+          "moved": 174.6153,
+          "closed": 0.573023,
+          "cosine": 0.831165,
+          "off_axis": 0.383337
+        }
+      },
+      {
+        "id": 80208,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 166.1409,
+          "moved": 107.4325,
+          "closed": 0.502548,
+          "cosine": 0.777175,
+          "off_axis": 0.406918
+        },
+        "scaled": {
+          "gap": 254.2787,
+          "moved": 164.4255,
+          "closed": 0.502548,
+          "cosine": 0.777175,
+          "off_axis": 0.406918
+        }
+      },
+      {
+        "id": 86137,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 194.6177,
+          "moved": 107.4444,
+          "closed": 0.389804,
+          "cosine": 0.706064,
+          "off_axis": 0.390954
+        },
+        "scaled": {
+          "gap": 297.8623,
+          "moved": 164.4437,
+          "closed": 0.389804,
+          "cosine": 0.706064,
+          "off_axis": 0.390954
+        }
+      },
+      {
+        "id": 112770,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 167.1026,
+          "moved": 120.4189,
+          "closed": 0.547729,
+          "cosine": 0.760071,
+          "off_axis": 0.468293
+        },
+        "scaled": {
+          "gap": 255.7505,
+          "moved": 184.3011,
+          "closed": 0.547729,
+          "cosine": 0.760071,
+          "off_axis": 0.468293
+        }
+      },
+      {
+        "id": 118723,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 194.6597,
+          "moved": 130.827,
+          "closed": 0.474712,
+          "cosine": 0.706332,
+          "off_axis": 0.475753
+        },
+        "scaled": {
+          "gap": 297.9267,
+          "moved": 200.2308,
+          "closed": 0.474712,
+          "cosine": 0.706332,
+          "off_axis": 0.475753
+        }
+      },
+      {
+        "id": 121622,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 187.0388,
+          "moved": 94.0337,
+          "closed": 0.365152,
+          "cosine": 0.726311,
+          "off_axis": 0.345573
+        },
+        "scaled": {
+          "gap": 286.2629,
+          "moved": 143.9185,
+          "closed": 0.365152,
+          "cosine": 0.72631,
+          "off_axis": 0.345573
+        }
+      },
+      {
+        "id": 123765,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 167.6104,
+          "moved": 126.8701,
+          "closed": 0.676468,
+          "cosine": 0.893694,
+          "off_axis": 0.33962
+        },
+        "scaled": {
+          "gap": 256.5277,
+          "moved": 194.1747,
+          "closed": 0.676468,
+          "cosine": 0.893694,
+          "off_axis": 0.33962
+        }
+      },
+      {
+        "id": 129327,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 164.7949,
+          "moved": 127.1902,
+          "closed": 0.556609,
+          "cosine": 0.721175,
+          "off_axis": 0.534673
+        },
+        "scaled": {
+          "gap": 252.2187,
+          "moved": 194.6646,
+          "closed": 0.556609,
+          "cosine": 0.721175,
+          "off_axis": 0.534673
+        }
+      },
+      {
+        "id": 131564,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 209.0254,
+          "moved": 120.1295,
+          "closed": 0.363214,
+          "cosine": 0.631992,
+          "off_axis": 0.445388
+        },
+        "scaled": {
+          "gap": 319.9134,
+          "moved": 183.8582,
+          "closed": 0.363214,
+          "cosine": 0.631992,
+          "off_axis": 0.445388
+        }
+      },
+      {
+        "id": 134548,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 204.7891,
+          "moved": 123.1225,
+          "closed": 0.416018,
+          "cosine": 0.691961,
+          "off_axis": 0.434038
+        },
+        "scaled": {
+          "gap": 313.4298,
+          "moved": 188.4389,
+          "closed": 0.416018,
+          "cosine": 0.691961,
+          "off_axis": 0.434038
+        }
+      },
+      {
+        "id": 138186,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 173.1674,
+          "moved": 128.6699,
+          "closed": 0.526862,
+          "cosine": 0.709065,
+          "off_axis": 0.523948
+        },
+        "scaled": {
+          "gap": 265.0327,
+          "moved": 196.9293,
+          "closed": 0.526862,
+          "cosine": 0.709065,
+          "off_axis": 0.523948
+        }
+      },
+      {
+        "id": 142484,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 168.9127,
+          "moved": 115.2375,
+          "closed": 0.507826,
+          "cosine": 0.744361,
+          "off_axis": 0.455579
+        },
+        "scaled": {
+          "gap": 258.5209,
+          "moved": 176.3711,
+          "closed": 0.507826,
+          "cosine": 0.744361,
+          "off_axis": 0.455579
+        }
+      },
+      {
+        "id": 172163,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 167.5992,
+          "moved": 92.9388,
+          "closed": 0.402059,
+          "cosine": 0.725044,
+          "off_axis": 0.381906
+        },
+        "scaled": {
+          "gap": 256.5106,
+          "moved": 142.2429,
+          "closed": 0.402059,
+          "cosine": 0.725044,
+          "off_axis": 0.381906
+        }
+      },
+      {
+        "id": 174137,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 160.0464,
+          "moved": 117.092,
+          "closed": 0.520295,
+          "cosine": 0.711161,
+          "off_axis": 0.514345
+        },
+        "scaled": {
+          "gap": 244.951,
+          "moved": 179.2093,
+          "closed": 0.520295,
+          "cosine": 0.711161,
+          "off_axis": 0.514345
+        }
+      },
+      {
+        "id": 177413,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 175.3403,
+          "moved": 126.0669,
+          "closed": 0.538798,
+          "cosine": 0.749388,
+          "off_axis": 0.476062
+        },
+        "scaled": {
+          "gap": 268.3583,
+          "moved": 192.9454,
+          "closed": 0.538798,
+          "cosine": 0.749388,
+          "off_axis": 0.476062
+        }
+      },
+      {
+        "id": 178193,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 206.0666,
+          "moved": 100.8777,
+          "closed": 0.353672,
+          "cosine": 0.722458,
+          "off_axis": 0.338475
+        },
+        "scaled": {
+          "gap": 315.3849,
+          "moved": 154.3934,
+          "closed": 0.353672,
+          "cosine": 0.722458,
+          "off_axis": 0.338475
+        }
+      },
+      {
+        "id": 180830,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 189.5873,
+          "moved": 108.2712,
+          "closed": 0.429801,
+          "cosine": 0.752599,
+          "off_axis": 0.37605
+        },
+        "scaled": {
+          "gap": 290.1634,
+          "moved": 165.7091,
+          "closed": 0.429801,
+          "cosine": 0.7526,
+          "off_axis": 0.37605
+        }
+      },
+      {
+        "id": 186635,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 155.8148,
+          "moved": 119.9988,
+          "closed": 0.610639,
+          "cosine": 0.792896,
+          "off_axis": 0.469289
+        },
+        "scaled": {
+          "gap": 238.4745,
+          "moved": 183.6582,
+          "closed": 0.61064,
+          "cosine": 0.792896,
+          "off_axis": 0.469289
+        }
+      },
+      {
+        "id": 193488,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 184.1494,
+          "moved": 104.6081,
+          "closed": 0.409662,
+          "cosine": 0.721158,
+          "off_axis": 0.393536
+        },
+        "scaled": {
+          "gap": 281.8406,
+          "moved": 160.1027,
+          "closed": 0.409662,
+          "cosine": 0.721158,
+          "off_axis": 0.393536
+        }
+      },
+      {
+        "id": 196619,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 157.4648,
+          "moved": 111.7557,
+          "closed": 0.46977,
+          "cosine": 0.661911,
+          "off_axis": 0.531993
+        },
+        "scaled": {
+          "gap": 240.9998,
+          "moved": 171.0421,
+          "closed": 0.46977,
+          "cosine": 0.661911,
+          "off_axis": 0.531993
+        }
+      },
+      {
+        "id": 197528,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 165.6267,
+          "moved": 119.1144,
+          "closed": 0.562771,
+          "cosine": 0.782525,
+          "off_axis": 0.447771
+        },
+        "scaled": {
+          "gap": 253.4917,
+          "moved": 182.3046,
+          "closed": 0.562771,
+          "cosine": 0.782525,
+          "off_axis": 0.447771
+        }
+      },
+      {
+        "id": 200492,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 211.2196,
+          "moved": 128.7732,
+          "closed": 0.42526,
+          "cosine": 0.697532,
+          "off_axis": 0.436858
+        },
+        "scaled": {
+          "gap": 323.2717,
+          "moved": 197.0874,
+          "closed": 0.42526,
+          "cosine": 0.697532,
+          "off_axis": 0.436858
+        }
+      },
+      {
+        "id": 204612,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 195.7539,
+          "moved": 129.2787,
+          "closed": 0.474584,
+          "cosine": 0.718615,
+          "off_axis": 0.459258
+        },
+        "scaled": {
+          "gap": 299.6014,
+          "moved": 197.8611,
+          "closed": 0.474584,
+          "cosine": 0.718615,
+          "off_axis": 0.459258
+        }
+      },
+      {
+        "id": 205279,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 167.3589,
+          "moved": 112.7509,
+          "closed": 0.50056,
+          "cosine": 0.742994,
+          "off_axis": 0.450911
+        },
+        "scaled": {
+          "gap": 256.1429,
+          "moved": 172.5653,
+          "closed": 0.50056,
+          "cosine": 0.742993,
+          "off_axis": 0.450911
+        }
+      },
+      {
+        "id": 215579,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 216.9216,
+          "moved": 113.898,
+          "closed": 0.360215,
+          "cosine": 0.686039,
+          "off_axis": 0.382019
+        },
+        "scaled": {
+          "gap": 331.9985,
+          "moved": 174.3209,
+          "closed": 0.360215,
+          "cosine": 0.686039,
+          "off_axis": 0.382019
+        }
+      },
+      {
+        "id": 217247,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 172.0768,
+          "moved": 117.3218,
+          "closed": 0.524035,
+          "cosine": 0.768606,
+          "off_axis": 0.436162
+        },
+        "scaled": {
+          "gap": 263.3636,
+          "moved": 179.561,
+          "closed": 0.524035,
+          "cosine": 0.768606,
+          "off_axis": 0.436162
+        }
+      },
+      {
+        "id": 222659,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 209.4816,
+          "moved": 121.1315,
+          "closed": 0.403099,
+          "cosine": 0.697109,
+          "off_axis": 0.414581
+        },
+        "scaled": {
+          "gap": 320.6115,
+          "moved": 185.3917,
+          "closed": 0.403099,
+          "cosine": 0.697109,
+          "off_axis": 0.414581
+        }
+      },
+      {
+        "id": 225322,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 156.0162,
+          "moved": 125.5207,
+          "closed": 0.597699,
+          "cosine": 0.742911,
+          "off_axis": 0.538549
+        },
+        "scaled": {
+          "gap": 238.7827,
+          "moved": 192.1095,
+          "closed": 0.597699,
+          "cosine": 0.742911,
+          "off_axis": 0.538549
+        }
+      },
+      {
+        "id": 234599,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 199.9791,
+          "moved": 121.8986,
+          "closed": 0.403987,
+          "cosine": 0.662756,
+          "off_axis": 0.456458
+        },
+        "scaled": {
+          "gap": 306.068,
+          "moved": 186.5659,
+          "closed": 0.403987,
+          "cosine": 0.662756,
+          "off_axis": 0.456458
+        }
+      },
+      {
+        "id": 239458,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 180.2221,
+          "moved": 129.9811,
+          "closed": 0.518742,
+          "cosine": 0.719249,
+          "off_axis": 0.501074
+        },
+        "scaled": {
+          "gap": 275.8299,
+          "moved": 198.9361,
+          "closed": 0.518742,
+          "cosine": 0.719249,
+          "off_axis": 0.501074
+        }
+      },
+      {
+        "id": 241505,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 202.4182,
+          "moved": 106.5458,
+          "closed": 0.35945,
+          "cosine": 0.682891,
+          "off_axis": 0.38452
+        },
+        "scaled": {
+          "gap": 309.801,
+          "moved": 163.0683,
+          "closed": 0.35945,
+          "cosine": 0.682891,
+          "off_axis": 0.38452
+        }
+      },
+      {
+        "id": 253145,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 177.797,
+          "moved": 120.659,
+          "closed": 0.514858,
+          "cosine": 0.758669,
+          "off_axis": 0.442113
+        },
+        "scaled": {
+          "gap": 272.1184,
+          "moved": 184.6687,
+          "closed": 0.514858,
+          "cosine": 0.758669,
+          "off_axis": 0.442113
+        }
+      },
+      {
+        "id": 258523,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 201.4306,
+          "moved": 128.5241,
+          "closed": 0.412929,
+          "cosine": 0.647166,
+          "off_axis": 0.486422
+        },
+        "scaled": {
+          "gap": 308.2895,
+          "moved": 196.7062,
+          "closed": 0.412929,
+          "cosine": 0.647166,
+          "off_axis": 0.486422
+        }
+      },
+      {
+        "id": 258555,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 219.0285,
+          "moved": 126.6612,
+          "closed": 0.415637,
+          "cosine": 0.71874,
+          "off_axis": 0.40207
+        },
+        "scaled": {
+          "gap": 335.2231,
+          "moved": 193.8549,
+          "closed": 0.415637,
+          "cosine": 0.71874,
+          "off_axis": 0.40207
+        }
+      },
+      {
+        "id": 258773,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 188.8951,
+          "moved": 98.3477,
+          "closed": 0.391995,
+          "cosine": 0.752899,
+          "off_axis": 0.342657
+        },
+        "scaled": {
+          "gap": 289.104,
+          "moved": 150.5212,
+          "closed": 0.391995,
+          "cosine": 0.752899,
+          "off_axis": 0.342657
+        }
+      },
+      {
+        "id": 259112,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 188.3622,
+          "moved": 111.7423,
+          "closed": 0.452327,
+          "cosine": 0.76248,
+          "off_axis": 0.383827
+        },
+        "scaled": {
+          "gap": 288.2884,
+          "moved": 171.0217,
+          "closed": 0.452327,
+          "cosine": 0.76248,
+          "off_axis": 0.383827
+        }
+      },
+      {
+        "id": 269314,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 203.3417,
+          "moved": 139.562,
+          "closed": 0.498699,
+          "cosine": 0.726604,
+          "off_axis": 0.471556
+        },
+        "scaled": {
+          "gap": 311.2145,
+          "moved": 213.5996,
+          "closed": 0.498699,
+          "cosine": 0.726604,
+          "off_axis": 0.471556
+        }
+      },
+      {
+        "id": 277584,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 169.5065,
+          "moved": 106.5496,
+          "closed": 0.450609,
+          "cosine": 0.716859,
+          "off_axis": 0.438262
+        },
+        "scaled": {
+          "gap": 259.4296,
+          "moved": 163.0741,
+          "closed": 0.450609,
+          "cosine": 0.716859,
+          "off_axis": 0.438262
+        }
+      },
+      {
+        "id": 278086,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 177.779,
+          "moved": 110.982,
+          "closed": 0.431727,
+          "cosine": 0.691571,
+          "off_axis": 0.450915
+        },
+        "scaled": {
+          "gap": 272.0908,
+          "moved": 169.8579,
+          "closed": 0.431727,
+          "cosine": 0.691571,
+          "off_axis": 0.450915
+        }
+      },
+      {
+        "id": 279386,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 201.5844,
+          "moved": 113.0106,
+          "closed": 0.364826,
+          "cosine": 0.650764,
+          "off_axis": 0.425662
+        },
+        "scaled": {
+          "gap": 308.525,
+          "moved": 172.9628,
+          "closed": 0.364826,
+          "cosine": 0.650764,
+          "off_axis": 0.425662
+        }
+      },
+      {
+        "id": 281296,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 170.4919,
+          "moved": 106.4372,
+          "closed": 0.430624,
+          "cosine": 0.689776,
+          "off_axis": 0.452003
+        },
+        "scaled": {
+          "gap": 260.9379,
+          "moved": 162.9022,
+          "closed": 0.430624,
+          "cosine": 0.689776,
+          "off_axis": 0.452003
+        }
+      },
+      {
+        "id": 282840,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 168.8707,
+          "moved": 140.3092,
+          "closed": 0.570341,
+          "cosine": 0.68644,
+          "off_axis": 0.604196
+        },
+        "scaled": {
+          "gap": 258.4567,
+          "moved": 214.7433,
+          "closed": 0.570341,
+          "cosine": 0.68644,
+          "off_axis": 0.604196
+        }
+      },
+      {
+        "id": 283617,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 155.8704,
+          "moved": 100.3404,
+          "closed": 0.496864,
+          "cosine": 0.771836,
+          "off_axis": 0.409305
+        },
+        "scaled": {
+          "gap": 238.5597,
+          "moved": 153.571,
+          "closed": 0.496864,
+          "cosine": 0.771836,
+          "off_axis": 0.409305
+        }
+      },
+      {
+        "id": 302845,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 181.5948,
+          "moved": 116.0101,
+          "closed": 0.412244,
+          "cosine": 0.6453,
+          "off_axis": 0.488029
+        },
+        "scaled": {
+          "gap": 277.9309,
+          "moved": 177.5534,
+          "closed": 0.412244,
+          "cosine": 0.6453,
+          "off_axis": 0.488029
+        }
+      },
+      {
+        "id": 304941,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 189.1992,
+          "moved": 120.2653,
+          "closed": 0.464918,
+          "cosine": 0.7314,
+          "off_axis": 0.433483
+        },
+        "scaled": {
+          "gap": 289.5694,
+          "moved": 184.066,
+          "closed": 0.464918,
+          "cosine": 0.7314,
+          "off_axis": 0.433483
+        }
+      },
+      {
+        "id": 322057,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 159.1231,
+          "moved": 110.1113,
+          "closed": 0.495155,
+          "cosine": 0.715554,
+          "off_axis": 0.483393
+        },
+        "scaled": {
+          "gap": 243.538,
+          "moved": 168.5253,
+          "closed": 0.495155,
+          "cosine": 0.715554,
+          "off_axis": 0.483393
+        }
+      },
+      {
+        "id": 329319,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 192.9566,
+          "moved": 113.6227,
+          "closed": 0.407105,
+          "cosine": 0.691355,
+          "off_axis": 0.425454
+        },
+        "scaled": {
+          "gap": 295.3201,
+          "moved": 173.8995,
+          "closed": 0.407105,
+          "cosine": 0.691355,
+          "off_axis": 0.425454
+        }
+      },
+      {
+        "id": 342817,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 181.2238,
+          "moved": 117.0396,
+          "closed": 0.413816,
+          "cosine": 0.640752,
+          "off_axis": 0.495834
+        },
+        "scaled": {
+          "gap": 277.363,
+          "moved": 179.1291,
+          "closed": 0.413816,
+          "cosine": 0.640752,
+          "off_axis": 0.495834
+        }
+      },
+      {
+        "id": 343739,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 209.3357,
+          "moved": 125.0647,
+          "closed": 0.440137,
+          "cosine": 0.73671,
+          "off_axis": 0.403992
+        },
+        "scaled": {
+          "gap": 320.3883,
+          "moved": 191.4115,
+          "closed": 0.440137,
+          "cosine": 0.73671,
+          "off_axis": 0.403992
+        }
+      },
+      {
+        "id": 352196,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 193.0945,
+          "moved": 147.5388,
+          "closed": 0.596438,
+          "cosine": 0.7806,
+          "off_axis": 0.477571
+        },
+        "scaled": {
+          "gap": 295.5312,
+          "moved": 225.8081,
+          "closed": 0.596438,
+          "cosine": 0.7806,
+          "off_axis": 0.477571
+        }
+      },
+      {
+        "id": 353149,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 156.5234,
+          "moved": 104.5372,
+          "closed": 0.52506,
+          "cosine": 0.786171,
+          "off_axis": 0.412749
+        },
+        "scaled": {
+          "gap": 239.5591,
+          "moved": 159.9942,
+          "closed": 0.52506,
+          "cosine": 0.786171,
+          "off_axis": 0.412749
+        }
+      },
+      {
+        "id": 361339,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 183.6626,
+          "moved": 103.8423,
+          "closed": 0.407376,
+          "cosine": 0.720514,
+          "off_axis": 0.392069
+        },
+        "scaled": {
+          "gap": 281.0956,
+          "moved": 158.9306,
+          "closed": 0.407376,
+          "cosine": 0.720514,
+          "off_axis": 0.392069
+        }
+      },
+      {
+        "id": 366141,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 165.6373,
+          "moved": 122.9596,
+          "closed": 0.586122,
+          "cosine": 0.789558,
+          "off_axis": 0.455558
+        },
+        "scaled": {
+          "gap": 253.5079,
+          "moved": 188.1898,
+          "closed": 0.586122,
+          "cosine": 0.789558,
+          "off_axis": 0.455558
+        }
+      },
+      {
+        "id": 367471,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 193.4577,
+          "moved": 110.1568,
+          "closed": 0.345066,
+          "cosine": 0.606005,
+          "off_axis": 0.452944
+        },
+        "scaled": {
+          "gap": 296.087,
+          "moved": 168.595,
+          "closed": 0.345066,
+          "cosine": 0.606005,
+          "off_axis": 0.452944
+        }
+      },
+      {
+        "id": 370638,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 195.4083,
+          "moved": 121.0546,
+          "closed": 0.40949,
+          "cosine": 0.661005,
+          "off_axis": 0.464858
+        },
+        "scaled": {
+          "gap": 299.0724,
+          "moved": 185.2741,
+          "closed": 0.40949,
+          "cosine": 0.661005,
+          "off_axis": 0.464858
+        }
+      },
+      {
+        "id": 381875,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 187.6232,
+          "moved": 108.2499,
+          "closed": 0.366877,
+          "cosine": 0.635886,
+          "off_axis": 0.445283
+        },
+        "scaled": {
+          "gap": 287.1573,
+          "moved": 165.6765,
+          "closed": 0.366877,
+          "cosine": 0.635886,
+          "off_axis": 0.445283
+        }
+      },
+      {
+        "id": 402590,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 161.8432,
+          "moved": 122.0344,
+          "closed": 0.531546,
+          "cosine": 0.704941,
+          "off_axis": 0.534807
+        },
+        "scaled": {
+          "gap": 247.7011,
+          "moved": 186.7737,
+          "closed": 0.531546,
+          "cosine": 0.704941,
+          "off_axis": 0.534807
+        }
+      },
+      {
+        "id": 404349,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 160.9913,
+          "moved": 113.2761,
+          "closed": 0.511462,
+          "cosine": 0.726905,
+          "off_axis": 0.4832
+        },
+        "scaled": {
+          "gap": 246.3972,
+          "moved": 173.3691,
+          "closed": 0.511462,
+          "cosine": 0.726905,
+          "off_axis": 0.4832
+        }
+      },
+      {
+        "id": 404929,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 156.3978,
+          "moved": 114.0512,
+          "closed": 0.534915,
+          "cosine": 0.733527,
+          "off_axis": 0.495634
+        },
+        "scaled": {
+          "gap": 239.3669,
+          "moved": 174.5553,
+          "closed": 0.534915,
+          "cosine": 0.733527,
+          "off_axis": 0.495634
+        }
+      },
+      {
+        "id": 413395,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 185.2298,
+          "moved": 126.8839,
+          "closed": 0.495036,
+          "cosine": 0.722671,
+          "off_axis": 0.473472
+        },
+        "scaled": {
+          "gap": 283.4942,
+          "moved": 194.1958,
+          "closed": 0.495036,
+          "cosine": 0.722671,
+          "off_axis": 0.473472
+        }
+      },
+      {
+        "id": 426778,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 196.7538,
+          "moved": 134.5047,
+          "closed": 0.449599,
+          "cosine": 0.657675,
+          "off_axis": 0.514971
+        },
+        "scaled": {
+          "gap": 301.1318,
+          "moved": 205.8594,
+          "closed": 0.449599,
+          "cosine": 0.657675,
+          "off_axis": 0.514971
+        }
+      },
+      {
+        "id": 433423,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 172.7463,
+          "moved": 132.5374,
+          "closed": 0.546228,
+          "cosine": 0.711941,
+          "off_axis": 0.538784
+        },
+        "scaled": {
+          "gap": 264.3883,
+          "moved": 202.8485,
+          "closed": 0.546228,
+          "cosine": 0.711941,
+          "off_axis": 0.538784
+        }
+      },
+      {
+        "id": 438667,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 170.7478,
+          "moved": 103.3005,
+          "closed": 0.449212,
+          "cosine": 0.742512,
+          "off_axis": 0.405241
+        },
+        "scaled": {
+          "gap": 261.3296,
+          "moved": 158.1014,
+          "closed": 0.449212,
+          "cosine": 0.742512,
+          "off_axis": 0.405241
+        }
+      },
+      {
+        "id": 438753,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 157.5202,
+          "moved": 104.3592,
+          "closed": 0.494207,
+          "cosine": 0.745959,
+          "off_axis": 0.441229
+        },
+        "scaled": {
+          "gap": 241.0847,
+          "moved": 159.7218,
+          "closed": 0.494207,
+          "cosine": 0.745958,
+          "off_axis": 0.441229
+        }
+      },
+      {
+        "id": 438912,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 173.3681,
+          "moved": 117.3125,
+          "closed": 0.447646,
+          "cosine": 0.661546,
+          "off_axis": 0.507436
+        },
+        "scaled": {
+          "gap": 265.3399,
+          "moved": 179.5468,
+          "closed": 0.447646,
+          "cosine": 0.661546,
+          "off_axis": 0.507436
+        }
+      },
+      {
+        "id": 440067,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 224.3439,
+          "moved": 141.7688,
+          "closed": 0.447804,
+          "cosine": 0.708633,
+          "off_axis": 0.445873
+        },
+        "scaled": {
+          "gap": 343.3584,
+          "moved": 216.9772,
+          "closed": 0.447804,
+          "cosine": 0.708633,
+          "off_axis": 0.445873
+        }
+      },
+      {
+        "id": 463883,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 166.1224,
+          "moved": 89.0032,
+          "closed": 0.408542,
+          "cosine": 0.762535,
+          "off_axis": 0.346614
+        },
+        "scaled": {
+          "gap": 254.2503,
+          "moved": 136.2194,
+          "closed": 0.408542,
+          "cosine": 0.762535,
+          "off_axis": 0.346614
+        }
+      },
+      {
+        "id": 468951,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 195.0645,
+          "moved": 107.4784,
+          "closed": 0.348218,
+          "cosine": 0.631987,
+          "off_axis": 0.427005
+        },
+        "scaled": {
+          "gap": 298.5462,
+          "moved": 164.4957,
+          "closed": 0.348218,
+          "cosine": 0.631987,
+          "off_axis": 0.427005
+        }
+      },
+      {
+        "id": 474607,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 212.8672,
+          "moved": 118.6877,
+          "closed": 0.387509,
+          "cosine": 0.695,
+          "off_axis": 0.400896
+        },
+        "scaled": {
+          "gap": 325.7933,
+          "moved": 181.6515,
+          "closed": 0.387509,
+          "cosine": 0.695,
+          "off_axis": 0.400896
+        }
+      },
+      {
+        "id": 477673,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 202.9285,
+          "moved": 131.8185,
+          "closed": 0.423105,
+          "cosine": 0.65135,
+          "off_axis": 0.492888
+        },
+        "scaled": {
+          "gap": 310.582,
+          "moved": 201.7482,
+          "closed": 0.423105,
+          "cosine": 0.65135,
+          "off_axis": 0.492888
+        }
+      },
+      {
+        "id": 477758,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 194.8264,
+          "moved": 122.8423,
+          "closed": 0.439895,
+          "cosine": 0.697669,
+          "off_axis": 0.451718
+        },
+        "scaled": {
+          "gap": 298.1819,
+          "moved": 188.0101,
+          "closed": 0.439895,
+          "cosine": 0.697669,
+          "off_axis": 0.451718
+        }
+      },
+      {
+        "id": 481313,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 191.0623,
+          "moved": 113.2564,
+          "closed": 0.403253,
+          "cosine": 0.680283,
+          "off_axis": 0.434472
+        },
+        "scaled": {
+          "gap": 292.4208,
+          "moved": 173.3389,
+          "closed": 0.403253,
+          "cosine": 0.680283,
+          "off_axis": 0.434472
+        }
+      },
+      {
+        "id": 492352,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 167.8384,
+          "moved": 111.6041,
+          "closed": 0.44981,
+          "cosine": 0.676457,
+          "off_axis": 0.489724
+        },
+        "scaled": {
+          "gap": 256.8766,
+          "moved": 170.8101,
+          "closed": 0.44981,
+          "cosine": 0.676457,
+          "off_axis": 0.489724
+        }
+      },
+      {
+        "id": 500471,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 212.5657,
+          "moved": 136.1653,
+          "closed": 0.412261,
+          "cosine": 0.643574,
+          "off_axis": 0.49029
+        },
+        "scaled": {
+          "gap": 325.3317,
+          "moved": 208.401,
+          "closed": 0.412261,
+          "cosine": 0.643574,
+          "off_axis": 0.49029
+        }
+      },
+      {
+        "id": 501229,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 183.7043,
+          "moved": 92.3189,
+          "closed": 0.323803,
+          "cosine": 0.644332,
+          "off_axis": 0.384316
+        },
+        "scaled": {
+          "gap": 281.1594,
+          "moved": 141.2941,
+          "closed": 0.323803,
+          "cosine": 0.644332,
+          "off_axis": 0.384316
+        }
+      },
+      {
+        "id": 506151,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 177.1534,
+          "moved": 124.4207,
+          "closed": 0.488814,
+          "cosine": 0.695986,
+          "off_axis": 0.504314
+        },
+        "scaled": {
+          "gap": 271.1334,
+          "moved": 190.4259,
+          "closed": 0.488814,
+          "cosine": 0.695986,
+          "off_axis": 0.504314
+        }
+      },
+      {
+        "id": 509021,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 156.2467,
+          "moved": 126.4953,
+          "closed": 0.613654,
+          "cosine": 0.757984,
+          "off_axis": 0.528071
+        },
+        "scaled": {
+          "gap": 239.1356,
+          "moved": 193.601,
+          "closed": 0.613654,
+          "cosine": 0.757984,
+          "off_axis": 0.528071
+        }
+      },
+      {
+        "id": 509607,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 192.8109,
+          "moved": 106.4857,
+          "closed": 0.36079,
+          "cosine": 0.653274,
+          "off_axis": 0.418144
+        },
+        "scaled": {
+          "gap": 295.0971,
+          "moved": 162.9764,
+          "closed": 0.36079,
+          "cosine": 0.653274,
+          "off_axis": 0.418144
+        }
+      },
+      {
+        "id": 522891,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 197.7098,
+          "moved": 146.8,
+          "closed": 0.484104,
+          "cosine": 0.651991,
+          "off_axis": 0.562985
+        },
+        "scaled": {
+          "gap": 302.5948,
+          "moved": 224.6774,
+          "closed": 0.484104,
+          "cosine": 0.65199,
+          "off_axis": 0.562985
+        }
+      },
+      {
+        "id": 528591,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 165.3906,
+          "moved": 119.6651,
+          "closed": 0.534486,
+          "cosine": 0.73872,
+          "off_axis": 0.487669
+        },
+        "scaled": {
+          "gap": 253.1303,
+          "moved": 183.1475,
+          "closed": 0.534486,
+          "cosine": 0.73872,
+          "off_axis": 0.487669
+        }
+      },
+      {
+        "id": 529626,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 171.9767,
+          "moved": 102.9332,
+          "closed": 0.361236,
+          "cosine": 0.603538,
+          "off_axis": 0.477228
+        },
+        "scaled": {
+          "gap": 263.2103,
+          "moved": 157.5392,
+          "closed": 0.361236,
+          "cosine": 0.603538,
+          "off_axis": 0.477228
+        }
+      },
+      {
+        "id": 533049,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 174.7402,
+          "moved": 112.2078,
+          "closed": 0.455957,
+          "cosine": 0.710059,
+          "off_axis": 0.452158
+        },
+        "scaled": {
+          "gap": 267.4399,
+          "moved": 171.734,
+          "closed": 0.455957,
+          "cosine": 0.710059,
+          "off_axis": 0.452158
+        }
+      },
+      {
+        "id": 533536,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 191.9737,
+          "moved": 105.6969,
+          "closed": 0.358525,
+          "cosine": 0.651177,
+          "off_axis": 0.417849
+        },
+        "scaled": {
+          "gap": 293.8158,
+          "moved": 161.7691,
+          "closed": 0.358525,
+          "cosine": 0.651177,
+          "off_axis": 0.417849
+        }
+      },
+      {
+        "id": 544698,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 177.0152,
+          "moved": 111.4873,
+          "closed": 0.408869,
+          "cosine": 0.649186,
+          "off_axis": 0.479058
+        },
+        "scaled": {
+          "gap": 270.9218,
+          "moved": 170.6313,
+          "closed": 0.408868,
+          "cosine": 0.649186,
+          "off_axis": 0.479058
+        }
+      },
+      {
+        "id": 547130,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 173.1065,
+          "moved": 112.4109,
+          "closed": 0.429208,
+          "cosine": 0.660957,
+          "off_axis": 0.487306
+        },
+        "scaled": {
+          "gap": 264.9395,
+          "moved": 172.0449,
+          "closed": 0.429208,
+          "cosine": 0.660957,
+          "off_axis": 0.487306
+        }
+      },
+      {
+        "id": 557825,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 183.0446,
+          "moved": 121.4263,
+          "closed": 0.459706,
+          "cosine": 0.692986,
+          "off_axis": 0.478257
+        },
+        "scaled": {
+          "gap": 280.1498,
+          "moved": 185.843,
+          "closed": 0.459706,
+          "cosine": 0.692986,
+          "off_axis": 0.478257
+        }
+      },
+      {
+        "id": 559490,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 207.3903,
+          "moved": 119.7146,
+          "closed": 0.394053,
+          "cosine": 0.682646,
+          "off_axis": 0.42182
+        },
+        "scaled": {
+          "gap": 317.4109,
+          "moved": 183.2232,
+          "closed": 0.394053,
+          "cosine": 0.682646,
+          "off_axis": 0.42182
+        }
+      },
+      {
+        "id": 564655,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 180.6736,
+          "moved": 118.4122,
+          "closed": 0.445882,
+          "cosine": 0.680329,
+          "off_axis": 0.480342
+        },
+        "scaled": {
+          "gap": 276.5209,
+          "moved": 181.2298,
+          "closed": 0.445883,
+          "cosine": 0.680329,
+          "off_axis": 0.480342
+        }
+      },
+      {
+        "id": 573181,
+        "target_image": "dog.png",
+        "raw": {
+          "gap": 191.3469,
+          "moved": 126.8997,
+          "closed": 0.462006,
+          "cosine": 0.69664,
+          "off_axis": 0.475788
+        },
+        "scaled": {
+          "gap": 292.8564,
+          "moved": 194.2201,
+          "closed": 0.462006,
+          "cosine": 0.69664,
+          "off_axis": 0.475788
+        }
+      }
+    ],
+    "raw": {
+      "closed": {
+        "n": 100,
+        "min": 0.3238,
+        "p25": 0.404,
+        "median": 0.4442,
+        "p75": 0.5009,
+        "max": 0.6765,
+        "mean": 0.4538,
+        "stdev": 0.0725
+      },
+      "cosine": {
+        "n": 100,
+        "min": 0.6035,
+        "p25": 0.6745,
+        "median": 0.7075,
+        "p75": 0.7425,
+        "max": 0.8937,
+        "mean": 0.7084,
+        "stdev": 0.0495
+      },
+      "off_axis": {
+        "n": 100,
+        "min": 0.3184,
+        "p25": 0.4127,
+        "median": 0.4493,
+        "p75": 0.4832,
+        "max": 0.6042,
+        "mean": 0.4472,
+        "stdev": 0.0541
+      },
+      "gap": {
+        "n": 100,
+        "min": 155.8148,
+        "p25": 168.8707,
+        "median": 183.6393,
+        "p75": 195.0645,
+        "max": 224.3439,
+        "mean": 183.4764,
+        "stdev": 17.2387
+      },
+      "moved": {
+        "n": 100,
+        "min": 89.0032,
+        "p25": 108.0294,
+        "median": 117.0658,
+        "p75": 125.0647,
+        "max": 147.5388,
+        "mean": 116.4957,
+        "stdev": 12.1974
+      }
+    },
+    "scaled": {
+      "closed": {
+        "n": 100,
+        "min": 0.3238,
+        "p25": 0.404,
+        "median": 0.4442,
+        "p75": 0.5009,
+        "max": 0.6765,
+        "mean": 0.4538,
+        "stdev": 0.0725
+      },
+      "cosine": {
+        "n": 100,
+        "min": 0.6035,
+        "p25": 0.6745,
+        "median": 0.7075,
+        "p75": 0.7425,
+        "max": 0.8937,
+        "mean": 0.7084,
+        "stdev": 0.0495
+      },
+      "off_axis": {
+        "n": 100,
+        "min": 0.3184,
+        "p25": 0.4127,
+        "median": 0.4493,
+        "p75": 0.4832,
+        "max": 0.6042,
+        "mean": 0.4472,
+        "stdev": 0.0541
+      },
+      "gap": {
+        "n": 100,
+        "min": 238.4745,
+        "p25": 258.4567,
+        "median": 281.06,
+        "p75": 298.5462,
+        "max": 343.3584,
+        "mean": 280.8106,
+        "stdev": 26.3838
+      },
+      "moved": {
+        "n": 100,
+        "min": 136.2194,
+        "p25": 165.3391,
+        "median": 179.1692,
+        "p75": 191.4115,
+        "max": 225.8081,
+        "mean": 178.2967,
+        "stdev": 18.6681
+      }
+    },
+    "built_with": {
+      "eps": 0.32,
+      "iters": 250,
+      "step_scale": 1.0,
+      "sigma": 0.5,
+      "compute_dtype": "float32",
+      "device": "Tesla T4"
+    }
+  }
+}

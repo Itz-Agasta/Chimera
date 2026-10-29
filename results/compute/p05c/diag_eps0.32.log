@@ -1,0 +1,23 @@
+/usr/local/lib/python3.13/dist-packages/huggingface_hub/utils/_validators.py:206: UserWarning: The `local_dir_use_symlinks` argument is deprecated and ignored in `hf_hub_download`. Downloading to a local directory does not use symlinks anymore.
+  warnings.warn(
+1 pool(s) to measure
+  nightshade_sd3/cat->dog
+    8/100
+    16/100
+    24/100
+    32/100
+    40/100
+    48/100
+    56/100
+    64/100
+    72/100
+    80/100
+    88/100
+    96/100
+    100/100
+    closed +0.444 (p25 +0.404, p75 +0.501)  cosine +0.708  on 100 images, 90s
+
+1 written, 1 entries total -> /kaggle/working/poison_diag_eps0.32.json
+
+pool                                ch  closed (median)   cosine  off-axis
+nightshade_sd3/cat->dog@eps0.32     16           0.4442   0.7075    0.4493

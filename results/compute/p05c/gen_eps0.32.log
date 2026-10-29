@@ -1,0 +1,130 @@
+nightshade_sd3 cat->dog: 100 images, 0 already done, 100 to do
+/usr/local/lib/python3.13/dist-packages/huggingface_hub/utils/_validators.py:206: UserWarning: The `local_dir_use_symlinks` argument is deprecated and ignored in `hf_hub_download`. Downloading to a local directory does not use symlinks anymore.
+  warnings.warn(
+    iter    0/250  loss 186.4848  3.38 s/iter
+    iter  100/250  loss 150.3604  2.48 s/iter
+    iter  200/250  loss 138.2452  2.48 s/iter
+  4/100  loss 198.325 -> 148.934  Linf 82.0/255  PSNR 12.6 dB  155.4 s/image  eta 249 min
+    iter    0/250  loss 186.8007  4.69 s/iter
+    iter  100/250  loss 153.6344  2.48 s/iter
+    iter  200/250  loss 143.4986  2.47 s/iter
+  8/100  loss 183.616 -> 135.286  Linf 82.0/255  PSNR 12.4 dB  154.9 s/image  eta 237 min
+    iter    0/250  loss 186.0481  4.65 s/iter
+    iter  100/250  loss 150.2919  2.47 s/iter
+    iter  200/250  loss 135.4497  2.46 s/iter
+  12/100  loss 190.751 -> 128.980  Linf 82.0/255  PSNR 12.0 dB  154.5 s/image  eta 227 min
+    iter    0/250  loss 180.6302  4.68 s/iter
+    iter  100/250  loss 145.8111  2.47 s/iter
+    iter  200/250  loss 131.3036  2.46 s/iter
+  16/100  loss 166.141 -> 106.776  Linf 82.0/255  PSNR 12.2 dB  154.3 s/image  eta 216 min
+    iter    0/250  loss 182.1174  4.67 s/iter
+    iter  100/250  loss 147.5274  2.48 s/iter
+    iter  200/250  loss 132.5660  2.46 s/iter
+  20/100  loss 187.039 -> 135.193  Linf 82.0/255  PSNR 12.5 dB  154.3 s/image  eta 206 min
+    iter    0/250  loss 178.6171  4.66 s/iter
+    iter  100/250  loss 145.9684  2.46 s/iter
+    iter  200/250  loss 132.5890  2.45 s/iter
+  24/100  loss 204.789 -> 149.008  Linf 82.0/255  PSNR 13.0 dB  154.1 s/image  eta 195 min
+    iter    0/250  loss 182.7602  4.66 s/iter
+    iter  100/250  loss 146.4389  2.48 s/iter
+    iter  200/250  loss 133.6078  2.46 s/iter
+  28/100  loss 160.046 -> 112.565  Linf 82.0/255  PSNR 12.8 dB  154.2 s/image  eta 185 min
+    iter    0/250  loss 165.7639  4.67 s/iter
+    iter  100/250  loss 138.3099  2.47 s/iter
+    iter  200/250  loss 121.8978  2.47 s/iter
+  32/100  loss 155.815 -> 95.013  Linf 82.0/255  PSNR 13.0 dB  154.2 s/image  eta 175 min
+    iter    0/250  loss 197.8135  4.66 s/iter
+    iter  100/250  loss 155.7479  2.49 s/iter
+    iter  200/250  loss 145.4738  2.47 s/iter
+  36/100  loss 211.220 -> 152.484  Linf 82.0/255  PSNR 13.8 dB  154.2 s/image  eta 164 min
+    iter    0/250  loss 184.3884  4.65 s/iter
+    iter  100/250  loss 149.7880  2.47 s/iter
+    iter  200/250  loss 136.8473  2.46 s/iter
+  40/100  loss 172.077 -> 111.090  Linf 82.0/255  PSNR 12.4 dB  154.2 s/image  eta 154 min
+    iter    0/250  loss 190.4670  4.65 s/iter
+    iter  100/250  loss 153.6164  2.49 s/iter
+    iter  200/250  loss 142.4807  2.47 s/iter
+  44/100  loss 180.222 -> 125.210  Linf 82.0/255  PSNR 12.7 dB  154.2 s/image  eta 144 min
+    iter    0/250  loss 199.9069  4.67 s/iter
+    iter  100/250  loss 151.5056  2.47 s/iter
+    iter  200/250  loss 142.0977  2.46 s/iter
+  48/100  loss 219.029 -> 155.362  Linf 82.0/255  PSNR 14.0 dB  154.2 s/image  eta 134 min
+    iter    0/250  loss 179.8405  4.68 s/iter
+    iter  100/250  loss 149.3761  2.47 s/iter
+    iter  200/250  loss 137.3878  2.46 s/iter
+  52/100  loss 169.506 -> 119.126  Linf 82.0/255  PSNR 12.2 dB  154.2 s/image  eta 123 min
+    iter    0/250  loss 173.8838  4.70 s/iter
+    iter  100/250  loss 143.0748  2.49 s/iter
+    iter  200/250  loss 130.4600  2.47 s/iter
+  56/100  loss 168.871 -> 125.199  Linf 82.0/255  PSNR 12.6 dB  154.2 s/image  eta 113 min
+    iter    0/250  loss 185.6598  4.66 s/iter
+    iter  100/250  loss 150.8864  2.48 s/iter
+    iter  200/250  loss 139.4696  2.47 s/iter
+  60/100  loss 159.123 -> 111.220  Linf 82.0/255  PSNR 12.5 dB  154.2 s/image  eta 103 min
+    iter    0/250  loss 174.7294  4.64 s/iter
+    iter  100/250  loss 140.0859  2.48 s/iter
+    iter  200/250  loss 123.0788  2.47 s/iter
+  64/100  loss 193.095 -> 120.732  Linf 82.0/255  PSNR 12.2 dB  154.2 s/image  eta 93 min
+    iter    0/250  loss 184.5831  4.68 s/iter
+    iter  100/250  loss 154.4506  2.48 s/iter
+    iter  200/250  loss 144.7837  2.46 s/iter
+  68/100  loss 193.458 -> 154.051  Linf 82.0/255  PSNR 13.3 dB  154.2 s/image  eta 82 min
+    iter    0/250  loss 174.8432  4.61 s/iter
+    iter  100/250  loss 143.7596  2.48 s/iter
+    iter  200/250  loss 130.2992  2.47 s/iter
+  72/100  loss 160.991 -> 110.622  Linf 82.0/255  PSNR 12.3 dB  154.2 s/image  eta 72 min
+    iter    0/250  loss 168.5956  4.68 s/iter
+    iter  100/250  loss 142.5463  2.47 s/iter
+    iter  200/250  loss 127.2409  2.46 s/iter
+  76/100  loss 172.746 -> 121.685  Linf 82.0/255  PSNR 12.4 dB  154.2 s/image  eta 62 min
+    iter    0/250  loss 199.5995  4.64 s/iter
+    iter  100/250  loss 158.4583  2.47 s/iter
+    iter  200/250  loss 149.1444  2.46 s/iter
+  80/100  loss 224.344 -> 159.225  Linf 82.0/255  PSNR 13.8 dB  154.2 s/image  eta 51 min
+    iter    0/250  loss 189.1639  4.68 s/iter
+    iter  100/250  loss 154.7158  2.49 s/iter
+    iter  200/250  loss 144.5141  2.47 s/iter
+  84/100  loss 202.928 -> 153.978  Linf 82.0/255  PSNR 13.3 dB  154.2 s/image  eta 41 min
+    iter    0/250  loss 182.4175  4.65 s/iter
+    iter  100/250  loss 150.7186  2.47 s/iter
+    iter  200/250  loss 139.4232  2.46 s/iter
+  88/100  loss 212.566 -> 162.696  Linf 82.0/255  PSNR 13.7 dB  154.2 s/image  eta 31 min
+    iter    0/250  loss 181.9720  4.65 s/iter
+    iter  100/250  loss 152.6077  2.48 s/iter
+    iter  200/250  loss 141.9848  2.46 s/iter
+  92/100  loss 192.811 -> 147.274  Linf 82.0/255  PSNR 13.3 dB  154.2 s/image  eta 21 min
+    iter    0/250  loss 179.2089  4.65 s/iter
+    iter  100/250  loss 148.3891  2.49 s/iter
+    iter  200/250  loss 138.2831  2.47 s/iter
+  96/100  loss 174.740 -> 123.613  Linf 82.0/255  PSNR 12.9 dB  154.2 s/image  eta 10 min
+    iter    0/250  loss 190.6139  4.70 s/iter
+    iter  100/250  loss 156.0962  2.47 s/iter
+    iter  200/250  loss 144.5903  2.46 s/iter
+  100/100  loss 183.045 -> 132.078  Linf 82.0/255  PSNR 12.3 dB  154.2 s/image  eta 0 min
+{
+  "config": {
+    "attack": "nightshade_sd3",
+    "pair": "cat->dog",
+    "model": "sd3_medium",
+    "space": "latent",
+    "anchor": "generated",
+    "pretrained": "stabilityai/stable-diffusion-3-medium-diffusers",
+    "iters": 250,
+    "eps": 0.32,
+    "sigma": 0.5,
+    "lpips_weight": 0.0,
+    "resolution": 512,
+    "optimiser": "signed-grad-anneal",
+    "target": "fixed_clean",
+    "noise": "fixed_per_image_id",
+    "step_scale": 1.0,
+    "anchor_seed": 123,
+    "anchor_prompt": "A photo of a {}",
+    "git_commit": ""
+  },
+  "generated": 100,
+  "seconds": 15420.5,
+  "compute_dtype": "float32",
+  "device": "Tesla T4",
+  "peak_gb": 12.25
+}

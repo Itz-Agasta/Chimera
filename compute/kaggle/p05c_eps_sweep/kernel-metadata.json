@@ -1,0 +1,18 @@
+{
+  "id": "itzagasta/chimera-p05c-eps-sweep",
+  "title": "chimera-p05c-eps-sweep",
+  "code_file": "p05c_eps_sweep.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "dataset_sources": [
+    "itzagasta/chimera-code",
+    "itzagasta/chimera-p05",
+    "itzagasta/chimera-secrets"
+  ],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}
