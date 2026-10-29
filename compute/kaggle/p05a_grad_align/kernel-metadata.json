@@ -1,0 +1,18 @@
+{
+  "id": "itzagasta/chimera-p05a-grad-align",
+  "title": "chimera-p05a-grad-align",
+  "code_file": "p05a_grad_align.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "dataset_sources": [
+    "itzagasta/chimera-code",
+    "itzagasta/chimera-p05",
+    "itzagasta/chimera-secrets"
+  ],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}

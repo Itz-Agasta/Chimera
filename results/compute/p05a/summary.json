@@ -1,0 +1,68 @@
+{
+  "code": "/kaggle/input/datasets/itzagasta/chimera-code",
+  "data": "/kaggle/input/datasets/itzagasta/chimera-p05",
+  "jobs": {
+    "ga_sd3": {
+      "rc": 0,
+      "seconds": 8268,
+      "tail": [
+        "  vae 8/100  5s",
+        "  vae 8/100  6s",
+        "  vae 8/100  6s",
+        "  vae 8/100  6s",
+        "  slot 1/100  1.58 s/backward  eta 125 min",
+        "  slot 10/100  1.62 s/backward  eta 116 min",
+        "  slot 20/100  1.62 s/backward  eta 104 min",
+        "  slot 30/100  1.62 s/backward  eta 91 min",
+        "  slot 40/100  1.62 s/backward  eta 78 min",
+        "  slot 50/100  1.62 s/backward  eta 65 min",
+        "  slot 60/100  1.62 s/backward  eta 52 min",
+        "  slot 70/100  1.61 s/backward  eta 39 min",
+        "  slot 80/100  1.61 s/backward  eta 26 min",
+        "  slot 90/100  1.61 s/backward  eta 13 min",
+        "  slot 100/100  1.61 s/backward  eta 0 min",
+        "",
+        "sd3_medium/cat->dog written, 1 entries -> /kaggle/working/grad_align_sd3.json",
+        "determinism 1.0  ceiling (cross-half) {'shift_cos': 0.29139, 'grad_closed': 0.28671}  raw baseline 0.97368",
+        "  random           shift_cos +0.2357 [0.00937, 0.37341]  grad_closed +1.1093 [0.03475, 1.48041]  raw +0.4698  cross {'shift_cos': 0.15352, 'grad_closed': 0.55068}",
+        "  nightshade_sd3   grad_closed EXCESS over random +0.3561 [-0.35749, 0.85338]",
+        "  nightshade_sd3   shift_cos +0.3172 [0.14223, 0.3905]  grad_closed +1.4654 [0.52861, 1.53062]  raw +0.4188  cross {'shift_cos': 0.21626, 'grad_closed': 0.75389}",
+        "  chimera_pred     grad_closed EXCESS over random -1.0823 [-1.45701, -0.02612]",
+        "  chimera_pred     shift_cos +0.1024 [0.01299, 0.155]  grad_closed +0.0271 [0.00277, 0.03576]  raw +0.9728  cross {'shift_cos': 0.06851, 'grad_closed': 0.01506}",
+        "  chimera_anchor   grad_closed EXCESS over random -0.5147 [-0.759, 0.1393]",
+        "  chimera_anchor   shift_cos +0.2282 [0.04726, 0.35726]  grad_closed +0.5947 [0.1037, 0.78422]  raw +0.7815  cross {'shift_cos': 0.10943, 'grad_closed': 0.21396}"
+      ]
+    },
+    "ga_sd2": {
+      "rc": 0,
+      "seconds": 8268,
+      "tail": [
+        "  warnings.warn(",
+        "  vae 8/100  5s",
+        "  vae 8/100  5s",
+        "  vae 8/100  6s",
+        "  vae 8/100  7s",
+        "  vae 8/100  6s",
+        "  slot 1/100  1.38 s/backward  eta 91 min",
+        "  slot 10/100  0.96 s/backward  eta 58 min",
+        "  slot 20/100  0.94 s/backward  eta 50 min",
+        "  slot 30/100  0.93 s/backward  eta 44 min",
+        "  slot 40/100  0.93 s/backward  eta 37 min",
+        "  slot 50/100  0.93 s/backward  eta 31 min",
+        "  slot 60/100  0.92 s/backward  eta 25 min",
+        "  slot 70/100  0.92 s/backward  eta 18 min",
+        "  slot 80/100  0.92 s/backward  eta 12 min",
+        "  slot 90/100  0.92 s/backward  eta 6 min",
+        "  slot 100/100  0.92 s/backward  eta 0 min",
+        "",
+        "sd2_base/cat->dog written, 1 entries -> /kaggle/working/grad_align_sd2.json",
+        "determinism 1.0  ceiling (cross-half) {'shift_cos': 0.049, 'grad_closed': 0.04883}  raw baseline 0.43287",
+        "  random           shift_cos +0.0889 [0.09688, 0.17671]  grad_closed +0.1448 [0.11977, 0.22708]  raw +0.0972  cross {'shift_cos': -0.01922, 'grad_closed': -0.02439}",
+        "  nightshade_sd2   grad_closed EXCESS over random +0.4696 [0.15655, 0.66274]",
+        "  nightshade_sd2   shift_cos +0.0930 [0.07137, 0.17152]  grad_closed +0.6143 [0.33779, 0.82949]  raw +0.0610  cross {'shift_cos': 0.01911, 'grad_closed': 0.09674}",
+        "  nightshade_sd3   grad_closed EXCESS over random +0.1874 [0.06477, 0.26447]",
+        "  nightshade_sd3   shift_cos +0.1330 [0.13454, 0.22496]  grad_closed +0.3322 [0.25532, 0.42328]  raw +0.2014  cross {'shift_cos': 0.00838, 'grad_closed': 0.01589}"
+      ]
+    }
+  }
+}

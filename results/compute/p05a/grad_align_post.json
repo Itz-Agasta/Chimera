@@ -1,0 +1,92 @@
+{
+  "sd3_medium": {
+    "n_slots": 100,
+    "sketch_dim": 16384,
+    "splits": 500,
+    "even_odd": {
+      "nightshade_sd3": 0.1723,
+      "chimera_pred": 0.0464,
+      "chimera_anchor": 0.0324,
+      "_ceiling": 0.2788,
+      "_random_raw": 0.152
+    },
+    "random_splits": {
+      "nightshade_sd3": {
+        "median": 0.1786,
+        "ci95": [
+          0.0654,
+          0.2871
+        ]
+      },
+      "chimera_pred": {
+        "median": 0.0381,
+        "ci95": [
+          -0.0196,
+          0.1122
+        ]
+      },
+      "chimera_anchor": {
+        "median": 0.069,
+        "ci95": [
+          -0.0435,
+          0.1564
+        ]
+      },
+      "_ceiling": {
+        "median": 0.3194,
+        "ci95": [
+          0.1611,
+          0.4499
+        ]
+      },
+      "_random_raw": {
+        "median": 0.1764,
+        "ci95": [
+          -0.0149,
+          0.3486
+        ]
+      }
+    }
+  },
+  "sd2_base": {
+    "n_slots": 100,
+    "sketch_dim": 16384,
+    "splits": 500,
+    "even_odd": {
+      "nightshade_sd2": 0.0288,
+      "nightshade_sd3": 0.0137,
+      "_ceiling": 0.0566,
+      "_random_raw": -0.0201
+    },
+    "random_splits": {
+      "nightshade_sd2": {
+        "median": 0.0302,
+        "ci95": [
+          -0.0233,
+          0.0827
+        ]
+      },
+      "nightshade_sd3": {
+        "median": 0.013,
+        "ci95": [
+          -0.03,
+          0.0545
+        ]
+      },
+      "_ceiling": {
+        "median": 0.0498,
+        "ci95": [
+          0.0241,
+          0.0749
+        ]
+      },
+      "_random_raw": {
+        "median": -0.0219,
+        "ci95": [
+          -0.0623,
+          0.0107
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,176 @@
+{
+  "sd3_medium/cat->dog": {
+    "model": "sd3_medium",
+    "pair": "cat->dog",
+    "seed": 0,
+    "n_slots": 100,
+    "draws": 8,
+    "subset": {
+      "blocks": 4,
+      "n_params": 73185792,
+      "n_tensors": 62,
+      "first": "transformer_blocks.20.attn.to_q.weight",
+      "last": "transformer_blocks.23.attn.to_out.0.bias"
+    },
+    "determinism_cos": 1.0,
+    "ceiling_cross": {
+      "shift_cos": 0.29139,
+      "grad_closed": 0.28671
+    },
+    "raw_cos_baseline": 0.97368,
+    "norms": {
+      "clean": 0.074044,
+      "dirty": 0.074573,
+      "random": 0.108508,
+      "nightshade_sd3": 0.097875,
+      "chimera_pred": 0.073762,
+      "chimera_anchor": 0.086289
+    },
+    "mean_loss": {
+      "clean": 0.24535,
+      "dirty": 0.25776,
+      "random": 0.20235,
+      "nightshade_sd3": 0.2348,
+      "chimera_pred": 0.26259,
+      "chimera_anchor": 0.34144
+    },
+    "sets": {
+      "random": {
+        "raw_cos": 0.46978,
+        "shift_cos": 0.2357,
+        "grad_closed": 1.10934,
+        "shift_norm": 4.78366,
+        "cross": {
+          "shift_cos": 0.15352,
+          "grad_closed": 0.55068
+        },
+        "ci95": {
+          "shift_cos": [
+            0.00937,
+            0.37341
+          ],
+          "grad_closed": [
+            0.03475,
+            1.48041
+          ]
+        }
+      },
+      "nightshade_sd3": {
+        "raw_cos": 0.41884,
+        "shift_cos": 0.31718,
+        "grad_closed": 1.46544,
+        "shift_norm": 4.69593,
+        "cross": {
+          "shift_cos": 0.21626,
+          "grad_closed": 0.75389
+        },
+        "ci95": {
+          "shift_cos": [
+            0.14223,
+            0.3905
+          ],
+          "grad_closed": [
+            0.52861,
+            1.53062
+          ]
+        },
+        "excess_over_random": {
+          "shift_cos": {
+            "value": 0.08148,
+            "ci95": [
+              -0.08481,
+              0.21816
+            ]
+          },
+          "grad_closed": {
+            "value": 0.3561,
+            "ci95": [
+              -0.35749,
+              0.85338
+            ]
+          }
+        }
+      },
+      "chimera_pred": {
+        "raw_cos": 0.97282,
+        "shift_cos": 0.10236,
+        "grad_closed": 0.02705,
+        "shift_norm": 0.26861,
+        "cross": {
+          "shift_cos": 0.06851,
+          "grad_closed": 0.01506
+        },
+        "ci95": {
+          "shift_cos": [
+            0.01299,
+            0.155
+          ],
+          "grad_closed": [
+            0.00277,
+            0.03576
+          ]
+        },
+        "excess_over_random": {
+          "shift_cos": {
+            "value": -0.13334,
+            "ci95": [
+              -0.26585,
+              0.04205
+            ]
+          },
+          "grad_closed": {
+            "value": -1.08229,
+            "ci95": [
+              -1.45701,
+              -0.02612
+            ]
+          }
+        }
+      },
+      "chimera_anchor": {
+        "raw_cos": 0.78146,
+        "shift_cos": 0.22821,
+        "grad_closed": 0.59467,
+        "shift_norm": 2.64849,
+        "cross": {
+          "shift_cos": 0.10943,
+          "grad_closed": 0.21396
+        },
+        "ci95": {
+          "shift_cos": [
+            0.04726,
+            0.35726
+          ],
+          "grad_closed": [
+            0.1037,
+            0.78422
+          ]
+        },
+        "excess_over_random": {
+          "shift_cos": {
+            "value": -0.00749,
+            "ci95": [
+              -0.07795,
+              0.09106
+            ]
+          },
+          "grad_closed": {
+            "value": -0.51467,
+            "ci95": [
+              -0.759,
+              0.1393
+            ]
+          }
+        }
+      }
+    },
+    "seconds": {
+      "encode": 441.7,
+      "gradients": 7729.3,
+      "per_backward": 1.61
+    },
+    "peak_gb": 10.12,
+    "device": "Tesla T4",
+    "compute_dtype": "bfloat16"
+  }
+}
